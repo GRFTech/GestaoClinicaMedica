@@ -7,7 +7,7 @@ import {Header} from './core/components/header/header';
   imports: [RouterOutlet, Header],
   templateUrl: './app.html',
   standalone: true,
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 })
 export class App {
   protected readonly title = signal('front');

@@ -8,7 +8,7 @@ import {RouterOutlet} from '@angular/router';
   ],
   templateUrl: './data.html',
   standalone: true,
-  styleUrl: './data.css'
+  styleUrl: './data.scss'
 })
 export class Data {
 
