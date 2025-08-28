@@ -27,7 +27,7 @@
     "@angular/platform-browser": "^20.2.2",
     "@angular/router": "^20.2.2",
     "@primeuix/themes": "^1.2.3",
-    "bootstrap": "^5.3.8",
+    "@tailwindcss/postcss": "^4.1.12",
     "primeicons": "^7.0.0",
     "primeng": "^20.0.1",
     "rxjs": "~7.8.0",
@@ -39,13 +39,16 @@
     "@angular/cli": "^20.1.1",
     "@angular/compiler-cli": "^20.2.2",
     "@types/jasmine": "~5.1.0",
+    "autoprefixer": "^10.4.21",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.6",
     "sass": "^1.91.0",
+    "tailwindcss": "^4.1.12",
     "typescript": "~5.8.2"
   }
 }
