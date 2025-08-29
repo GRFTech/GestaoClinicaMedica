@@ -5,7 +5,13 @@ export default class Consulta {
   private _medicoId: number;
   private _exameId: number;
 
-  constructor(id: number, data: Date, pacienteId: number, medicoId: number, exameId: number) {
+  constructor(
+    id: number = 0,
+    data: Date = new Date(),
+    pacienteId: number = 0,
+    medicoId: number = 0,
+    exameId: number = 0
+  ) {
     this._id = id;
     this._data = data;
     this._pacienteId = pacienteId;

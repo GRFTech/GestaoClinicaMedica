@@ -1,15 +1,11 @@
-import { Component } from '@angular/core';
-import {Button} from 'primeng/button';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    Button
-  ],
+  imports: [],
   templateUrl: './header.html',
   standalone: true,
   styleUrl: './header.scss'
 })
 export class Header {
-
 }

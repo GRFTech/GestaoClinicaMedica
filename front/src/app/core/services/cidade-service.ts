@@ -8,7 +8,7 @@ import {environment} from '../../../environments/environment.development';
 })
 export class CidadeService {
 
-  constructor(private http: HttpClient) { }
+  // constructor(private http: HttpClient) { }
 
   backURL = environment.apiURL;
   cidades = signal<Cidade[]>([]);

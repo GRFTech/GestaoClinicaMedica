@@ -10,6 +10,6 @@
 export interface TableColumn {
   field: string;
   header: string;
-  editable?: boolean;
-  type?: string;
+  editable: boolean;
+  type: string;
 }
