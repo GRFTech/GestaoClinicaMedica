@@ -7,7 +7,14 @@ export default class Medico {
   private _especialidadeId: number;
 
 
-  constructor(id: number, nome: string, endereco: string, telefone: string, cidadeId: number, especialidadeId: number) {
+  constructor(
+    id: number = 0,
+    nome: string = '',
+    endereco: string = '',
+    telefone: string = '',
+    cidadeId: number = 0,
+    especialidadeId: number = 0
+  ) {
     this._id = id;
     this._nome = nome;
     this._endereco = endereco;
@@ -15,7 +22,6 @@ export default class Medico {
     this._cidadeId = cidadeId;
     this._especialidadeId = especialidadeId;
   }
-
 
   get id(): number {
     return this._id;

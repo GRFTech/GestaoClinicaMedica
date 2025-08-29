@@ -5,7 +5,12 @@ export default class Especialidade {
   private _limiteDiario: number;
 
 
-  constructor(id: number, descricao: string, valorConsulta: number, limiteDiario: number) {
+  constructor(
+    id: number = 0,
+    descricao: string = '',
+    valorConsulta: number = 0,
+    limiteDiario: number = 0
+  ) {
     this._id = id;
     this._descricao = descricao;
     this._valorConsulta = valorConsulta;

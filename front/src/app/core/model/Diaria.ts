@@ -11,7 +11,11 @@ export default class Diaria {
     return `${ano}${mes}${dia}`;
   }
 
-  constructor(codigoDia: Date, quantidadeConsultas: number, especialidadeId: number) {
+  constructor(
+    codigoDia: Date = new Date(),
+    quantidadeConsultas: number = 0,
+    especialidadeId: number = 0
+  ) {
     this._codigoDia = codigoDia;
     this._quantidadeConsultas = quantidadeConsultas;
     this._especialidadeId = especialidadeId;

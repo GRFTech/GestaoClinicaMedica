@@ -8,8 +8,16 @@ export default class Paciente {
   private _altura: number;
   private _cidadeId: number;
 
-
-  constructor(id: number, nome: string, dataNascimento: Date, endereco: string, telefone: string, peso: number, altura: number, cidadeId: number) {
+  constructor(
+    id: number = 0,
+    nome: string = '',
+    dataNascimento: Date = new Date(),
+    endereco: string = '',
+    telefone: string = '',
+    peso: number = 0,
+    altura: number = 0,
+    cidadeId: number = 0
+  ) {
     this._id = id;
     this._nome = nome;
     this._dataNascimento = dataNascimento;
@@ -19,7 +27,6 @@ export default class Paciente {
     this._altura = altura;
     this._cidadeId = cidadeId;
   }
-
 
   get id(): number {
     return this._id;

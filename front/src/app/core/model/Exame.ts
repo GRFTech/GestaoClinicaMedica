@@ -5,7 +5,12 @@ export default class Exame {
   private _especialidadeId: number;
 
 
-  constructor(id: number, descricao: string, valor: number, especialidadeId: number) {
+  constructor(
+    id: number = 0,
+    descricao: string = '',
+    valor: number = 0,
+    especialidadeId: number = 0
+  ) {
     this._id = id;
     this._descricao = descricao;
     this._valor = valor;
