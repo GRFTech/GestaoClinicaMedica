@@ -5,6 +5,7 @@ import {InputText} from 'primeng/inputtext';
 import {AbstractDataType} from '../../interfaces/abstract-data-type';
 import {InputNumber} from 'primeng/inputnumber';
 import { DatePickerModule } from 'primeng/datepicker';
+import {Select} from 'primeng/select';
 
 @Component({
   selector: 'app-crud-field',
@@ -12,7 +13,8 @@ import { DatePickerModule } from 'primeng/datepicker';
     FormsModule,
     InputText,
     InputNumber,
-    DatePickerModule
+    DatePickerModule,
+    Select
   ],
   templateUrl: './crud-field.html',
   standalone: true,
@@ -24,5 +26,4 @@ export class CrudField<T extends AbstractDataType> {
   isEditable = input.required<boolean>();
   currentItem = input.required<T>();
   submitted = input.required<boolean>()
-  protected readonly DatePickerModule = DatePickerModule;
 }

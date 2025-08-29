@@ -12,4 +12,5 @@ export interface TableColumn {
   header: string;
   editable: boolean;
   type: string;
+  options?: any[]
 }

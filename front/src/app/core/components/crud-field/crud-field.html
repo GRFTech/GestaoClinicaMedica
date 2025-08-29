@@ -61,7 +61,7 @@
         [hourFormat]="'24'"
         [showButtonBar]="true"
         appendTo="body"
-      />
+      ></p-datepicker>
 
       @if (submitted() && !currentItem()[col().field]) {
         <small class="text-red-500">
@@ -85,7 +85,7 @@
         [(ngModel)]="currentItem()[col().field]"
         [showButtonBar]="true"
         appendTo="body"
-      />
+      ></p-datepicker>
 
       @if (submitted() && !currentItem()[col().field]) {
         <small class="text-red-500">
@@ -96,29 +96,47 @@
   </ng-container>
 }
 
-
-@if (col().type === "") {
+@if (col().type === "select") {
   <ng-container>
     <div class="mt-2">
       <label
         [for]="col().header"
         class="block font-bold mb-2"
-      >{{ col().header }}</label>
+      >
+        {{ col().header }}
+      </label>
 
-<!--      <p-datepicker-->
-<!--        inputId="calendar-24h"-->
-<!--        [(ngModel)]="currentItem()[col().field]"-->
-<!--        [showTime]="true"-->
-<!--        [hourFormat]="'24'"-->
-<!--        [showButtonBar]="true"-->
-<!--        appendTo="body"-->
-<!--      />-->
+      <p-select
+        [options]="col().options"
+        [(ngModel)]="currentItem()[col().field]"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Selecione..."
+        class="w-full md:w-56"
+        appendTo="body"
+      >
+        <ng-template #selectedItem let-selectedOption>
+          @if (selectedOption) {
+            <div class="flex items-center gap-2">
+              <div>{{ selectedOption.label }}</div>
+            </div>
+          }
+        </ng-template>
+
+        <ng-template let-option #item>
+          <div class="flex items-center gap-2">
+            <div>{{ option.label }}</div>
+          </div>
+        </ng-template>
+      </p-select>
 
       @if (submitted() && !currentItem()[col().field]) {
         <small class="text-red-500">
-          {{ col().field }} é necessário.
+          {{ col().header }} é necessário.
         </small>
       }
     </div>
   </ng-container>
 }
+
+
