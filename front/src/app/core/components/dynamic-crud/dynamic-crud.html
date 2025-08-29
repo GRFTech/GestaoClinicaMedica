@@ -33,6 +33,7 @@
   <p-table
     #dt
     [value]="data"
+    [resizableColumns]="true"
     [columns]="columns"
     [rows]="10"
     [paginator]="true"
@@ -65,7 +66,7 @@
           <p-tableHeaderCheckbox/>
         </th>
         @for (col of columns; track col.field) {
-          <th pSortableColumn="{{ col.field }}">
+          <th pResizableColumn pSortableColumn="{{ col.field }}">
             <div class="flex items-center gap-2">
               {{ col.header }}
               <p-sortIcon [field]="col.header"/>
@@ -110,7 +111,7 @@
   <p-dialog
     [(visible)]="dialogVisible"
     [style]="{ width: '450px' }"
-    header="Registrar novo"
+    [header]="message"
     [modal]="true"
   >
     <div class="d-flex flex-column gap-3">

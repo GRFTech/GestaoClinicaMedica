@@ -54,6 +54,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   submitted: boolean = false;
   globalFilterFields!: string[];
   isEdit!: boolean;
+  message!: string;
 
   constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {}
 
@@ -65,11 +66,13 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
     this.isEdit = false;
     this.currentItem = new this.T_class()
     this.submitted = false;
+    this.message = "Registrar novo"
     this.dialogVisible = true;
   }
 
   edit(item: T) {
     this.isEdit = true;
+    this.message = "Editar"
     this.currentItem = Object.create(item);
     this.dialogVisible = true;
   }
