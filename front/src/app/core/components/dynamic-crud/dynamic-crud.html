@@ -66,7 +66,10 @@
           <p-tableHeaderCheckbox/>
         </th>
         @for (col of columns; track col.field) {
-          <th pResizableColumn pSortableColumn="{{ col.field }}">
+          <th
+            pResizableColumn
+            pSortableColumn="{{ col.field }}"
+          >
             <div class="flex items-center gap-2">
               {{ col.header }}
               <p-sortIcon [field]="col.header"/>
@@ -86,7 +89,11 @@
           <p-tableCheckbox [value]="row"/>
         </td>
         @for (col of columns; track col.field) {
-          <td>{{ row[col.field] }}</td>
+          <td
+            (dblclick)="edit(row)"
+          >
+            {{ row[col.field] }}
+          </td>
         }
         <td>
           <p-button
@@ -136,24 +143,20 @@
           />
         }
       }
-
-
-      <!--      <app-crud-field-->
-<!--        [columns]="columns"-->
-<!--        [isEdit]="isEdit"-->
-<!--        [currentItem]="currentItem"-->
-<!--        [submitted]="submitted"-->
-<!--      />-->
     </div>
 
-    <ng-template #footer>
+    <ng-template
+      #footer
+    >
       <p-button
+        class="mt-20"
         label="Cancelar"
         icon="pi pi-times"
         text
         (click)="dialogVisible=false"
       />
       <p-button
+        class="mt-20"
         label="Salvar"
         icon="pi pi-check"
         (click)="save()"
