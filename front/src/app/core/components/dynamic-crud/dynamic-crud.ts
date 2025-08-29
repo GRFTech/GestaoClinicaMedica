@@ -12,6 +12,7 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
 import {TableColumn} from '../../interfaces/table-column';
 import {InputText} from 'primeng/inputtext';
 import {AbstractDataType} from '../../interfaces/abstract-data-type';
+import {CrudField} from '../crud-field/crud-field';
 
 @Component({
   selector: 'app-dynamic-crud',
@@ -26,7 +27,8 @@ import {AbstractDataType} from '../../interfaces/abstract-data-type';
     Dialog,
     FormsModule,
     ConfirmDialog,
-    InputText
+    InputText,
+    CrudField
   ],
   templateUrl: './dynamic-crud.html',
   standalone: true,
@@ -37,6 +39,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   @Input() columns: TableColumn[] = [];
   @Input() data: T[] = [];
   @Input() entityName: string = 'item';
+  @Input() T_class!: { new(): T };
 
   @Output() onSave = new EventEmitter<T>();
   @Output() onEdit = new EventEmitter<T>();
@@ -50,6 +53,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   currentItem!: T;
   submitted: boolean = false;
   globalFilterFields!: string[];
+  isEdit!: boolean;
 
   constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {}
 
@@ -58,12 +62,15 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   }
 
   openNew() {
+    this.isEdit = false;
+    this.currentItem = new this.T_class()
     this.submitted = false;
     this.dialogVisible = true;
   }
 
   edit(item: T) {
-    this.currentItem = { ...item };
+    this.isEdit = true;
+    this.currentItem = Object.create(item);
     this.dialogVisible = true;
   }
 
@@ -77,7 +84,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',
-          detail: `${this.entityName} deletado com sucesso!`,
+          detail: `Item removido com sucesso!`,
           life: 3000
         });
       }
@@ -115,12 +122,21 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
     this.submitted = true;
     this.onSave.emit(this.currentItem);
     this.dialogVisible = false;
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Dados salvos com sucesso!`,
-      life: 3000
-    });
+    if (this.isEdit) {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Dados editados com sucesso!`,
+        life: 3000
+      });
+    } else{
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Dados salvos com sucesso!`,
+        life: 3000
+      });
+    }
   }
 
   exportCSV() {

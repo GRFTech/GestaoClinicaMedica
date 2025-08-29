@@ -76,7 +76,10 @@
       </tr>
     </ng-template>
 
-    <ng-template #body let-row>
+    <ng-template
+      #body
+      let-row
+    >
       <tr>
         <td style="width: 3rem">
           <p-tableCheckbox [value]="row"/>
@@ -85,44 +88,77 @@
           <td>{{ row[col.field] }}</td>
         }
         <td>
-          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="edit(row)" />
-          <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="confirmDelete(row)" />
+          <p-button
+            icon="pi pi-pencil"
+            class="mr-2"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="edit(row)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="confirmDelete(row)"
+          />
         </td>
       </tr>
     </ng-template>
   </p-table>
 
-  <p-dialog [(visible)]="dialogVisible" [style]="{ width: '450px' }" header="Detalhes" [modal]="true">
+  <p-dialog
+    [(visible)]="dialogVisible"
+    [style]="{ width: '450px' }"
+    header="Registrar novo"
+    [modal]="true"
+  >
     <div class="d-flex flex-column gap-3">
-      @for (col of columns; track col.field) {
-        <ng-container>
-          @if (col.editable) {
-            <div class="mt-2">
-              <label [for]="col.header" class="block font-bold mb-2">{{ col.header }}</label>
-              <input
-                pInputText
-                [id]="col.field"
-                [(ngModel)]="currentItem[col.field]"
-                [type]="col.type || 'text'"
-                required
-              />
 
-              @if(submitted && !currentItem[col.field]) {
-                <small class="text-red-500">
-                  {{ col.field }} é necessário.
-                </small>
-              }
-            </div>
-          }
-        </ng-container>
+
+      @if (isEdit) {
+        @for (col of columns; track col.field) {
+          <app-crud-field
+            [col]="col"
+            [isEditable]="col.editable!"
+            [currentItem]="currentItem"
+            [submitted]="submitted"
+          />
+        }
+      } @else {
+        @for (col of columns; track col.field) {
+          <app-crud-field
+            [col]="col"
+            [isEditable]="true"
+            [currentItem]="currentItem"
+            [submitted]="submitted"
+          />
+        }
       }
+
+
+      <!--      <app-crud-field-->
+<!--        [columns]="columns"-->
+<!--        [isEdit]="isEdit"-->
+<!--        [currentItem]="currentItem"-->
+<!--        [submitted]="submitted"-->
+<!--      />-->
     </div>
 
     <ng-template #footer>
-      <p-button label="Cancelar" icon="pi pi-times" text (click)="dialogVisible=false"/>
-      <p-button label="Salvar" icon="pi pi-check" (click)="save()"/>
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        text
+        (click)="dialogVisible=false"
+      />
+      <p-button
+        label="Salvar"
+        icon="pi pi-check"
+        (click)="save()"
+      />
     </ng-template>
   </p-dialog>
 
-  <p-confirmDialog [style]="{ width: '450px' }" />
+  <p-confirmDialog [style]="{ width: '450px' }"/>
 </div>

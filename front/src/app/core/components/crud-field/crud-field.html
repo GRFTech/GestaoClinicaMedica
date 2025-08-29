@@ -1,0 +1,74 @@
+@if (col().type == "string") {
+  <ng-container>
+    <div class="mt-2">
+      <label
+        [for]="col().header"
+        class="block font-bold mb-2"
+      >{{ col().header }}</label>
+
+      <input
+        pInputText
+        [id]="col().field"
+        [(ngModel)]="currentItem()[col().field]"
+        [type]="'text'"
+        required
+      />
+
+      @if (submitted() && !currentItem()[col().field]) {
+        <small class="text-red-500">
+          {{ col().field }} é necessário.
+        </small>
+      }
+    </div>
+  </ng-container>
+}
+
+
+@if (col().type === "number") {
+  <ng-container>
+    <div class="mt-2">
+      <label
+        [for]="col().header"
+        class="block font-bold mb-2"
+      >{{ col().header }}</label>
+
+      <p-input-number
+        [id]="col().field"
+        [(ngModel)]="currentItem()[col().field]"
+        required
+      />
+
+      @if (submitted() && !currentItem()[col().field]) {
+        <small class="text-red-500">
+          {{ col().field }} é necessário.
+        </small>
+      }
+    </div>
+  </ng-container>
+}
+
+@if (col().type === "Date") {
+  <ng-container>
+    <div class="mt-2">
+      <label
+        [for]="col().header"
+        class="block font-bold mb-2"
+      >{{ col().header }}</label>
+
+      <p-datepicker
+        inputId="calendar-24h"
+        [(ngModel)]="currentItem()[col().field]"
+        [showTime]="true"
+        [hourFormat]="'24'"
+        [showButtonBar]="true"
+        appendTo="body"
+      />
+
+      @if (submitted() && !currentItem()[col().field]) {
+        <small class="text-red-500">
+          {{ col().field }} é necessário.
+        </small>
+      }
+    </div>
+  </ng-container>
+}
