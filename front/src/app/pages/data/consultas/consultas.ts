@@ -36,7 +36,7 @@ export class Consultas implements OnInit {
 
     this.cols = [
       { field: 'id', header: 'ID', editable: false, type: 'number' },
-      { field: 'data', header: 'Data', editable: true, type: 'Date' },
+      { field: 'data', header: 'Data', editable: true, type: 'datetime' },
       { field: 'pacienteId', header: 'ID do Paciente', editable: false, type: 'number' },
       { field: 'medicoId', header: 'ID do Medico', editable: false, type: 'number' },
       { field: 'exameId', header: 'ID do Exame', editable: false, type: 'number' }
