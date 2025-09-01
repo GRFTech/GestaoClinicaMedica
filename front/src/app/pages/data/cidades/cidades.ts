@@ -49,7 +49,7 @@ export class Cidades implements OnInit {
 
     this.cols = [
       { field: 'id', header: 'ID', editable: false, type: 'number' },
-      { field: 'descricao', header: 'Descrição', editable: true, type: 'string' },
+      { field: 'descricao', header: 'Descrição', editable: true, type: 'text' },
       { field: 'estadoId', header: 'Estado', editable: true, type: 'select', options: this.estadoOptions()},
     ];
   }
