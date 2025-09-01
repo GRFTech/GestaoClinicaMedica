@@ -66,7 +66,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
     this.isEdit = false;
     this.currentItem = new this.T_class()
     this.submitted = false;
-    this.message = "Registrar novo"
+    this.message = "Registrar novo item"
     this.dialogVisible = true;
   }
 
@@ -79,7 +79,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
 
   confirmDelete(item: T) {
     this.confirmationService.confirm({
-      message: `Tem certeza que deseja deletar este ${this.entityName}?`,
+      message: `Tem certeza que deseja deletar o item ${this.entityName}?`,
       header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -96,7 +96,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
 
   confirmDeleteSelected() {
     this.confirmationService.confirm({
-      message: `Tem certeza que deseja deletar os/as ${this.entityName}s selecionados?`,
+      message: `Tem certeza que deseja deletar os itens selecionados?`,
       header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
@@ -123,7 +123,6 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
 
   save() {
     this.submitted = true;
-    this.onSave.emit(this.currentItem);
     this.dialogVisible = false;
     if (this.isEdit) {
       this.messageService.add({
@@ -140,6 +139,8 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
         life: 3000
       });
     }
+
+    this.onSave.emit(this.currentItem);
   }
 
   exportCSV() {
