@@ -12,7 +12,7 @@
         [(ngModel)]="currentItem()[col().field]"
         [type]="'text'"
         required
-        [disabled]="!isEditable()"
+        [disabled]="!isEditable() || !isInsertable()"
       />
 
       @if (submitted() && !currentItem()[col().field]) {
@@ -36,7 +36,7 @@
         [id]="col().field"
         [(ngModel)]="currentItem()[col().field]"
         required
-        [disabled]="!isEditable()"
+        [disabled]="!isEditable() || !isInsertable()"
       />
 
       @if (submitted() && !currentItem()[col().field]) {
@@ -64,7 +64,7 @@
         [showButtonBar]="true"
         appendTo="body"
         dateFormat="dd/mm/yy"
-        [disabled]="!isEditable()"
+        [disabled]="!isEditable() || !isInsertable()"
       ></p-datepicker>
 
       @if (submitted() && !currentItem()[col().field]) {
@@ -90,7 +90,7 @@
         [showButtonBar]="true"
         appendTo="body"
         dateFormat="dd/mm/yy"
-        [disabled]="!isEditable()"
+        [disabled]="!isEditable() || !isInsertable()"
       ></p-datepicker>
 
       @if (submitted() && !currentItem()[col().field]) {
@@ -120,7 +120,7 @@
         placeholder="Selecione..."
         class="w-full md:w-56"
         appendTo="body"
-        [disabled]="!isEditable()"
+        [disabled]="!isEditable() || !isInsertable()"
       >
         <ng-template #selectedItem let-selectedOption>
           @if (selectedOption) {

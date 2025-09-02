@@ -128,7 +128,8 @@
         @for (col of columns; track col.field) {
           <app-crud-field
             [col]="col"
-            [isEditable]="col.editable!"
+            [isEditable]="col.editable"
+            [isInsertable]="col.insertable"
             [currentItem]="currentItem"
             [submitted]="submitted"
           />
@@ -138,6 +139,7 @@
           <app-crud-field
             [col]="col"
             [isEditable]="true"
+            [isInsertable]="col.insertable"
             [currentItem]="currentItem"
             [submitted]="submitted"
           />

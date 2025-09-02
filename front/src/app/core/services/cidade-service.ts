@@ -1,7 +1,7 @@
 import {Injectable, Signal, signal} from '@angular/core';
-import Cidade from '../model/Cidade';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment.development';
+import Cidade from '../model/cidade/Cidade';
 
 @Injectable({
   providedIn: 'root'

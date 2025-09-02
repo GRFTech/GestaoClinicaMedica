@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CidadeService} from '../../../core/services/cidade-service';
 import {TableColumn} from '../../../core/interfaces/table-column';
-import Cidade from '../../../core/model/Cidade';
 import Consulta from '../../../core/model/Consulta';
 import {ConsultaService} from '../../../core/services/consulta-service';
 import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';
@@ -35,11 +34,11 @@ export class Consultas implements OnInit {
     this.data = this.consultaService.getConsultas()();
 
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number' },
-      { field: 'data', header: 'Data', editable: true, type: 'datetime' },
-      { field: 'pacienteId', header: 'ID do Paciente', editable: false, type: 'number' },
-      { field: 'medicoId', header: 'ID do Medico', editable: false, type: 'number' },
-      { field: 'exameId', header: 'ID do Exame', editable: false, type: 'number' }
+      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false },
+      { field: 'data', header: 'Data', editable: true, type: 'datetime', insertable: true },
+      { field: 'pacienteId', header: 'ID do Paciente', editable: false, type: 'number', insertable: true },
+      { field: 'medicoId', header: 'ID do Medico', editable: false, type: 'number', insertable: true },
+      { field: 'exameId', header: 'ID do Exame', editable: false, type: 'number', insertable: true }
     ];
   }
 }

@@ -11,6 +11,7 @@ export interface TableColumn {
   field: string;
   header: string;
   editable: boolean;
+  insertable: boolean;
   type: string;
   options?: any[]
 }

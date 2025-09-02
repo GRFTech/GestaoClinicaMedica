@@ -24,6 +24,7 @@ export class CrudField<T extends AbstractDataType> {
 
   col = input.required<TableColumn>();
   isEditable = input.required<boolean>();
+  isInsertable = input.required<boolean>();
   currentItem = input.required<T>();
   submitted = input.required<boolean>()
 }

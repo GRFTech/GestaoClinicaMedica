@@ -1,11 +1,11 @@
 export default class Estado {
   private _id: number;
-  private _descricao: string;
+  private _estado: string;
 
 
-  constructor(id: number = 0, descricao: string = '') {
+  constructor(id: number = 0, estado: string = '') {
     this._id = id;
-    this._descricao = descricao;
+    this._estado = estado;
   }
 
 
@@ -17,11 +17,11 @@ export default class Estado {
     this._id = value;
   }
 
-  get descricao(): string {
-    return this._descricao;
+  get estado(): string {
+    return this._estado;
   }
 
-  set descricao(value: string) {
-    this._descricao = value;
+  set estado(value: string) {
+    this._estado = value;
   }
 }
