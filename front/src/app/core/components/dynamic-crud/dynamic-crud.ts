@@ -13,6 +13,8 @@ import {TableColumn} from '../../interfaces/table-column';
 import {InputText} from 'primeng/inputtext';
 import {AbstractDataType} from '../../interfaces/abstract-data-type';
 import {CrudField} from '../crud-field/crud-field';
+import {CurrencyPipe, DatePipe} from '@angular/common';
+import {Tag} from 'primeng/tag';
 
 @Component({
   selector: 'app-dynamic-crud',
@@ -28,7 +30,10 @@ import {CrudField} from '../crud-field/crud-field';
     FormsModule,
     ConfirmDialog,
     InputText,
-    CrudField
+    CrudField,
+    DatePipe,
+    CurrencyPipe,
+    Tag
   ],
   templateUrl: './dynamic-crud.html',
   standalone: true,
