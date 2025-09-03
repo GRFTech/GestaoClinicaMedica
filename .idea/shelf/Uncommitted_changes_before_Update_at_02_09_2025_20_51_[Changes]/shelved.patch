@@ -1,0 +1,303 @@
+Index: back/app.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app.py b/back/app/app.py
+rename from back/app.py
+rename to back/app/app.py
+--- a/back/app.py	(revision 55ddc12e385ce8983a216469beee28b83aee8f23)
++++ b/back/app/app.py	(date 1756853547206)
+@@ -4,7 +4,7 @@
+ 
+ 
+ @app.route('/')
+-def hello_world():  # put application's code here
++def hello_world():
+     return 'Hello World!'
+ 
+ 
+Index: back/app/models/Paciente.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Paciente.py b/back/app/models/Paciente.py
+new file mode 100644
+--- /dev/null	(date 1756856212728)
++++ b/back/app/models/Paciente.py	(date 1756856212728)
+@@ -0,0 +1,10 @@
++class Paciente:
++    def __init__(self, codigo_paciente, nome, data_nascimento, endereco, telefone, codigo_cidade, peso, altura):
++        self.codigo_paciente = int(codigo_paciente)
++        self.nome = str(nome)
++        self.data_nascimento = str(data_nascimento)
++        self.endereco = str(endereco)
++        self.telefone = str(telefone)
++        self.codigo_cidade = int(codigo_cidade)
++        self.peso = float(peso)
++        self.altura = float(altura)
+\ No newline at end of file
+Index: back/app/models/Medico.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Medico.py b/back/app/models/Medico.py
+new file mode 100644
+--- /dev/null	(date 1756856189747)
++++ b/back/app/models/Medico.py	(date 1756856189747)
+@@ -0,0 +1,8 @@
++class Medico:
++    def __init__(self, codigo_medico, nome, endereco, telefone, codigo_cidade, codigo_especialidade):
++        self.codigo_medico = int(codigo_medico)
++        self.nome = str(nome)
++        self.endereco = str(endereco)
++        self.telefone = str(telefone)
++        self.codigo_cidade = int(codigo_cidade)
++        self.codigo_especialidade = int(codigo_especialidade)
+\ No newline at end of file
+Index: back/app/models/Especialidade.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Especialidade.py b/back/app/models/Especialidade.py
+new file mode 100644
+--- /dev/null	(date 1756856905113)
++++ b/back/app/models/Especialidade.py	(date 1756856905113)
+@@ -0,0 +1,6 @@
++class Especialidade:
++    def __init__(self, codigo_especialidade, descricao, valor_consulta, limite_diario):
++        self.codigo_especialidade = int(codigo_especialidade)
++        self.descricao = str(descricao)
++        self.valor_consulta = float(valor_consulta)
++        self.limite_diario = int(limite_diario)
+Index: back/app/models/Consulta.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Consulta.py b/back/app/models/Consulta.py
+new file mode 100644
+--- /dev/null	(date 1756855444022)
++++ b/back/app/models/Consulta.py	(date 1756855444022)
+@@ -0,0 +1,8 @@
++class Consulta:
++    def __init__(self, codigo_consulta, codigo_paciente, codigo_medico, codigo_exame, data, hora):
++        self.codigo_consulta = int(codigo_consulta)
++        self.codigo_paciente = int(codigo_paciente)
++        self.codigo_medico = int(codigo_medico)
++        self.codigo_exame = int(codigo_exame)
++        self.data = str(data) # Formato 'DD/MM/AAAA'
++        self.hora = str(hora) # Formato 'HH:MM'
+\ No newline at end of file
+Index: back/app/models/Exame.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Exame.py b/back/app/models/Exame.py
+new file mode 100644
+--- /dev/null	(date 1756855428083)
++++ b/back/app/models/Exame.py	(date 1756855428083)
+@@ -0,0 +1,6 @@
++class Exame:
++    def __init__(self, codigo_exame, descricao, codigo_especialidade, valor_exame):
++        self.codigo_exame = int(codigo_exame)
++        self.descricao = str(descricao)
++        self.codigo_especialidade = int(codigo_especialidade)
++        self.valor_exame = float(valor_exame)
+\ No newline at end of file
+Index: .idea/GestaoClinicaMedica.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\" />\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n  <component name=\"PyDocumentationSettings\">\r\n    <option name=\"format\" value=\"PLAIN\" />\r\n    <option name=\"myDocStringFormat\" value=\"Plain\" />\r\n  </component>\r\n  <component name=\"TemplatesService\">\r\n    <option name=\"TEMPLATE_FOLDERS\">\r\n      <list>\r\n        <option value=\"$MODULE_DIR$/back/templates\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/GestaoClinicaMedica.iml b/.idea/GestaoClinicaMedica.iml
+--- a/.idea/GestaoClinicaMedica.iml	(revision 55ddc12e385ce8983a216469beee28b83aee8f23)
++++ b/.idea/GestaoClinicaMedica.iml	(date 1756853475635)
+@@ -1,8 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module type="PYTHON_MODULE" version="4">
+   <component name="NewModuleRootManager">
+-    <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="inheritedJdk" />
++    <content url="file://$MODULE_DIR$">
++      <excludeFolder url="file://$MODULE_DIR$/venv" />
++    </content>
++    <orderEntry type="jdk" jdkName="C:\Users\LABORINFO\anaconda3" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+   <component name="PyDocumentationSettings">
+Index: back/app/models/Diaria.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Diaria.py b/back/app/models/Diaria.py
+new file mode 100644
+--- /dev/null	(date 1756855471359)
++++ b/back/app/models/Diaria.py	(date 1756855471359)
+@@ -0,0 +1,5 @@
++class Diaria:
++    def __init__(self, codigo_dia, codigo_especialidade, quantidade_consultas):
++        self.codigo_dia = int(codigo_dia) # Formato AAAAMMDD
++        self.codigo_especialidade = int(codigo_especialidade)
++        self.quantidade_consultas = int(quantidade_consultas)
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"ba7218bb-1f34-4097-934e-1dcf70d269ac\" name=\"Changes\" comment=\"initial commit\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"ROOT_SYNC\" value=\"SYNC\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;DevIsper&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/rannyeroliveira/GestaoClinicaMedica.git&quot;,\r\n    &quot;accountId&quot;: &quot;586ef744-a2c2-4435-b100-a64febda7e94&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 8\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"31qb4jMXx2yzn0Vsb6k248brmMX\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"main\",\r\n    \"last_opened_file_path\": \"/Users/DevIsper/Programação/Estudo/FEMA/2º Ano/Begs/GestaoClinicaMedica\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"$PROJECT_DIR$\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17890.14\" />\r\n        <option value=\"bundled-python-sdk-5b207ade9991-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17890.14\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"ba7218bb-1f34-4097-934e-1dcf70d269ac\" name=\"Changes\" comment=\"\" />\r\n      <created>1756254361038</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1756254361038</updated>\r\n      <workItem from=\"1756254362175\" duration=\"473000\" />\r\n      <workItem from=\"1756254995597\" duration=\"192000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"initial commit\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1756254488712</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1756254488712</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"initial commit\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"initial commit\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 55ddc12e385ce8983a216469beee28b83aee8f23)
++++ b/.idea/workspace.xml	(date 1756856276200)
+@@ -4,11 +4,32 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="ba7218bb-1f34-4097-934e-1dcf70d269ac" name="Changes" comment="initial commit" />
++    <list default="true" id="ba7218bb-1f34-4097-934e-1dcf70d269ac" name="Changes" comment="initial commit">
++      <change afterPath="$PROJECT_DIR$/back/app/models/Cidade.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/models/Consulta.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/models/Diaria.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/models/Especialidade.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/models/Exame.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/models/Medico.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/models/Paciente.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/app/repository/PacienteRepository.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/back/indices/arvore_binaria.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/GestaoClinicaMedica.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/GestaoClinicaMedica.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/back/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/app.py" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="FileTemplateManagerImpl">
++    <option name="RECENT_TEMPLATES">
++      <list>
++        <option value="Python Script" />
++      </list>
++    </option>
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+@@ -36,6 +57,7 @@
+   </component>
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
++    "Python.app.executor": "Run",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "git-widget-placeholder": "main",
+     "last_opened_file_path": "/Users/DevIsper/Programação/Estudo/FEMA/2º Ano/Begs/GestaoClinicaMedica",
+@@ -44,19 +66,44 @@
+     "node.js.selected.package.eslint": "(autodetect)",
+     "node.js.selected.package.tslint": "(autodetect)",
+     "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
++      <recent name="C:\Users\LABORINFO\PycharmProjects\GestaoClinicaMedica\back\app" />
+       <recent name="$PROJECT_DIR$" />
+     </key>
+   </component>
++  <component name="RunManager">
++    <configuration name="app" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
++      <module name="GestaoClinicaMedica" />
++      <option name="ENV_FILES" value="" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/back" />
++      <option name="IS_MODULE_SDK" value="true" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="SCRIPT_NAME" value="C:\Users\LABORINFO\PycharmProjects\GestaoClinicaMedica\back\app\app.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++  </component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17890.14" />
+-        <option value="bundled-python-sdk-5b207ade9991-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17890.14" />
++        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+       </set>
+     </attachedChunks>
+   </component>
+Index: back/indices/arvore_binaria.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/indices/arvore_binaria.py b/back/indices/arvore_binaria.py
+new file mode 100644
+--- /dev/null	(date 1756855833090)
++++ b/back/indices/arvore_binaria.py	(date 1756855833090)
+@@ -0,0 +1,6 @@
++class NoArvore:
++    def __init__(self, info, end):
++        self.info = info
++        self.end = end
++        self.esquerda = None
++        self.direita = None
+\ No newline at end of file
+Index: back/app/models/Cidade.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/back/app/models/Cidade.py b/back/app/models/Cidade.py
+new file mode 100644
+--- /dev/null	(date 1756855329510)
++++ b/back/app/models/Cidade.py	(date 1756855329510)
+@@ -0,0 +1,5 @@
++class Cidade:
++    def __init__(self, codigo_cidade, descricao, estado):
++        self.codigo_cidade = int(codigo_cidade)
++        self.descricao = str(descricao)
++        self.estado = str(estado)
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.12 (GestaoClinicaMedica)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 55ddc12e385ce8983a216469beee28b83aee8f23)
++++ b/.idea/misc.xml	(date 1756853547524)
+@@ -1,4 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (GestaoClinicaMedica)" project-jdk-type="Python SDK" />
++  <component name="Black">
++    <option name="sdkName" value="C:\Users\LABORINFO\anaconda3" />
++  </component>
++  <component name="ProjectRootManager" version="2" project-jdk-name="C:\Users\LABORINFO\anaconda3" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+diff --git a/back/app/repository/PacienteRepository.py b/back/app/repository/PacienteRepository.py
+new file mode 100644
