@@ -28,16 +28,33 @@ export class CidadeService {
    */
   getCidades(){
     const c = [
-      new Cidade(1, 'São Paulo', 10),
-      new Cidade(2, 'Rio de Janeiro', 9),
-      new Cidade(3, 'Belo Horizonte', 8),
-      new Cidade(4, 'Curitiba', 7),
-      new Cidade(5, 'Porto Alegre', 6),
-      new Cidade(6, 'Salvador', 5),
-      new Cidade(7, 'Fortaleza', 4),
-      new Cidade(8, 'Manaus', 3),
-      new Cidade(9, 'Recife', 2),
-      new Cidade(10, 'Florianópolis', 1),
+      new Cidade(1, 'Rio Branco', 1),
+      new Cidade(2, 'Maceió', 2),
+      new Cidade(3, 'Macapá', 3),
+      new Cidade(4, 'Manaus', 4),
+      new Cidade(5, 'Salvador', 5),
+      new Cidade(6, 'Fortaleza', 6),
+      new Cidade(7, 'Brasília', 7),
+      new Cidade(8, 'Vitória', 8),
+      new Cidade(9, 'Goiânia', 9),
+      new Cidade(10, 'São Luís', 10),
+      new Cidade(11, 'Cuiabá', 11),
+      new Cidade(12, 'Campo Grande', 12),
+      new Cidade(13, 'Belo Horizonte', 13),
+      new Cidade(14, 'Belém', 14),
+      new Cidade(15, 'João Pessoa', 15),
+      new Cidade(16, 'Curitiba', 16),
+      new Cidade(17, 'Recife', 17),
+      new Cidade(18, 'Teresina', 18),
+      new Cidade(19, 'Rio de Janeiro', 19),
+      new Cidade(20, 'Natal', 20),
+      new Cidade(21, 'Porto Alegre', 21),
+      new Cidade(22, 'Porto Velho', 22),
+      new Cidade(23, 'Boa Vista', 23),
+      new Cidade(24, 'Florianópolis', 24),
+      new Cidade(25, 'São Paulo', 25),
+      new Cidade(26, 'Aracaju', 26),
+      new Cidade(27, 'Palmas', 27),
     ];
 
     this.cidades.set(c);
@@ -50,7 +67,7 @@ export class CidadeService {
    */
 
   private UItoDto(cidadeUI: CidadeUI): Cidade {
-    const estado = this.estadoService.estados().find(e => e.estado === cidadeUI.estado);
+    const estado = this.estadoService.estadosDto().find(e => e.estado === cidadeUI.estado);
     return new Cidade(cidadeUI.id, cidadeUI.descricao, estado!.id);
   }
 
@@ -60,7 +77,7 @@ export class CidadeService {
    * @returns Cidade
    */
   private DTOtoUI(cidade: Cidade): CidadeUI {
-    const estado = this.estadoService.estados().find(e => e.id === cidade.estadoId);
+    const estado = this.estadoService.estadosDto().find(e => e.id === cidade.estadoId);
     return new CidadeUI(cidade.id, cidade.descricao, estado?.estado ?? '');
   }
 

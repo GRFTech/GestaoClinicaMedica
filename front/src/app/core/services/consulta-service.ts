@@ -56,9 +56,9 @@ export class ConsultaService {
    * @returns Consulta
    */
   private UItoDto(ui: ConsultaUI): Consulta {
-    const paciente = this.pacienteService.pacientes().find(p => p.nome === ui.paciente);
-    const medico = this.medicoService.medicos().find(m => m.nome === ui.medico);
-    const exame = this.exameService.exames().find(e => e.descricao === ui.exame);
+    const paciente = this.pacienteService.pacientesDto().find(p => p.nome === ui.paciente);
+    const medico = this.medicoService.medicosDto().find(m => m.nome === ui.medico);
+    const exame = this.exameService.examesDto().find(e => e.descricao === ui.exame);
     return new Consulta(ui.id, ui.data, paciente!.id, medico!.id, exame!.id);
   }
 
@@ -68,9 +68,9 @@ export class ConsultaService {
    * @returns ConsultaUI
    */
   private DTOtoUI(dto: Consulta): ConsultaUI {
-    const paciente = this.pacienteService.pacientes().find(p => p.id === dto.pacienteId);
-    const medico = this.medicoService.medicos().find(m => m.id === dto.medicoId);
-    const exame = this.exameService.exames().find(e => e.id === dto.exameId);
+    const paciente = this.pacienteService.pacientesDto().find(p => p.id === dto.pacienteId);
+    const medico = this.medicoService.medicosDto().find(m => m.id === dto.medicoId);
+    const exame = this.exameService.examesDto().find(e => e.id === dto.exameId);
     return new ConsultaUI(dto.id, dto.data, paciente!.nome, medico!.nome, exame!.descricao);
   }
 

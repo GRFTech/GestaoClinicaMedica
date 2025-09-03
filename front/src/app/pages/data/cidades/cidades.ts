@@ -28,7 +28,6 @@ export class Cidades implements OnInit {
 
   cidadeService = inject(CidadeService)
 
-
   constructor(private estadoService: EstadoService, private messageService: MessageService) {}
 
   ngOnInit(): void {
@@ -80,11 +79,8 @@ export class Cidades implements OnInit {
   }
 
 
-
-
-
   estadoOptions() {
-    return this.estadoService.getEstados()().map(e => ({
+    return this.estadoService.estadosDto().map(e => ({
       label: e.estado,
       value: e.estado
     }));

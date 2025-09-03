@@ -1,4 +1,4 @@
-import {Injectable, Signal, signal} from '@angular/core';
+import {computed, Injectable, Signal, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
 import Diaria from '../model/Diaria';
 import Estado from '../model/Estado';
@@ -8,16 +8,24 @@ import Estado from '../model/Estado';
 })
 export class EstadoService {
 
+  constructor() {
+    this.getEstados()
+  }
 
   backURL = environment.apiURL;
-  estados = signal<Estado[]>([]);
+  private estados = signal<Estado[]>([]);
+
+  // Exposição como Readonly
+  estadosDto = this.estados.asReadonly();
+
+  // estadosUI = computed<EstadoUI[]>()
 
   /**
    * Retorna todos os dados mock.
    *
    * @return {Signal<Estado[]>} um signal que retorna os estados mockados
    */
-  getEstados(): Signal<Estado[]> {
+  getEstados() {
 
     let c = [
       new Estado(1, 'Acre'),
@@ -50,6 +58,5 @@ export class EstadoService {
     ];
 
     this.estados.set(c)
-    return this.estados;
   }
 }

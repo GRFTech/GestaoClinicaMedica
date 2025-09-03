@@ -1,4 +1,4 @@
-import {Injectable, Signal, signal} from '@angular/core';
+import {computed, Injectable, Signal, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
 import Estado from '../model/Estado';
 import Exame from '../model/Exame';
@@ -8,15 +8,23 @@ import Exame from '../model/Exame';
 })
 export class ExameService {
 
+  constructor() {
+    this.getExames();
+  }
+
   backURL = environment.apiURL;
-  exames = signal<Exame[]>([]);
+  private exames = signal<Exame[]>([]);
+
+  examesDto = this.exames.asReadonly();
+
+  // examesUI = computed<ExameUI>()
 
   /**
    * Retorna todos os dados mock.
    *
    * @return {Signal<Exame[]>} um signal que retorna os exames mockados
    */
-  getExames(): Signal<Exame[]> {
+  getExames() {
 
     let c = [
       new Exame(1, 'Eletrocardiograma (ECG)', 80.00, 1),
@@ -52,6 +60,5 @@ export class ExameService {
     ];
 
     this.exames.set(c)
-    return this.exames;
   }
 }

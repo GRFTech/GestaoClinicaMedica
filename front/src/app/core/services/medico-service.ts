@@ -1,4 +1,4 @@
-import {Injectable, Signal, signal} from '@angular/core';
+import {computed, Injectable, Signal, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
 import Exame from '../model/Exame';
 import Medico from '../model/Medico';
@@ -8,15 +8,23 @@ import Medico from '../model/Medico';
 })
 export class MedicoService {
 
+  constructor() {
+    this.getMedicos()
+  }
+
   backURL = environment.apiURL;
-  medicos = signal<Medico[]>([]);
+  private medicos = signal<Medico[]>([]);
+
+  medicosDto = this.medicos.asReadonly();
+
+  // medicosUI = computed<MedicoUI>()
 
   /**
    * Retorna todos os dados mock.
    *
    * @return {Signal<Medico[]>} um signal que retorna os medicos mockados
    */
-  getMedicos(): Signal<Medico[]> {
+  getMedicos() {
 
 
     let c = [
@@ -53,6 +61,5 @@ export class MedicoService {
     ];
 
     this.medicos.set(c)
-    return this.medicos;
   }
 }

@@ -89,21 +89,21 @@ export class Consultas implements OnInit {
   }
 
   pacienteOptions() {
-    return this.pacienteService.getPacientes()().map(p => ({
+    return this.pacienteService.pacientesDto().map(p => ({
       label: p.nome,
       value: p.nome
     }));
   }
 
   medicoOptions() {
-    return this.medicoService.getMedicos()().map(m => ({
+    return this.medicoService.medicosDto().map(m => ({
       label: m.nome,
       value: m.nome
     }));
   }
 
   exameOptions() {
-    return this.exameService.getExames()().map(e => ({
+    return this.exameService.examesDto().map(e => ({
       label: e.descricao,
       value: e.descricao
     }));
