@@ -1,4 +1,4 @@
-import {Component, Output, Input, EventEmitter, ViewChild, OnInit} from '@angular/core';
+import {Component, Output, Input, EventEmitter, ViewChild, OnInit, signal, input, Signal} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {Table, TableModule} from 'primeng/table';
 import {Button} from 'primeng/button';
@@ -37,7 +37,7 @@ import {CrudField} from '../crud-field/crud-field';
 export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   @Input() title: string = 'Gerenciar Dados';
   @Input() columns: TableColumn[] = [];
-  @Input() data: T[] = [];
+  @Input({ required: true }) data!: Signal<T[]>;
   @Input() entityName: string = 'item';
   @Input() T_class!: { new(): T };
 
@@ -59,7 +59,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {}
 
   ngOnInit(): void {
-    this.currentItem = this.data[0];
+    this.currentItem = this.data()[0];
   }
 
   openNew() {
@@ -84,12 +84,6 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.onDelete.emit(item);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: `Item removido com sucesso!`,
-          life: 3000
-        });
       }
     });
   }
@@ -111,12 +105,6 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
       accept: () => {
         this.onDeleteSelected.emit(this.selectedItems);
         this.selectedItems = [];
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: `Dados deletados com sucesso!`,
-          life: 3000
-        });
       }
     });
   }
@@ -124,22 +112,6 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   save() {
     this.submitted = true;
     this.dialogVisible = false;
-    if (this.isEdit) {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: `Dados editados com sucesso!`,
-        life: 3000
-      });
-    } else{
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: `Dados salvos com sucesso!`,
-        life: 3000
-      });
-    }
-
     this.onSave.emit(this.currentItem);
   }
 

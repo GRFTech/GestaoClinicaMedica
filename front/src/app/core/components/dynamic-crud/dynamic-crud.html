@@ -1,6 +1,4 @@
 <div class="container">
-  <p-toast/>
-
   <p-toolbar class="mb-2">
     <ng-template #start>
       <p-button
@@ -32,7 +30,7 @@
 
   <p-table
     #dt
-    [value]="data"
+    [value]="data()"
     [resizableColumns]="true"
     [columns]="columns"
     [rows]="10"

@@ -1,56 +1,111 @@
-import {Injectable, Signal, signal} from '@angular/core';
-import Consulta from '../model/Consulta';
-import {environment} from '../../../environments/environment.development';
+import {Injectable, Signal, signal, computed, inject} from '@angular/core';
+import Consulta from '../model/consulta/Consulta';
+import ConsultaUI from '../model/consulta/ConsultaUI';
+import { environment } from '../../../environments/environment.development';
+import {PacienteService} from './paciente-service';
+import {MedicoService} from './medico-service';
+import {ExameService} from './exame-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultaService {
 
-  // constructor(private http: HttpClient) { }
+  pacienteService = inject(PacienteService);
+  medicoService = inject(MedicoService);
+  exameService = inject(ExameService);
+
+  constructor() {
+    this.getConsultas()
+  }
 
   backURL = environment.apiURL;
-  consultas = signal<Consulta[]>([]);
+  private consultas = signal<Consulta[]>([]);
+
+  // Exposição DTO (caso precise em outro lugar)
+  consultasDto = this.consultas.asReadonly();
+
+  // Exposição já como UI
+  consultasUI = computed<ConsultaUI[]>(() =>
+    this.consultas().map(c => this.DTOtoUI(c))
+  );
 
   /**
    * Retorna todas as consultas mock.
-   *
-   * @return {Signal<Consulta[]>} um signal que retorna as cidades mockadas
    */
-  getConsultas(): Signal<Consulta[]> {
-
-    let c = [
-      new Consulta(1, new Date(), 10, 33, 908),
-      new Consulta(2, new Date('2025-09-01T10:00:00'), 12, 35, 910),
-      new Consulta(3, new Date('2025-09-02T11:30:00'), 15, 38, 912),
-      new Consulta(4, new Date('2025-09-03T09:00:00'), 18, 40, 915),
-      new Consulta(5, new Date('2025-09-04T14:15:00'), 20, 42, 918),
-      new Consulta(6, new Date('2025-09-05T08:45:00'), 22, 45, 920),
-      new Consulta(7, new Date('2025-09-06T16:00:00'), 25, 48, 922),
-      new Consulta(8, new Date('2025-09-07T13:00:00'), 28, 50, 925),
-      new Consulta(9, new Date('2025-09-08T10:30:00'), 30, 52, 928),
-      new Consulta(10, new Date('2025-09-09T11:00:00'), 32, 55, 930),
-      new Consulta(11, new Date('2025-09-10T15:00:00'), 35, 58, 932),
-      new Consulta(12, new Date('2025-09-11T12:00:00'), 38, 60, 935),
-      new Consulta(13, new Date('2025-09-12T09:30:00'), 40, 62, 938),
-      new Consulta(14, new Date('2025-09-13T14:45:00'), 42, 65, 940),
-      new Consulta(15, new Date('2025-09-14T16:30:00'), 45, 68, 942),
-      new Consulta(16, new Date('2025-09-15T08:00:00'), 48, 70, 945),
-      new Consulta(17, new Date('2025-09-16T11:15:00'), 50, 72, 948),
-      new Consulta(18, new Date('2025-09-17T13:45:00'), 52, 75, 950),
-      new Consulta(19, new Date('2025-09-18T10:00:00'), 55, 78, 952),
-      new Consulta(20, new Date('2025-09-19T09:30:00'), 58, 80, 955),
-      new Consulta(21, new Date('2025-09-20T12:00:00'), 60, 82, 958),
-      new Consulta(22, new Date('2025-09-21T15:00:00'), 62, 85, 960),
-      new Consulta(23, new Date('2025-09-22T10:45:00'), 65, 88, 962),
-      new Consulta(24, new Date('2025-09-23T11:00:00'), 68, 90, 965),
-      new Consulta(25, new Date('2025-09-24T14:00:00'), 70, 92, 968),
-      new Consulta(26, new Date('2025-09-25T16:00:00'), 72, 95, 970),
+  getConsultas() {
+    const c = [
+      new Consulta(1, new Date(), 10, 1, 6),
+      new Consulta(2, new Date('2025-09-01T10:00:00'), 12, 1, 3),
+      new Consulta(3, new Date('2025-09-02T11:30:00'), 15, 2, 29),
+      new Consulta(4, new Date('2025-09-03T09:00:00'), 18, 5, 2),
+      new Consulta(5, new Date('2025-09-04T14:15:00'), 20, 8, 6),
+      new Consulta(6, new Date('2025-09-05T08:45:00'), 22, 14, 8),
+      new Consulta(7, new Date('2025-09-06T16:00:00'), 25, 14, 22),
+      new Consulta(8, new Date('2025-09-07T13:00:00'), 28, 25, 7),
+      new Consulta(9, new Date('2025-09-08T10:30:00'), 30, 22, 15),
+      new Consulta(10, new Date('2025-09-09T11:00:00'), 30, 18, 18),
     ];
 
-    this.consultas.set(c)
-    return this.consultas;
+    this.consultas.set(c);
   }
 
+  /**
+   * Mapeia um objeto de UI para um de banco
+   * @param ui é um objeto de UI
+   * @returns Consulta
+   */
+  private UItoDto(ui: ConsultaUI): Consulta {
+    const paciente = this.pacienteService.pacientes().find(p => p.nome === ui.paciente);
+    const medico = this.medicoService.medicos().find(m => m.nome === ui.medico);
+    const exame = this.exameService.exames().find(e => e.descricao === ui.exame);
+    return new Consulta(ui.id, ui.data, paciente!.id, medico!.id, exame!.id);
+  }
 
+  /**
+   * Mapeia um objeto de banco para um de UI
+   * @param dto é um objeto de banco
+   * @returns ConsultaUI
+   */
+  private DTOtoUI(dto: Consulta): ConsultaUI {
+    const paciente = this.pacienteService.pacientes().find(p => p.id === dto.pacienteId);
+    const medico = this.medicoService.medicos().find(m => m.id === dto.medicoId);
+    const exame = this.exameService.exames().find(e => e.id === dto.exameId);
+    return new ConsultaUI(dto.id, dto.data, paciente!.nome, medico!.nome, exame!.descricao);
+  }
+
+  /**
+   * Salva uma consulta no banco de dados.
+   * @param ui é um objeto de UI
+   */
+  createConsulta(ui: ConsultaUI) {
+    this.consultas.update(cs => [...cs, this.UItoDto(ui)]);
+  }
+
+  /**
+   * Atualiza uma consulta no banco de dados.
+   * @param ui é um objeto de UI
+   */
+  updateConsulta(ui: ConsultaUI) {
+    this.consultas.update(cs =>
+      cs.map(c => (c.id === ui.id ? this.UItoDto(ui) : c))
+    );
+  }
+
+  /**
+   * Deleta uma consulta no banco de dados.
+   * @param ui é um objeto de UI
+   */
+  deleteConsulta(ui: ConsultaUI) {
+    this.consultas.update(cs => cs.filter(c => c.id !== ui.id));
+  }
+
+  /**
+   * Deleta várias consultas selecionadas do banco de dados.
+   * @param uis é um array de objetos de UI
+   */
+  deleteConsultas(uis: ConsultaUI[]) {
+    const ids = uis.map(u => u.id);
+    this.consultas.update(cs => cs.filter(c => !ids.includes(c.id)));
+  }
 }
