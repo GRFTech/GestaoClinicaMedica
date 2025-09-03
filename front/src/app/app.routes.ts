@@ -3,6 +3,7 @@ import {Data} from './pages/data/data';
 import {Cidades} from './pages/data/cidades/cidades';
 import {Home} from './pages/home/home';
 import {Consultas} from './pages/data/consultas/consultas';
+import {Pacientes} from './pages/data/pacientes/pacientes';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,10 @@ export const routes: Routes = [
       {
         path: "consultas",
         component: Consultas
+      },
+      {
+        path: "pacientes",
+        component: Pacientes
       }
     ]
   }

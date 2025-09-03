@@ -1,21 +1,35 @@
-import {Injectable, Signal, signal} from '@angular/core';
+import {computed, inject, Injectable, Signal, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
-import Paciente from '../model/Paciente';
+import Paciente from '../model/paciente/Paciente';
+import PacienteUI from '../model/paciente/PacienteUI';
+import {CidadeService} from './cidade-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PacienteService {
 
+  cidadeService = inject(CidadeService);
+
+  constructor() {
+    this.getPacientes()
+  }
+
   backURL = environment.apiURL;
-  pacientes = signal<Paciente[]>([]);
+  private pacientes = signal<Paciente[]>([]);
+
+  pacientesDto = this.pacientes.asReadonly();
+
+  pacientesUI = computed<PacienteUI[]>(() =>
+    this.pacientes().map(p => this.DTOtoUI(p))
+  );
 
   /**
    * Retorna todos os dados mock.
    *
    * @return {Signal<Paciente[]>} um signal que retorna os pacientes mockados
    */
-  getPacientes(): Signal<Paciente[]> {
+  getPacientes() {
 
     let c = [
       new Paciente(1, 'Alice Ribeiro', new Date('1990-05-15'), 'Rua das Flores, 100', '(11) 98765-1234', 70, 1.75, 1),
@@ -51,6 +65,84 @@ export class PacienteService {
     ];
 
     this.pacientes.set(c)
-    return this.pacientes;
+  }
+
+
+
+  /**
+   * Mapeia um objeto de UI (PacienteUI) para um de banco (Paciente)
+   * @param pacienteUI é um objeto de UI
+   * @returns Paciente
+   */
+  private UItoDto(pacienteUI: PacienteUI): Paciente {
+    const cidade = this.cidadeService.cidadesDto().find(c => c.descricao === pacienteUI.cidade);
+    return new Paciente(
+      pacienteUI.id,
+      pacienteUI.nome,
+      pacienteUI.dataNascimento,
+      pacienteUI.endereco,
+      pacienteUI.telefone,
+      pacienteUI.peso,
+      pacienteUI.altura,
+      cidade!.id
+    );
+  }
+
+  /**
+   * Mapeia um objeto de banco (Paciente) para um de UI (PacienteUI)
+   * @param paciente é um objeto de banco
+   * @returns PacienteUI
+   */
+  private DTOtoUI(paciente: Paciente): PacienteUI {
+    const cidade = this.cidadeService.cidadesDto().find(c => c.id === paciente.cidadeId);
+    return new PacienteUI(
+      paciente.id,
+      paciente.nome,
+      paciente.dataNascimento,
+      paciente.endereco,
+      paciente.telefone,
+      paciente.peso,
+      paciente.altura,
+      cidade!.descricao
+    );
+  }
+
+  /**
+   * Salva um novo paciente no "banco de dados"
+   * @param ui é um objeto de UI
+   */
+  createPaciente(ui: PacienteUI) {
+    this.pacientes.update(pacientes => [...pacientes, this.UItoDto(ui)]);
+  }
+
+  /**
+   * Atualiza um paciente existente no "banco de dados"
+   * @param ui é um objeto de UI
+   */
+  updatePaciente(ui: PacienteUI) {
+    this.pacientes.update(pacientes =>
+      pacientes.map(p => (p.id === ui.id ? this.UItoDto(ui) : p))
+    );
+  }
+
+  /**
+   * Deleta um paciente do "banco de dados"
+   * @param ui é um objeto de UI
+   */
+  deletePaciente(ui: PacienteUI) {
+    this.pacientes.update(pacientes =>
+      pacientes.filter(p => p.id !== ui.id)
+    );
+  }
+
+  /**
+   * Deleta vários pacientes selecionados do "banco de dados"
+   * @param uis é um array de objetos de UI
+   */
+  deletePacientes(uis: PacienteUI[]) {
+    const ids = uis.map(u => u.id);
+    this.pacientes.update(pacientes =>
+      pacientes.filter(p => !ids.includes(p.id))
+    );
   }
 }
