@@ -1,4 +1,4 @@
-import { Injectable, Signal, signal, computed } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import Cidade from '../model/cidade/Cidade';
 import { CidadeUI } from '../model/cidade/CidadeUI';

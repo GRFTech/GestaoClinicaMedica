@@ -1,6 +1,5 @@
-import {computed, Injectable, Signal, signal} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
-import Diaria from '../model/Diaria';
 import Estado from '../model/Estado';
 
 @Injectable({

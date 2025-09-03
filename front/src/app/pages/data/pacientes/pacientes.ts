@@ -6,7 +6,6 @@ import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';
 import {TableColumn} from '../../../core/interfaces/table-column';
 import PacienteUI from '../../../core/model/paciente/PacienteUI';
 import {CidadeService} from '../../../core/services/cidade-service';
-import {Exception} from 'sass';
 
 @Component({
   selector: 'app-pacientes',

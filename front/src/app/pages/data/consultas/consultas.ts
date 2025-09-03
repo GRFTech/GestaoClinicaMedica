@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {TableColumn} from '../../../core/interfaces/table-column';
 import {ConsultaService} from '../../../core/services/consulta-service';
 import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';

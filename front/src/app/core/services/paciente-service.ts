@@ -1,4 +1,4 @@
-import {computed, inject, Injectable, Signal, signal} from '@angular/core';
+import {computed, inject, Injectable, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
 import Paciente from '../model/paciente/Paciente';
 import PacienteUI from '../model/paciente/PacienteUI';
