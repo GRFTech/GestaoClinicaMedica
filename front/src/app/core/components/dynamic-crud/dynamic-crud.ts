@@ -58,7 +58,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   currentItem!: T;
   submitted: boolean = false;
   globalFilterFields!: string[];
-  isEdit!: boolean;
+  isEdit: boolean = false;
   message!: string;
 
   constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {}
@@ -93,6 +93,19 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
     });
   }
 
+  confirmEdit() {
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja alterar os dados?`,
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.submitted = true;
+        this.dialogVisible = false;
+        this.onEdit.emit(this.currentItem);
+      }
+    })
+  }
+
   confirmDeleteSelected() {
     this.confirmationService.confirm({
       message: `Tem certeza que deseja deletar os itens selecionados?`,
@@ -115,9 +128,15 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   }
 
   save() {
-    this.submitted = true;
-    this.dialogVisible = false;
-    this.onSave.emit(this.currentItem);
+
+    if (!this.isEdit) {
+      this.submitted = true;
+      this.dialogVisible = false;
+      this.onSave.emit(this.currentItem);
+      return;
+    }
+
+    this.confirmEdit()
   }
 
   exportCSV() {
