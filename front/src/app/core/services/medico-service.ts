@@ -1,14 +1,20 @@
-import {Injectable, signal} from '@angular/core';
-import {environment} from '../../../environments/environment.development';
-import Medico from '../model/Medico';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import { environment } from '../../../environments/environment.development';
+import Medico from '../model/medico/Medico';
+import MedicoUI from '../model/medico/MedicoUI';
+import {CidadeService} from './cidade-service';
+import {EspecialidadeService} from './especialidade-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
 
+  cidadeService = inject(CidadeService)
+  especialidadeService = inject(EspecialidadeService);
+
   constructor() {
-    this.getMedicos()
+    this.getMedicos();
   }
 
   backURL = environment.apiURL;
@@ -16,16 +22,11 @@ export class MedicoService {
 
   medicosDto = this.medicos.asReadonly();
 
-  // medicosUI = computed<MedicoUI>()
+  medicosUI = computed<MedicoUI[]>(() =>
+    this.medicos().map(m => this.DTOtoUI(m))
+  );
 
-  /**
-   * Retorna todos os dados mock.
-   *
-   * @return {Signal<Medico[]>} um signal que retorna os medicos mockados
-   */
   getMedicos() {
-
-
     let c = [
       new Medico(1, 'Dr. João Silva', 'Rua das Flores, 123', '(11) 98765-4321', 1, 1),
       new Medico(2, 'Dra. Maria Oliveira', 'Av. Sete de Setembro, 45', '(21) 99876-5432', 2, 2),
@@ -59,6 +60,83 @@ export class MedicoService {
       new Medico(30, 'Dra. Elisa Santos', 'Rua do Limoeiro, 50', '(51) 99887-2233', 6, 2)
     ];
 
-    this.medicos.set(c)
+    this.medicos.set(c);
+  }
+
+  /**
+   * Mapeia um objeto de UI (MedicoUI) para um de banco (Medico)
+   * @param medicoUI é um objeto de UI
+   * @returns Medico
+   */
+  private UItoDto(medicoUI: MedicoUI): Medico {
+    const cidade = this.cidadeService.cidadesDto().find(c => c.descricao === medicoUI.cidade);
+    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.descricao === medicoUI.especialidade);
+
+    return new Medico(
+      medicoUI.id,
+      medicoUI.nome,
+      medicoUI.endereco,
+      medicoUI.telefone,
+      cidade!.id,
+      especialidade!.id
+    );
+  }
+
+  /**
+   * Mapeia um objeto de banco (Medico) para um de UI (MedicoUI)
+   * @param medico é um objeto de banco
+   * @returns MedicoUI
+   */
+  private DTOtoUI(medico: Medico): MedicoUI {
+    const cidade = this.cidadeService.cidadesDto().find(c => c.id === medico.cidadeId);
+    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.id === medico.especialidadeId);
+
+    return new MedicoUI(
+      medico.id,
+      medico.nome,
+      medico.endereco,
+      medico.telefone,
+      cidade!.descricao,
+      especialidade!.descricao
+    );
+  }
+
+  /**
+   * Salva um novo médico no banco de dados
+   * @param ui é um objeto de UI
+   */
+  createMedico(ui: MedicoUI) {
+    this.medicos.update(medicos => [...medicos, this.UItoDto(ui)]);
+  }
+
+  /**
+   * Atualiza um médico existente no banco de dados
+   * @param ui é um objeto de UI
+   */
+  updateMedico(ui: MedicoUI) {
+    this.medicos.update(medicos =>
+      medicos.map(m => (m.id === ui.id ? this.UItoDto(ui) : m))
+    );
+  }
+
+  /**
+   * Deleta um médico do banco de dados
+   * @param ui é um objeto de UI
+   */
+  deleteMedico(ui: MedicoUI) {
+    this.medicos.update(medicos =>
+      medicos.filter(m => m.id !== ui.id)
+    );
+  }
+
+  /**
+   * Deleta vários médicos selecionados do banco de dados
+   * @param uis é um array de objetos de UI
+   */
+  deleteMedicos(uis: MedicoUI[]) {
+    const ids = uis.map(u => u.id);
+    this.medicos.update(medicos =>
+      medicos.filter(m => !ids.includes(m.id))
+    );
   }
 }

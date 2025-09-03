@@ -1,4 +1,4 @@
-import {Injectable, Signal, signal} from '@angular/core';
+import {computed, Injectable, Signal, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
 import Especialidade from '../model/Especialidade';
 
@@ -8,16 +8,23 @@ import Especialidade from '../model/Especialidade';
 export class EspecialidadeService {
 
 
+  constructor() {
+    this.getEspecialidades()
+  }
 
   backURL = environment.apiURL;
-  especialidades = signal<Especialidade[]>([]);
+  private especialidades = signal<Especialidade[]>([]);
+
+  especialidadesDto = this.especialidades.asReadonly();
+
+  // especialidadesUI = computed<EspecialidadeUI[]>(() =>)
 
   /**
    * Retorna todos os dados mock.
    *
    * @return {Signal<Especialidade[]>} um signal que retorna as especialidades mockadas
    */
-  getEspecialidades(): Signal<Especialidade[]> {
+  getEspecialidades() {
 
     let c = [
       new Especialidade(1, 'Cardiologia', 250.00, 15),
@@ -53,6 +60,5 @@ export class EspecialidadeService {
     ];
 
     this.especialidades.set(c)
-    return this.especialidades;
   }
 }

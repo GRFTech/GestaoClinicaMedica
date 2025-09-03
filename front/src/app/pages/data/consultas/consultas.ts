@@ -60,7 +60,7 @@ export class Consultas implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao salvar a consulta!`,
         life: 3000
@@ -79,7 +79,7 @@ export class Consultas implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao editar a consulta!`,
         life: 3000
@@ -99,7 +99,7 @@ export class Consultas implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao deletar a consulta!`,
         life: 3000
@@ -118,7 +118,7 @@ export class Consultas implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao tentar deletar ${uis.length} consulta(s)!`,
         life: 3000

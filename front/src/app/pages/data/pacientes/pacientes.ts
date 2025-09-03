@@ -61,7 +61,7 @@ export class Pacientes implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao salvar o paciente!`,
         life: 3000
@@ -80,7 +80,7 @@ export class Pacientes implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao atualizar o paciente!`,
         life: 3000
@@ -99,7 +99,7 @@ export class Pacientes implements OnInit {
       });
     } catch (ex) {
       this.messageService.add({
-        severity: 'danger',
+        severity: 'error',
         summary: 'Ocorreu um erro!',
         detail: `Ocorreu um erro ao deletar o paciente!`,
         life: 3000
