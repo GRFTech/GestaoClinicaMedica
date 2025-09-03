@@ -39,45 +39,80 @@ export class Cidades implements OnInit {
   }
 
   onSave(cidadeUI: CidadeUI) {
-    this.cidadeService.createCidade(cidadeUI);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Cidade salva com sucesso!`,
-      life: 3000
-    });
+    try {
+      this.cidadeService.createCidade(cidadeUI);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Cidade salva com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao tentar salvar a cidade!`,
+        life: 3000
+      });
+    }
   }
 
   onEdit(cidadeUI: CidadeUI) {
-    this.cidadeService.updateCidade(cidadeUI);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Cidade atualizada com sucesso!`,
-      life: 3000
-    });
+    try {
+      this.cidadeService.updateCidade(cidadeUI);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Cidade atualizada com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao tentar atualizar a cidade!`,
+        life: 3000
+      });
+    }
   }
 
   onDelete(cidadeUI: CidadeUI) {
-    this.cidadeService.deleteCidade(cidadeUI);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Cidade removida com sucesso!`,
-      life: 3000
-    });
+    try {
+      this.cidadeService.deleteCidade(cidadeUI);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Cidade removida com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao tentar remover a cidade!`,
+        life: 3000
+      });
+    }
   }
 
   onDeleteSelected(cidadesUI: CidadeUI[]) {
-    this.cidadeService.deleteCidades(cidadesUI)
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `${cidadesUI.length} cidade(s) removida(s) com sucesso!`,
-      life: 3000
-    });
+    try {
+      this.cidadeService.deleteCidades(cidadesUI);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `${cidadesUI.length} cidade(s) removida(s) com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao tentar remover ${cidadesUI.length} cidade(s)!`,
+        life: 3000
+      });
+    }
   }
-
 
   estadoOptions() {
     return this.estadoService.estadosDto().map(e => ({

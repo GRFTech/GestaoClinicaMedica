@@ -49,43 +49,81 @@ export class Consultas implements OnInit {
     ];
   }
   onSave(ui: ConsultaUI) {
-    this.consultaService.createConsulta(ui);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Consulta salva com sucesso!`,
-      life: 3000
-    });
+
+    try {
+      this.consultaService.createConsulta(ui);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Consulta salva com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'danger',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao salvar a consulta!`,
+        life: 3000
+      });
+    }
   }
 
   onEdit(ui: ConsultaUI) {
-    this.consultaService.updateConsulta(ui);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Consulta atualizada com sucesso!`,
-      life: 3000
-    });
+    try {
+      this.consultaService.updateConsulta(ui);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Consulta atualizada com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'danger',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao editar a consulta!`,
+        life: 3000
+      });
+    }
   }
 
   onDelete(ui: ConsultaUI) {
-    this.consultaService.deleteConsulta(ui);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `Consulta removida com sucesso!`,
-      life: 3000
-    });
+
+    try {
+      this.consultaService.deleteConsulta(ui);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Consulta removida com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'danger',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao deletar a consulta!`,
+        life: 3000
+      });
+    }
   }
 
   onDeleteSelected(uis: ConsultaUI[]) {
-    this.consultaService.deleteConsultas(uis);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: `${uis.length} consulta(s) removida(s) com sucesso!`,
-      life: 3000
-    });
+    try {
+      this.consultaService.deleteConsultas(uis);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `${uis.length} consulta(s) removida(s) com sucesso!`,
+        life: 3000
+      });
+    } catch (ex) {
+      this.messageService.add({
+        severity: 'danger',
+        summary: 'Ocorreu um erro!',
+        detail: `Ocorreu um erro ao tentar deletar ${uis.length} consulta(s)!`,
+        life: 3000
+      });
+    }
   }
 
   pacienteOptions() {
