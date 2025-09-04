@@ -1,15 +1,14 @@
-import {computed, Injectable, Signal, signal} from '@angular/core';
-import {environment} from '../../../environments/environment.development';
-import Especialidade from '../model/Especialidade';
+import { computed, Injectable, Signal, signal } from '@angular/core';
+import { environment } from '../../../environments/environment.development';
+import Especialidade from '../model/especialidade/Especialidade';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EspecialidadeService {
 
-
   constructor() {
-    this.getEspecialidades()
+    this.getEspecialidades();
   }
 
   backURL = environment.apiURL;
@@ -17,7 +16,8 @@ export class EspecialidadeService {
 
   especialidadesDto = this.especialidades.asReadonly();
 
-  // especialidadesUI = computed<EspecialidadeUI[]>(() =>)
+  // Não é necessário um objeto UI, então o DTO é o mesmo que a UI
+  especialidadesUI = this.especialidades.asReadonly() as Signal<Especialidade[]>;
 
   /**
    * Retorna todos os dados mock.
@@ -59,6 +59,45 @@ export class EspecialidadeService {
       new Especialidade(30, 'Odontologia', 210.00, 20)
     ];
 
-    this.especialidades.set(c)
+    this.especialidades.set(c);
+  }
+
+  /**
+   * Salva uma nova especialidade no "banco de dados"
+   * @param ui é um objeto de UI (que neste caso é o mesmo que o DTO)
+   */
+  createEspecialidade(ui: Especialidade) {
+    this.especialidades.update(especialidades => [...especialidades, ui]);
+  }
+
+  /**
+   * Atualiza uma especialidade existente no "banco de dados"
+   * @param ui é um objeto de UI
+   */
+  updateEspecialidade(ui: Especialidade) {
+    this.especialidades.update(especialidades =>
+      especialidades.map(e => (e.id === ui.id ? ui : e))
+    );
+  }
+
+  /**
+   * Deleta uma especialidade do "banco de dados"
+   * @param ui é um objeto de UI
+   */
+  deleteEspecialidade(ui: Especialidade) {
+    this.especialidades.update(especialidades =>
+      especialidades.filter(e => e.id !== ui.id)
+    );
+  }
+
+  /**
+   * Deleta várias especialidades selecionadas do "banco de dados"
+   * @param uis é um array de objetos de UI
+   */
+  deleteEspecialidades(uis: Especialidade[]) {
+    const ids = uis.map(u => u.id);
+    this.especialidades.update(especialidades =>
+      especialidades.filter(e => !ids.includes(e.id))
+    );
   }
 }
