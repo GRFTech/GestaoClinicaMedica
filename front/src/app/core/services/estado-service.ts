@@ -1,6 +1,6 @@
-import {Injectable, signal} from '@angular/core';
-import {environment} from '../../../environments/environment.development';
-import Estado from '../model/Estado';
+import { Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment.development';
+import Estado from '../model/estado/Estado';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,7 @@ import Estado from '../model/Estado';
 export class EstadoService {
 
   constructor() {
-    this.getEstados()
+    this.getEstados();
   }
 
   backURL = environment.apiURL;
@@ -17,13 +17,6 @@ export class EstadoService {
   // Exposição como Readonly
   estadosDto = this.estados.asReadonly();
 
-  // estadosUI = computed<EstadoUI[]>()
-
-  /**
-   * Retorna todos os dados mock.
-   *
-   * @return {Signal<Estado[]>} um signal que retorna os estados mockados
-   */
   getEstados() {
 
     let c = [
@@ -56,6 +49,45 @@ export class EstadoService {
       new Estado(27, 'Tocantins'),
     ];
 
-    this.estados.set(c)
+    this.estados.set(c);
+  }
+
+  /**
+   * Salva um novo estado no "banco de dados"
+   * @param estado é um objeto de UI (que neste caso é o mesmo que o DTO)
+   */
+  createEstado(estado: Estado) {
+    this.estados.update(estados => [...estados, estado]);
+  }
+
+  /**
+   * Atualiza um estado existente no "banco de dados"
+   * @param estado é um objeto de UI
+   */
+  updateEstado(estado: Estado) {
+    this.estados.update(estados =>
+      estados.map(e => (e.id === estado.id ? estado : e))
+    );
+  }
+
+  /**
+   * Deleta um estado do "banco de dados"
+   * @param estado é um objeto de UI
+   */
+  deleteEstado(estado: Estado) {
+    this.estados.update(estados =>
+      estados.filter(e => e.id !== estado.id)
+    );
+  }
+
+  /**
+   * Deleta vários estados selecionados do "banco de dados"
+   * @param estadosToDelete é um array de objetos de UI
+   */
+  deleteEstados(estadosToDelete: Estado[]) {
+    const ids = estadosToDelete.map(e => e.id);
+    this.estados.update(estados =>
+      estados.filter(e => !ids.includes(e.id))
+    );
   }
 }
