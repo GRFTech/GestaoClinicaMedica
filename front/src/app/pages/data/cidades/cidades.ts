@@ -32,9 +32,9 @@ export class Cidades implements OnInit {
 
   ngOnInit(): void {
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false },
-      { field: 'descricao', header: 'Descrição', editable: false, type: 'text', insertable: true },
-      { field: 'estado', header: 'Estado', editable: false, type: 'select', insertable: true, options: this.estadoOptions() },
+      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'descricao', header: 'Descrição', editable: false, type: 'text', insertable: true, exhibitable: true },
+      { field: 'estado', header: 'Estado', editable: false, type: 'select', insertable: true, options: this.estadoOptions(), exhibitable: true },
     ];
   }
 

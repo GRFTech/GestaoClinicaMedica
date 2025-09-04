@@ -12,6 +12,7 @@ export interface TableColumn {
   header: string;
   editable: boolean;
   insertable: boolean;
+  exhibitable: boolean;
   type: string;
   options?: any[]
 }

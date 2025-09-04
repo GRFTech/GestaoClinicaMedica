@@ -64,15 +64,17 @@
           <p-tableHeaderCheckbox/>
         </th>
         @for (col of columns; track col.field) {
-          <th
-            pResizableColumn
-            pSortableColumn="{{ col.field }}"
-          >
-            <div class="flex items-center gap-2">
-              {{ col.header }}
-              <p-sortIcon [field]="col.header"/>
-            </div>
-          </th>
+          @if (col.exhibitable) {
+            <th
+              pResizableColumn
+              pSortableColumn="{{ col.field }}"
+            >
+              <div class="flex items-center gap-2">
+                {{ col.header }}
+                <p-sortIcon [field]="col.header"/>
+              </div>
+            </th>
+          }
         }
         <th style="min-width: 8rem">Ações</th>
       </tr>
@@ -88,29 +90,31 @@
         </td>
 
         @for (col of columns; track col.field) {
-          <td (dblclick)="edit(row)">
-            @switch (col.type) {
-              @case ('date') {
-                {{ row[col.field] | date:'dd/MM/yyyy' }}
-              }
+          @if(col.exhibitable) {
+            <td (dblclick)="edit(row)">
+              @switch (col.type) {
+                @case ('date') {
+                  {{ row[col.field] | date:'dd/MM/yyyy' }}
+                }
 
-              @case ('datetime') {
-                {{ row[col.field] | date:'dd/MM/yyyy HH:mm' }}
-              }
+                @case ('datetime') {
+                  {{ row[col.field] | date:'dd/MM/yyyy HH:mm' }}
+                }
 
-              @case ('currency') {
-                {{ row[col.field] | currency:'BRL':'symbol':'1.2-2' }}
+                @case ('currency') {
+                  {{ row[col.field] | currency:'BRL':'symbol':'1.2-2' }}
+                }
+                @case ('boolean') {
+                  <p-tag
+                    [value]="row[col.field] ? 'Ativo' : 'Inativo'"
+                    [severity]="row[col.field] ? 'success' : 'danger'" />
+                }
+                @default {
+                  {{ row[col.field] }}
+                }
               }
-              @case ('boolean') {
-                <p-tag
-                  [value]="row[col.field] ? 'Ativo' : 'Inativo'"
-                  [severity]="row[col.field] ? 'success' : 'danger'" />
-              }
-              @default {
-                {{ row[col.field] }}
-              }
-            }
-          </td>
+            </td>
+          }
         }
 
         <td>
@@ -146,7 +150,7 @@
         @for (col of columns; track col.field) {
           <app-crud-field
             [col]="col"
-            [isEditable]="col.editable"
+            [isEditable]="col.editable && col.exhibitable"
             [isInsertable]="col.insertable"
             [currentItem]="currentItem"
             [submitted]="submitted"

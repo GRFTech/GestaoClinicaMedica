@@ -41,11 +41,11 @@ export class Consultas implements OnInit {
   ngOnInit(): void {
 
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false },
-      { field: 'data', header: 'Data', editable: true, type: 'datetime', insertable: true },
-      { field: 'paciente', header: 'Paciente', editable: false, type: 'select', insertable: true, options: this.pacienteOptions() },
-      { field: 'medico', header: 'Medico', editable: false, type: 'select', insertable: true, options: this.medicoOptions() },
-      { field: 'exame', header: 'Exame', editable: false, type: 'select', insertable: true, options: this.exameOptions() }
+      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: true, exhibitable: true },
+      { field: 'data', header: 'Data', editable: true, type: 'datetime', insertable: true, exhibitable: true },
+      { field: 'paciente', header: 'Paciente', editable: false, type: 'select', insertable: true, options: this.pacienteOptions(), exhibitable: true },
+      { field: 'medico', header: 'Medico', editable: false, type: 'select', insertable: true, options: this.medicoOptions(), exhibitable: true },
+      { field: 'exame', header: 'Exame', editable: false, type: 'select', insertable: true, options: this.exameOptions(), exhibitable: true }
     ];
   }
   onSave(ui: ConsultaUI) {

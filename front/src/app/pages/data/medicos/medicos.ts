@@ -38,12 +38,12 @@ export class Medicos implements OnInit {
 
   ngOnInit(): void {
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false },
-      { field: 'nome', header: 'Nome', editable: true, type: 'text', insertable: true },
-      { field: 'endereco', header: 'Endereço', editable: true, type: 'text', insertable: true },
-      { field: 'telefone', header: 'Telefone', editable: true, type: 'text', insertable: true },
-      { field: 'cidade', header: 'Cidade', editable: true, type: 'select', insertable: true, options: this.cidadeOptions() },
-      { field: 'especialidade', header: 'Especialidade', editable: true, type: 'select', insertable: true, options: this.especialidadeOptions() }
+      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'nome', header: 'Nome', editable: true, type: 'text', insertable: true, exhibitable: true },
+      { field: 'endereco', header: 'Endereço', editable: true, type: 'text', insertable: true, exhibitable: true },
+      { field: 'telefone', header: 'Telefone', editable: true, type: 'text', insertable: true, exhibitable: true },
+      { field: 'cidade', header: 'Cidade', editable: true, type: 'select', insertable: true, options: this.cidadeOptions(), exhibitable: true },
+      { field: 'especialidade', header: 'Especialidade', editable: true, type: 'select', insertable: true, options: this.especialidadeOptions(), exhibitable: true }
     ];
   }
   onSave(ui: MedicoUI) {
