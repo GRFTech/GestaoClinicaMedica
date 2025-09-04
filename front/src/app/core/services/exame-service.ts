@@ -1,11 +1,15 @@
-import {Injectable, signal} from '@angular/core';
-import {environment} from '../../../environments/environment.development';
-import Exame from '../model/Exame';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import { environment } from '../../../environments/environment.development';
+import Exame from '../model/exame/Exame';
+import ExameUI from '../model/exame/ExameUI';
+import {EspecialidadeService} from './especialidade-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExameService {
+
+  especialidadeService = inject(EspecialidadeService);
 
   constructor() {
     this.getExames();
@@ -16,15 +20,12 @@ export class ExameService {
 
   examesDto = this.exames.asReadonly();
 
-  // examesUI = computed<ExameUI>()
+  // Mapeia o signal de DTO para UI
+  examesUI = computed<ExameUI[]>(() =>
+    this.exames().map(e => this.DTOtoUI(e))
+  );
 
-  /**
-   * Retorna todos os dados mock.
-   *
-   * @return {Signal<Exame[]>} um signal que retorna os exames mockados
-   */
   getExames() {
-
     let c = [
       new Exame(1, 'Eletrocardiograma (ECG)', 80.00, 1),
       new Exame(2, 'Hemograma Completo', 50.00, 2),
@@ -58,6 +59,75 @@ export class ExameService {
       new Exame(30, 'Teste de Paternidade', 900.00, 2)
     ];
 
-    this.exames.set(c)
+    this.exames.set(c);
+  }
+
+  /**
+   * Mapeia um objeto de UI (ExameUI) para um de banco (Exame)
+   * @param exameUI é um objeto de UI
+   * @returns Exame
+   */
+  private UItoDto(exameUI: ExameUI): Exame {
+    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.descricao === exameUI.especialidade);
+    return new Exame(
+      exameUI.id,
+      exameUI.descricao,
+      exameUI.valor,
+      especialidade!.id
+    );
+  }
+
+  /**
+   * Mapeia um objeto de banco (Exame) para um de UI (ExameUI)
+   * @param exame é um objeto de banco
+   * @returns ExameUI
+   */
+  private DTOtoUI(exame: Exame): ExameUI {
+    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.id === exame.especialidadeId);
+    return new ExameUI(
+      exame.id,
+      exame.descricao,
+      exame.valor,
+      especialidade!.descricao
+    );
+  }
+
+  /**
+   * Salva um novo exame no "banco de dados".
+   * @param ui é um objeto de UI
+   */
+  createExame(ui: ExameUI) {
+    this.exames.update(exames => [...exames, this.UItoDto(ui)]);
+  }
+
+  /**
+   * Atualiza um exame existente no "banco de dados".
+   * @param ui é um objeto de UI
+   */
+  updateExame(ui: ExameUI) {
+    this.exames.update(exames =>
+      exames.map(e => (e.id === ui.id ? this.UItoDto(ui) : e))
+    );
+  }
+
+  /**
+   * Deleta um exame do "banco de dados".
+   * @param ui é um objeto de UI
+   */
+  deleteExame(ui: ExameUI) {
+    this.exames.update(exames =>
+      exames.filter(e => e.id !== ui.id)
+    );
+  }
+
+  /**
+   * Deleta vários exames selecionados do "banco de dados".
+   * @param uis é um array de objetos de UI
+   */
+  deleteExames(uis: ExameUI[]) {
+    const ids = uis.map(u => u.id);
+    this.exames.update(exames =>
+      exames.filter(e => !ids.includes(e.id))
+    );
   }
 }

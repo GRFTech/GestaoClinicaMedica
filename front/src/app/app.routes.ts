@@ -5,6 +5,7 @@ import {Home} from './pages/home/home';
 import {Consultas} from './pages/data/consultas/consultas';
 import {Pacientes} from './pages/data/pacientes/pacientes';
 import {Medicos} from './pages/data/medicos/medicos';
+import {Exames} from './pages/data/exames/exames';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,10 @@ export const routes: Routes = [
       {
         path: "medicos",
         component: Medicos
+      },
+      {
+        path: "exames",
+        component: Exames
       }
     ]
   }
