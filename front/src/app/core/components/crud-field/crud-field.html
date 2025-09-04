@@ -47,6 +47,40 @@
       </div>
     </ng-container>
   }
+
+  @case ("currency") {
+    <ng-container>
+      <div class="mt-2">
+        <label
+          [for]="col().header"
+          class="block font-bold mb-2"
+        >{{ col().header }}</label>
+
+        <p-input-number
+          [id]="col().field"
+          [(ngModel)]="currentItem()[col().field]"
+          mode="decimal"
+          prefix="R$ "
+          locale="pt-BR"
+          [useGrouping]="true"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          [allowEmpty]="true"
+          placeholder="R$ 0,00"
+          required
+          [disabled]="!isEditable() || !isInsertable()"
+        />
+
+
+        @if (submitted() && !currentItem()[col().field]) {
+          <small class="text-red-500">
+            {{ col().field }} é necessário.
+          </small>
+        }
+      </div>
+    </ng-container>
+  }
+
   @case ("datetime") {
     <ng-container>
       <div class="mt-2">
