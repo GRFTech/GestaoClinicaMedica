@@ -1,0 +1,12 @@
+<p-toast/>
+<app-dynamic-crud
+  [columns]="cols"
+  [data]="diariaService.diariasUI"
+  [entityName]="entityName"
+  [title]="title"
+  [T_class]="t_class"
+  (onSave)="onSave($event)"
+  (onEdit)="onEdit($event)"
+  (onDelete)="onDelete($event)"
+  (onDeleteSelected)="onDeleteSelected($event)"
+/>
