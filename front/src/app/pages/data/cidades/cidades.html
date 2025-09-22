@@ -1,12 +1,16 @@
-<p-toast/>
-<app-dynamic-crud
-  [columns]="cols"
-  [data]="cidadeService.cidadesUI"
-  [entityName]="entityName"
-  [title]="title"
-  [T_class]="t_class"
-  (onSave)="onSave($event)"
-  (onEdit)="onEdit($event)"
-  (onDelete)="onDelete($event)"
-  (onDeleteSelected)="onDeleteSelected($event)"
-/>
+<div class="flex justify-center w-full mx-auto mt-5">
+  <div class="w-4/5">
+    <p-toast/>
+    <app-dynamic-crud
+      [columns]="cols"
+      [data]="cidadeService.cidadesUI"
+      [entityName]="entityName"
+      [title]="title"
+      [T_class]="t_class"
+      (onSave)="onSave($event)"
+      (onEdit)="onEdit($event)"
+      (onDelete)="onDelete($event)"
+      (onDeleteSelected)="onDeleteSelected($event)"
+    />
+  </div>
+</div>

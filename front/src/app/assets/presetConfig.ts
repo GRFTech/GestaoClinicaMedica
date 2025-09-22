@@ -5,5 +5,4 @@ export const presetConfig = definePreset(Aura, {
 
 });
 
-export const darkMode = false;
-
+export const darkMode = '.p-dark';

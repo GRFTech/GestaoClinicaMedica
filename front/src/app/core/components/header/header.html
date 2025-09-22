@@ -1,0 +1,14 @@
+<p-toolbar class="p-p-2 p-card p-shadow-1">
+  <div class="p-toolbar-group-left p-d-flex p-ai-center">
+    <img src="assets/images/logo.png" alt="Logo" style="height: 40px;" class="p-mr-3" />
+    <span class="p-text-bold p-text-xl">Sistema Clínica Médica</span>
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <p-menubar [model]="items" />
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <p-button icon="pi pi-moon" (click)="toggleDarkMode()" class="p-button-text p-button-secondary"></p-button>
+  </div>
+</p-toolbar>
