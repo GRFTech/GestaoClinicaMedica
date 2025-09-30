@@ -4,6 +4,8 @@ import {Menubar} from 'primeng/menubar';
 import {MenuItem} from 'primeng/api';
 import {Toolbar} from 'primeng/toolbar';
 import {RouterLink} from '@angular/router';
+import {ThemeService} from '../../services/theme-service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +21,10 @@ import {RouterLink} from '@angular/router';
   styleUrl: './header.scss'
 })
 export class Header implements OnInit {
+
+  constructor(protected themeService: ThemeService) {
+  }
+
   title = "Sistema Clínica Médica";
 
   items: MenuItem[] | undefined;
@@ -82,16 +88,5 @@ export class Header implements OnInit {
         routerLink: '/home' // Ou crie uma rota específica para 'sobre'
       }
     ]
-  }
-
-  toggleDarkMode() {
-    const bodyElement = document.querySelector('body');
-    if (bodyElement) {
-      if (bodyElement.classList.contains('p-dark')) {
-        bodyElement.classList.remove('p-dark');
-      } else {
-        bodyElement.classList.add('p-dark');
-      }
-    }
   }
 }

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba7218bb-1f34-4097-934e-1dcf70d269ac" name="Changes" comment="initial commit" />
+    <list default="true" id="ba7218bb-1f34-4097-934e-1dcf70d269ac" name="Changes" comment="initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,7 +32,7 @@
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/GRFTech/GestaoClinicaMedica.git",
-    "accountId": "82f42e2c-a408-45c5-b006-b12b0ecd6fbd"
+    "accountId": "be30bbe7-b9fe-48d8-89cf-2953cd227fc8"
   }
 }]]></component>
   <component name="ProjectColorInfo">{
@@ -45,6 +47,7 @@
   &quot;keyToString&quot;: {
     &quot;Python.app.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/DevIsper/Programação/Estudo/FEMA/2º Ano/Begs/GestaoClinicaMedica&quot;,
@@ -54,6 +57,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\gabri\\Applications\\FEMA\\2º Ano\\Algoritmos e Estruturas de Dados II\\clinicaMedica\\front\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -106,6 +110,7 @@
       <workItem from="1756254995597" duration="192000" />
       <workItem from="1758062397666" duration="50000" />
       <workItem from="1758562545421" duration="41000" />
+      <workItem from="1759239485351" duration="87000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
