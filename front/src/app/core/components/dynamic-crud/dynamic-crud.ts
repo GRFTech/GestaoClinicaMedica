@@ -64,7 +64,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {}
 
   ngOnInit(): void {
-    this.currentItem = this.data()[0];
+    this.currentItem = new this.T_class();
   }
 
   openNew() {

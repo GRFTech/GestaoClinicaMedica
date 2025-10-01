@@ -6,12 +6,13 @@ export default class Cidade {
   constructor(
     id: number = 0,
     descricao: string = '',
-    estado: number = 0
+    estadoId: number = 0
   ) {
     this._id = id;
     this._descricao = descricao;
-    this._estadoId = estado;
+    this._estadoId = estadoId;
   }
+
 
   get id(): number {
     return this._id;
