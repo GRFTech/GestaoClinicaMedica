@@ -1,93 +1,104 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import Estado from '../model/estado/Estado';
+import { HttpClient } from '@angular/common/http'; // Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
 })
 export class EstadoService {
 
-  constructor() {
-    this.getEstados();
-  }
+  // Injeção de dependência
+  private http = inject(HttpClient);
 
+  // Propriedades
   backURL = environment.apiURL;
   private estados = signal<Estado[]>([]);
 
   // Exposição como Readonly
   estadosDto = this.estados.asReadonly();
 
-  getEstados() {
-
-    let c = [
-      new Estado(1, 'Acre'),
-      new Estado(2, 'Alagoas'),
-      new Estado(3, 'Amapá'),
-      new Estado(4, 'Amazonas'),
-      new Estado(5, 'Bahia'),
-      new Estado(6, 'Ceará'),
-      new Estado(7, 'Distrito Federal'),
-      new Estado(8, 'Espírito Santo'),
-      new Estado(9, 'Goiás'),
-      new Estado(10, 'Maranhão'),
-      new Estado(11, 'Mato Grosso'),
-      new Estado(12, 'Mato Grosso do Sul'),
-      new Estado(13, 'Minas Gerais'),
-      new Estado(14, 'Pará'),
-      new Estado(15, 'Paraíba'),
-      new Estado(16, 'Paraná'),
-      new Estado(17, 'Pernambuco'),
-      new Estado(18, 'Piauí'),
-      new Estado(19, 'Rio de Janeiro'),
-      new Estado(20, 'Rio Grande do Norte'),
-      new Estado(21, 'Rio Grande do Sul'),
-      new Estado(22, 'Rondônia'),
-      new Estado(23, 'Roraima'),
-      new Estado(24, 'Santa Catarina'),
-      new Estado(25, 'São Paulo'),
-      new Estado(26, 'Sergipe'),
-      new Estado(27, 'Tocantins'),
-    ];
-
-    this.estados.set(c);
+  constructor() {
+    this.getEstados();
   }
 
   /**
-   * Salva um novo estado no "banco de dados"
-   * @param estado é um objeto de UI (que neste caso é o mesmo que o DTO)
+   * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
+   */
+  getEstados() {
+    this.http.get<Estado[]>(`${environment.apiURL}/estados`) // Chamada HTTP GET
+      .subscribe({
+        next: data => {
+          console.log("Estado: ", data);
+          this.estados.set(data)
+        },
+        error: (err) => console.error(err)
+      });
+  }
+
+  /**
+   * Salva um novo estado no banco de dados.
+   * @param estado é um objeto de Estado
    */
   createEstado(estado: Estado) {
-    this.estados.update(estados => [...estados, estado]);
+    this.http.post<Estado>(`${environment.apiURL}/estados`, estado).subscribe({
+      next: data => {
+        // 'data' é o objeto completo retornado pelo backend (com ID, se aplicável)
+        this.estados.update(estados => [...estados, data]);
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   /**
-   * Atualiza um estado existente no "banco de dados"
-   * @param estado é um objeto de UI
+   * Atualiza um estado existente no banco de dados.
+   * @param estado é um objeto de Estado
    */
   updateEstado(estado: Estado) {
-    this.estados.update(estados =>
-      estados.map(e => (e.id === estado.id ? estado : e))
-    );
+    this.http.put<Estado>(`${environment.apiURL}/estados/${estado.id}`, estado).subscribe({
+      next: data => {
+        this.estados.update(estados =>
+          estados.map(e => (e.id === estado.id ? data : e))
+        );
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   /**
-   * Deleta um estado do "banco de dados"
-   * @param estado é um objeto de UI
+   * Deleta um estado do banco de dados.
+   * @param estado é um objeto de Estado
    */
   deleteEstado(estado: Estado) {
-    this.estados.update(estados =>
-      estados.filter(e => e.id !== estado.id)
-    );
+    this.http.delete(`${environment.apiURL}/estados/${estado.id}`).subscribe({
+      next: () => {
+        this.estados.update(estados =>
+          estados.filter(e => e.id !== estado.id)
+        );
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   /**
-   * Deleta vários estados selecionados do "banco de dados"
-   * @param estadosToDelete é um array de objetos de UI
+   * Deleta vários estados selecionados do banco de dados.
+   * @param estadosToDelete é um array de objetos de Estado
    */
   deleteEstados(estadosToDelete: Estado[]) {
     const ids = estadosToDelete.map(e => e.id);
-    this.estados.update(estados =>
-      estados.filter(e => !ids.includes(e.id))
-    );
+
+    // Replicando a lógica de deletar em loop
+    for (let i = 0; i < ids.length; i++) {
+      this.http.delete(`${environment.apiURL}/estados/${ids[i]}`).subscribe({
+        next: () => {
+          console.log(`Estado com id ${ids[i]} deletado`);
+          // Atualiza o signal, garantindo que o item deletado seja removido
+          this.estados.update(estados =>
+            estados.filter(e => e.id !== ids[i])
+          );
+        },
+        error: (err) => console.error(err)
+      })
+    }
   }
 }

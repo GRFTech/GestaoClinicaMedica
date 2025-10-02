@@ -70,4 +70,15 @@ export default class Medico {
   set especialidadeId(value: number) {
     this._especialidadeId = value;
   }
+
+  toJSON() {
+    return {
+      id: String(this._id),
+      nome: this._nome,
+      endereco: this._endereco,
+      telefone: this._telefone,
+      cidadeId: this._cidadeId,
+      especialidadeId: this._especialidadeId
+    };
+  }
 }

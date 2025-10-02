@@ -45,4 +45,12 @@ export default class Diaria {
   set especialidadeId(value: number) {
     this._especialidadeId = value;
   }
+
+  toJSON() {
+    return {
+      codigoDia: this.formatarDataAAAAMMDD(this._codigoDia),
+      quantidadeConsultas: this._quantidadeConsultas,
+      especialidadeId: this._especialidadeId
+    };
+  }
 }

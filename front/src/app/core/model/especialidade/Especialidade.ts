@@ -49,4 +49,13 @@ export default class Especialidade {
   set limiteDiario(value: number) {
     this._limiteDiario = value;
   }
+
+  toJSON() {
+    return {
+      id: this._id,
+      descricao: this._descricao,
+      valorConsulta: this._valorConsulta,
+      limiteDiario: this._limiteDiario
+    };
+  }
 }

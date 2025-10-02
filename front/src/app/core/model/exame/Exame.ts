@@ -49,4 +49,13 @@ export default class Exame {
   set especialidadeId(value: number) {
     this._especialidadeId = value;
   }
+
+  toJSON() {
+    return {
+      id: String(this._id),
+      descricao: this._descricao,
+      valor: this._valor,
+      especialidadeId: this._especialidadeId
+    };
+  }
 }

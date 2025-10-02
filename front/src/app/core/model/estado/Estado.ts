@@ -24,4 +24,11 @@ export default class Estado {
   set estado(value: string) {
     this._estado = value;
   }
+
+  toJSON() {
+    return {
+      id: String(this._id),
+      estado: this._estado
+    };
+  }
 }

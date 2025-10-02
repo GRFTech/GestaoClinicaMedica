@@ -37,4 +37,12 @@ export default class Cidade {
   set estadoId(value: number) {
     this._estadoId = value;
   }
+
+  toJSON() {
+    return {
+      id: this._id,
+      descricao: this._descricao,
+      estadoId: this._estadoId,
+    };
+  }
 }

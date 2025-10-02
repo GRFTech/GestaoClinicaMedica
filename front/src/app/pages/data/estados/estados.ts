@@ -34,7 +34,7 @@ export class Estados implements OnInit {
 
   ngOnInit(): void {
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'id', header: 'ID', editable: true, type: 'number', insertable: true, exhibitable: true },
       { field: 'estado', header: 'Estado', editable: true, type: 'text', insertable: true, exhibitable: true },
     ];
   }

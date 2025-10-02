@@ -1,8 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import {Injectable, signal, computed} from '@angular/core';
+import {environment} from '../../../environments/environment.development';
 import Cidade from '../model/cidade/Cidade';
-import { CidadeUI } from '../model/cidade/CidadeUI';
-import { EstadoService } from './estado-service';
+import {CidadeUI} from '../model/cidade/CidadeUI';
+import {EstadoService} from './estado-service';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable({
@@ -21,18 +21,18 @@ export class CidadeService {
   );
 
   constructor(private estadoService: EstadoService, private http: HttpClient) {
-    this.getCidades()
+    Promise.all([
+      this.estadoService.getEstados()
+    ]).then(() => this.getCidades());
   }
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos
    */
-  getCidades(){
+  getCidades() {
     this.http.get<Cidade[]>(`${environment.apiURL}/cidades`)
       .subscribe({
         next: data => {
-          console.log(data);
-          console.log(data[0].id)
           this.cidades.set(data)
         },
         error: (err) => console.error(err)
@@ -64,7 +64,16 @@ export class CidadeService {
    * @param ui é um objeto de UI
    */
   createCidade(ui: CidadeUI) {
-    this.cidades.update(cidades => [...cidades, this.UItoDto(ui)]);
+
+    let dto = this.UItoDto(ui);
+
+
+    this.http.post<Cidade>(`${environment.apiURL}/cidades`, dto).subscribe({
+      next: data => {
+        this.cidades.update(cidades => [...cidades, data]);
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   /**
@@ -72,9 +81,17 @@ export class CidadeService {
    * @param ui é um objeto de UI
    */
   updateCidade(ui: CidadeUI) {
-    this.cidades.update(cidades =>
-      cidades.map(c => (c.id === ui.id ? this.UItoDto(ui) : c))
-    );
+
+    let dto = this.UItoDto(ui);
+
+    this.http.put<Cidade>(`${environment.apiURL}/cidades/${ui.id}`, dto).subscribe({
+      next: data => {
+        this.cidades.update(cidades =>
+          cidades.map(c => (c.id === ui.id ? data : c))
+        );
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   /**
@@ -82,9 +99,14 @@ export class CidadeService {
    * @param ui é um objeto de UI
    */
   deleteCidade(ui: CidadeUI) {
-    this.cidades.update(cidades =>
-      cidades.filter(c => c.id !== ui.id)
-    );
+    this.http.delete(`${environment.apiURL}/cidades/${ui.id}`).subscribe({
+      next: data => {
+        this.cidades.update(cidades =>
+          cidades.filter(c => c.id !== ui.id)
+        );
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   /**
@@ -93,8 +115,17 @@ export class CidadeService {
    */
   deleteCidades(uis: CidadeUI[]) {
     const ids = uis.map(u => u.id);
-    this.cidades.update(cidades =>
-      cidades.filter(c => !ids.includes(c.id))
-    );
+
+    for (let i = 0; i < ids.length; i++) {
+      this.http.delete(`${environment.apiURL}/cidades/${ids[i]}`).subscribe({
+        next: data => {
+          console.log("deletou")
+          this.cidades.update(cidades =>
+            cidades.filter(c => c.id !== ids[i])
+          );
+        },
+        error: (err) => console.error(err)
+      })
+    }
   }
 }

@@ -59,4 +59,14 @@ export default class Consulta {
   set exameId(value: number) {
     this._exameId = value;
   }
+
+  toJSON() {
+    return {
+      id: this._id.toString(),
+      data: this._data.toISOString(),
+      pacienteId: this._pacienteId,
+      medicoId: this._medicoId,
+      exameId: this._exameId
+    };
+  }
 }
