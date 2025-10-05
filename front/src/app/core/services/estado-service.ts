@@ -20,8 +20,16 @@ export class EstadoService {
   estadosDto = this.estados.asReadonly();
 
   constructor() {
+    this.initializeData()
   }
 
+  private async initializeData(): Promise<void> {
+    try {
+      await this.getEstados();
+    } catch (err) {
+      console.error('Erro ao inicializar EstadoService:', err);
+    }
+  }
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
