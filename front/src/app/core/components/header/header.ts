@@ -57,7 +57,7 @@ export class Header implements OnInit {
           },
           {
             label: 'Médicos',
-            icon: 'pi pi-medkit',
+            icon: 'pi pi-wave-pulse',
             routerLink: '/data/medicos'
           },
           {
