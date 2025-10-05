@@ -3,7 +3,9 @@ import { environment } from '../../../environments/environment.development';
 import Diaria from '../model/diaria/Diaria';
 import DiariaUI from '../model/diaria/DiariaUI';
 import {EspecialidadeService} from './especialidade-service';
-import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
+import { HttpClient } from '@angular/common/http';
+import Consulta from '../model/consulta/Consulta';
+import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class DiariaService {
 
   // Injeções
   private especialidadeService = inject(EspecialidadeService);
-  private http = inject(HttpClient); // 2. Injetar HttpClient
+  private http = inject(HttpClient);
 
   // Propriedades
   backURL = environment.apiURL;
@@ -27,8 +29,83 @@ export class DiariaService {
   );
 
   constructor() {
-    this.getDiarias();
+    this.initializeData();
   }
+
+  /**
+   * Método responsável por carregar os dados de maneira assíncrona e garantir que tudo apareça na UI
+   */
+  private async initializeData(): Promise<void> {
+    try {
+      await this.especialidadeService.getEspecialidades();
+      await this.getDiarias();
+    } catch (err) {
+      console.error('Erro ao inicializar CidadeService:', err);
+    }
+  }
+
+
+  /**
+   * Busca os dados no endpoint e inicializa a lista com os dados recebidos
+   */
+  async getDiarias(): Promise<Diaria[]> {
+    if (this.diarias().length) return this.diarias();
+    try {
+      const data = await firstValueFrom(this.http.get<Diaria[]>(`${this.backURL}/diarias`));
+      this.diarias.set(data);
+
+      console.log('Diarias carregadas com estados resolvidos: ', this.diariasUI());
+      return data;
+    } catch (err) {
+      console.error('Erro ao buscar diarias:', err);
+      return [];
+    }
+  }
+
+  /**
+   * Mapeia um objeto de UI para um de DTO
+   * @param diariaUI é um objeto de UI
+   * @returns Diaria
+   */
+  private UItoDto(diariaUI: DiariaUI): Diaria {
+
+    const especialidades = this.especialidadeService.especialidadesDto;
+    const especialidade = especialidades().find(e => +e.descricao === +diariaUI.especialidade)!.id
+
+    return new Diaria(
+      diariaUI.codigoDia,
+      diariaUI.quantidadeConsultas,
+      especialidade
+    );
+  }
+
+  private formatarDataAAAAMMDD(data: string | Date): string {
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}${mes}${dia}`;
+  }
+
+  /**
+   * Mapeia um objeto de DTO para um de UI
+   * @param diaria é um objeto de DTO
+   * @returns DiariaUI
+   */
+  private DTOtoUI(diaria: Diaria): DiariaUI {
+
+    const especialidades = this.especialidadeService.especialidadesDto;
+
+    const especialidade = especialidades().find(e => +e.id === +diaria.especialidadeId)!.descricao
+
+    return new DiariaUI(
+      diaria.codigoDia,
+      this.formatarDataAAAAMMDD(diaria.codigoDia),
+      diaria.quantidadeConsultas,
+      especialidade
+    );
+  }
+
 
   /**
    * Normaliza uma data para o início do dia (00:00:00).
@@ -42,47 +119,6 @@ export class DiariaService {
     return normalized;
   }
 
-  /**
-   * Busca os dados no endpoint e inicializa a lista com os dados recebidos
-   */
-  getDiarias() {
-    this.http.get<Diaria[]>(`${environment.apiURL}/diarias`) // Chamada HTTP GET
-      .subscribe({
-        next: data => {
-          // No DTO, a data pode vir como string. Se for o caso, converta para Date.
-          // Ex: data.forEach(d => d.codigoDia = new Date(d.codigoDia));
-          this.diarias.set(data)
-        },
-        error: (err) => console.error(err)
-      });
-  }
-
-  /**
-   * Mapeia um objeto de UI para um de DTO
-   * @param diariaUI é um objeto de UI
-   * @returns Diaria
-   */
-  private UItoDto(diariaUI: DiariaUI): Diaria {
-    return new Diaria(
-      diariaUI.codigoDia,
-      diariaUI.quantidadeConsultas,
-      this.especialidadeService.especialidadesDto().find(e => e.descricao === diariaUI.especialidade)!.id
-    );
-  }
-
-  /**
-   * Mapeia um objeto de DTO para um de UI
-   * @param diaria é um objeto de DTO
-   * @returns DiariaUI
-   */
-  private DTOtoUI(diaria: Diaria): DiariaUI {
-    return new DiariaUI(
-      diaria.codigoDia,
-      diaria.formatarDataAAAAMMDD(diaria.codigoDia),
-      diaria.quantidadeConsultas,
-      this.especialidadeService.especialidadesDto().find(e => e.id === diaria.especialidadeId)!.descricao
-    );
-  }
 
   /**
    * Salva uma diária no banco de dados.

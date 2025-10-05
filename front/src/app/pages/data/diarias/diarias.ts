@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { DynamicCrud } from '../../../core/components/dynamic-crud/dynamic-crud';
 import { Toast } from 'primeng/toast';
@@ -30,12 +30,23 @@ export class Diarias implements OnInit {
   title = "Gerenciar Diárias";
   t_class = DiariaUI;
 
-  ngOnInit(): void {
+  especialidadeOptions = signal<{ label: string, value: string }[]>([]);
+
+
+  async ngOnInit() {
+    const especialidades = await this.especialidadeService.getEspecialidades();
+
+    this.especialidadeOptions.set(especialidades.map(e => ({
+      label: e.descricao,
+      value: e.descricao
+    })));
+
+
     this.cols = [
       { field: 'codigoDiaString', header: 'Código do Dia', editable: false, type: 'text', insertable: false, exhibitable: true },
       { field: 'codigoDia', header: 'Data', editable: false, type: 'date', insertable: true, exhibitable: false },
       { field: 'quantidadeConsultas', header: 'Quantidade de Consultas', editable: true, type: 'number', insertable: true, exhibitable: true },
-      { field: 'especialidade', header: 'Especialidade', editable: false, type: 'select', insertable: true, options: this.getEspecialidadeOptions(), exhibitable: true },
+      { field: 'especialidade', header: 'Especialidade', editable: false, type: 'select', insertable: true, options: this.especialidadeOptions(), exhibitable: true },
     ];
   }
 
@@ -113,12 +124,5 @@ export class Diarias implements OnInit {
         life: 3000
       });
     }
-  }
-
-  getEspecialidadeOptions() {
-    return this.especialidadeService.especialidadesDto().map(especialidade => ({
-      label: especialidade.descricao,
-      value: especialidade.descricao
-    }));
   }
 }
