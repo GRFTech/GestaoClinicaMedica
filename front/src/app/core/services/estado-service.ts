@@ -22,8 +22,6 @@ export class EstadoService {
   constructor() {
   }
 
-  /** Carrega estados do backend e retorna quando concluído */
-
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.

@@ -22,7 +22,7 @@ export class CidadeService {
   );
 
   constructor(private estadoService: EstadoService, private http: HttpClient) {
-    this.initializeData()
+    this.initializeData();
   }
 
 
@@ -42,14 +42,17 @@ export class CidadeService {
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos
    */
-  async getCidades(): Promise<void> {
+  async getCidades(): Promise<Cidade[]> {
+    if (this.cidades().length) return this.cidades();
     try {
       const data = await firstValueFrom(this.http.get<Cidade[]>(`${this.backURL}/cidades`));
       this.cidades.set(data);
 
       console.log('Cidades carregadas com estados resolvidos:', this.cidadesUI());
+      return data;
     } catch (err) {
       console.error('Erro ao buscar cidades:', err);
+      return [];
     }
   }
 
@@ -71,7 +74,7 @@ export class CidadeService {
    */
   private DTOtoUI(cidade: Cidade): CidadeUI {
     const estados = this.estadoService.estadosDto;
-    const estado = estados().find(e => +e.id === +cidade.estadoId); // 🔹 comparando number x string
+    const estado = estados().find(e => +e.id === +cidade.estadoId);
     return new CidadeUI(cidade.id, cidade.descricao, estado?.estado ?? '');
   }
 

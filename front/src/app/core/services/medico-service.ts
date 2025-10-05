@@ -4,7 +4,10 @@ import Medico from '../model/medico/Medico';
 import MedicoUI from '../model/medico/MedicoUI';
 import {CidadeService} from './cidade-service';
 import {EspecialidadeService} from './especialidade-service';
-import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
+import { HttpClient } from '@angular/common/http';
+import {firstValueFrom} from 'rxjs';
+import Cidade from '../model/cidade/Cidade';
+import {CidadeUI} from '../model/cidade/CidadeUI'; // 1. Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -27,23 +30,34 @@ export class MedicoService {
   );
 
   constructor() {
-    Promise.all([
-      this.cidadeService.getCidades(),
-      this.especialidadeService.getEspecialidades()
-    ]).then(() => this.getMedicos());
+    this.initializeData()
+  }
+
+  /**
+   * Método responsável por carregar os dados de maneira assíncrona e garantir que tudo apareça na UI
+   */
+  private async initializeData(): Promise<void> {
+    try {
+      await this.especialidadeService.getEspecialidades();
+      await this.cidadeService.getCidades();
+      await this.getMedicos();
+    } catch (err) {
+      console.error('Erro ao inicializar CidadeService:', err);
+    }
   }
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
    */
-  getMedicos() {
-    this.http.get<Medico[]>(`${environment.apiURL}/medicos`) // Chamada HTTP GET
-      .subscribe({
-        next: data => {
-          this.medicos.set(data)
-        },
-        error: (err) => console.error(err)
-      });
+  async getMedicos(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.http.get<Medico[]>(`${this.backURL}/medicos`));
+      this.medicos.set(data);
+
+      console.log('Medicos carregados com sucesso: ', this.medicosUI());
+    } catch (err) {
+      console.error('Erro ao buscar cidades:', err);
+    }
   }
 
   /**
@@ -52,8 +66,11 @@ export class MedicoService {
    * @returns Medico
    */
   private UItoDto(medicoUI: MedicoUI): Medico {
-    const cidade = this.cidadeService.cidadesDto().find(c => c.descricao === medicoUI.cidade);
-    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.descricao === medicoUI.especialidade);
+    const cidades = this.cidadeService.cidadesDto;
+    const cidade = cidades().find(c => c.descricao === medicoUI.cidade);
+
+    const especialidades = this.especialidadeService.especialidadesDto;
+    const especialidade = especialidades().find(e => e.descricao === medicoUI.especialidade);
 
     return new Medico(
       medicoUI.id,
@@ -71,8 +88,11 @@ export class MedicoService {
    * @returns MedicoUI
    */
   private DTOtoUI(medico: Medico): MedicoUI {
-    const cidade = this.cidadeService.cidadesDto().find(c => c.id === medico.cidadeId);
-    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.id === medico.especialidadeId);
+    const cidades = this.cidadeService.cidadesDto;
+    const cidade = cidades().find(c => +c.id === +medico.cidadeId);
+
+    const especialidades = this.especialidadeService.especialidadesDto;
+    const especialidade = especialidades().find(e => +e.id === +medico.especialidadeId);
 
     return new MedicoUI(
       medico.id,

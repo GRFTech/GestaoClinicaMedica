@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {MessageService} from 'primeng/api';
 import {TableColumn} from '../../../core/interfaces/table-column';
 import MedicoUI from '../../../core/model/medico/MedicoUI';
@@ -35,8 +35,23 @@ export class Medicos implements OnInit {
   title = "Gerenciar Medicos"
 
   t_class = MedicoUI
+  cidadeOptions = signal<{ label: string, value: string }[]>([]);
+  especialidadeOptions = signal<{ label: string, value: string }[]>([]);
 
-  ngOnInit(): void {
+  async ngOnInit() {
+
+    const cidades = await this.cidadeService.getCidades();
+    this.cidadeOptions.set(cidades.map(c => ({
+      label: c.descricao,
+      value: c.descricao
+    })));
+    
+    const especialidades = await this.especialidadeService.getEspecialidades();
+    this.especialidadeOptions.set(especialidades.map(e => ({
+      label: e.descricao,
+      value: e.descricao
+    })));
+
     this.cols = [
       { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'nome', header: 'Nome', editable: true, type: 'text', insertable: true, exhibitable: true },
@@ -123,20 +138,4 @@ export class Medicos implements OnInit {
       });
     }
   }
-
-  cidadeOptions() {
-    return this.cidadeService.cidadesDto().map(c => ({
-      label: c.descricao,
-      value: c.descricao
-    }));
-  }
-
-  especialidadeOptions() {
-    return this.especialidadeService.especialidadesDto().map(e => ({
-      label: e.descricao,
-      value: e.descricao
-    }));
-  }
-
-
 }

@@ -1,7 +1,9 @@
 import { computed, Injectable, Signal, signal, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import Especialidade from '../model/especialidade/Especialidade';
-import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
+import { HttpClient } from '@angular/common/http';
+import Estado from '../model/estado/Estado';
+import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -21,20 +23,22 @@ export class EspecialidadeService {
   especialidadesUI = this.especialidades.asReadonly() as Signal<Especialidade[]>;
 
   constructor() {
-    this.getEspecialidades();
   }
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
    */
-  getEspecialidades() {
-    this.http.get<Especialidade[]>(`${environment.apiURL}/especialidades`) // 2. Chamada HTTP GET
-      .subscribe({
-        next: data => {
-          this.especialidades.set(data)
-        },
-        error: (err) => console.error(err)
-      });
+  async getEspecialidades(): Promise<Especialidade[]> {
+    if (this.especialidades().length) return this.especialidades();
+    try {
+      const data = await firstValueFrom(this.http.get<Especialidade[]>(`${this.backURL}/especialidades`));
+      console.log("Especialidades carregadas")
+      this.especialidades.set(data);
+      return data;
+    } catch (err) {
+      console.error('Erro ao buscar estados:', err);
+      return [];
+    }
   }
 
   /**
