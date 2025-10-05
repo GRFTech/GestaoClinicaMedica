@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {TableColumn} from '../../../core/interfaces/table-column';
 import {ConsultaService} from '../../../core/services/consulta-service';
 import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';
@@ -28,26 +28,78 @@ export class Consultas implements OnInit {
   medicoService = inject(MedicoService);
   exameService = inject(ExameService);
 
-  constructor() {}
+  constructor() {
+  }
 
   cols!: TableColumn[];
 
   entityName = "Consultas";
 
-  title = "Gerenciar Consultas"
+  title = "Gerenciar Consultas";
 
-  t_class = ConsultaUI
+  t_class = ConsultaUI;
 
-  ngOnInit(): void {
+  pacienteOptions = signal<{ label: string, value: string }[]>([]);
+  medicoOptions = signal<{ label: string, value: string }[]>([]);
+  exameOptions = signal<{ label: string, value: string }[]>([]);
+
+  async ngOnInit() {
+
+
+    const pacientes = await this.pacienteService.getPacientes();
+
+    this.pacienteOptions.set(pacientes.map(e => ({
+      label: e.nome,
+      value: e.nome
+    })));
+
+    const medico = await this.medicoService.getMedicos();
+
+    this.medicoOptions.set(medico.map(e => ({
+      label: e.nome,
+      value: e.nome
+    })));
+
+    const exame = await this.exameService.getExames();
+
+    this.exameOptions.set(exame.map(e => ({
+      label: e.descricao,
+      value: e.descricao
+    })));
 
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: true, exhibitable: true },
-      { field: 'data', header: 'Data', editable: true, type: 'datetime', insertable: true, exhibitable: true },
-      { field: 'paciente', header: 'Paciente', editable: false, type: 'select', insertable: true, options: this.pacienteOptions(), exhibitable: true },
-      { field: 'medico', header: 'Medico', editable: false, type: 'select', insertable: true, options: this.medicoOptions(), exhibitable: true },
-      { field: 'exame', header: 'Exame', editable: false, type: 'select', insertable: true, options: this.exameOptions(), exhibitable: true }
+      {field: 'id', header: 'ID', editable: false, type: 'number', insertable: true, exhibitable: true},
+      {field: 'data', header: 'Data', editable: true, type: 'datetime', insertable: true, exhibitable: true},
+      {
+        field: 'paciente',
+        header: 'Paciente',
+        editable: false,
+        type: 'select',
+        insertable: true,
+        options: this.pacienteOptions(),
+        exhibitable: true
+      },
+      {
+        field: 'medico',
+        header: 'Medico',
+        editable: false,
+        type: 'select',
+        insertable: true,
+        options: this.medicoOptions(),
+        exhibitable: true
+      },
+      {
+        field: 'exame',
+        header: 'Exame',
+        editable: false,
+        type: 'select',
+        insertable: true,
+        options: this.exameOptions(),
+        exhibitable: true
+      }
     ];
   }
+
   onSave(ui: ConsultaUI) {
 
     try {
@@ -124,27 +176,6 @@ export class Consultas implements OnInit {
         life: 3000
       });
     }
-  }
-
-  pacienteOptions() {
-    return this.pacienteService.pacientesDto().map(p => ({
-      label: p.nome,
-      value: p.nome
-    }));
-  }
-
-  medicoOptions() {
-    return this.medicoService.medicosDto().map(m => ({
-      label: m.nome,
-      value: m.nome
-    }));
-  }
-
-  exameOptions() {
-    return this.exameService.examesDto().map(e => ({
-      label: e.descricao,
-      value: e.descricao
-    }));
   }
 
 }

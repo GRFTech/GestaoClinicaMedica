@@ -5,7 +5,9 @@ import { environment } from '../../../environments/environment.development';
 import {PacienteService} from './paciente-service';
 import {MedicoService} from './medico-service';
 import {ExameService} from './exame-service';
-import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
+import { HttpClient } from '@angular/common/http';
+import Cidade from '../model/cidade/Cidade';
+import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class ConsultaService {
   pacienteService = inject(PacienteService);
   medicoService = inject(MedicoService);
   exameService = inject(ExameService);
-  private http = inject(HttpClient); // 2. Injetar HttpClient
+  private http = inject(HttpClient);
 
   // Propriedades
   backURL = environment.apiURL;
@@ -32,20 +34,39 @@ export class ConsultaService {
 
   // Construtor
   constructor() {
-    this.getConsultas()
+    this.initializeData();
   }
+
+  /**
+   * Método responsável por carregar os dados de maneira assíncrona e garantir que tudo apareça na UI
+   */
+  private async initializeData(): Promise<void> {
+    try {
+      await this.pacienteService.getPacientes();
+      await this.medicoService.getMedicos();
+      await this.exameService.getExames();
+      await this.getConsultas();
+    } catch (err) {
+      console.error('Erro ao inicializar CidadeService:', err);
+    }
+  }
+
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos
    */
-  getConsultas() {
-    this.http.get<Consulta[]>(`${environment.apiURL}/consultas`) // 3. Chamada HTTP GET
-      .subscribe({
-        next: data => {
-          this.consultas.set(data)
-        },
-        error: (err) => console.error(err)
-      });
+  async getConsultas(): Promise<Consulta[]> {
+    if (this.consultas().length) return this.consultas();
+    try {
+      const data = await firstValueFrom(this.http.get<Consulta[]>(`${this.backURL}/consultas`));
+      this.consultas.set(data);
+
+      console.log('Consultas carregadas com estados resolvidos: ', this.consultasUI());
+      return data;
+    } catch (err) {
+      console.error('Erro ao buscar consultas:', err);
+      return [];
+    }
   }
 
   /**
@@ -54,12 +75,15 @@ export class ConsultaService {
    * @returns Consulta
    */
   private UItoDto(ui: ConsultaUI): Consulta {
-    // A lógica de mapeamento para DTO permanece a mesma, mas é bom garantir que
-    // PacienteService, MedicoService e ExameService já tenham carregado seus dados
-    // antes de usar esse método.
-    const paciente = this.pacienteService.pacientesDto().find(p => p.nome === ui.paciente);
-    const medico = this.medicoService.medicosDto().find(m => m.nome === ui.medico);
-    const exame = this.exameService.examesDto().find(e => e.descricao === ui.exame);
+
+    const pacientes = this.pacienteService.pacientesDto;
+    const paciente = pacientes().find(p => +p.nome === +ui.paciente);
+
+    const medicos = this.medicoService.medicosDto;
+    const medico = medicos().find(m => +m.nome === +ui.medico);
+
+    const exames = this.exameService.examesDto;
+    const exame = exames().find(e => +e.descricao === +ui.exame);
 
     // Nota: O construtor de Consulta pode precisar ser ajustado se o id for gerado no backend.
     // Assumindo que o ID é ignorado no POST/PUT e que a data é tratada corretamente.
@@ -72,9 +96,15 @@ export class ConsultaService {
    * @returns ConsultaUI
    */
   private DTOtoUI(dto: Consulta): ConsultaUI {
-    const paciente = this.pacienteService.pacientesDto().find(p => p.id === dto.pacienteId);
-    const medico = this.medicoService.medicosDto().find(m => m.id === dto.medicoId);
-    const exame = this.exameService.examesDto().find(e => e.id === dto.exameId);
+    const pacientes = this.pacienteService.pacientesDto;
+    const paciente = pacientes().find(p => +p.id === +dto.pacienteId);
+
+    const medicos = this.medicoService.medicosDto;
+    const medico = medicos().find(m => +m.id === +dto.medicoId);
+
+    const exames = this.exameService.examesDto;
+    const exame = exames().find(e => +e.id === +dto.exameId);
+
     return new ConsultaUI(dto.id, dto.data, paciente?.nome ?? '', medico?.nome ?? '', exame?.descricao ?? '');
   }
 
