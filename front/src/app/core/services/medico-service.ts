@@ -42,21 +42,23 @@ export class MedicoService {
       await this.cidadeService.getCidades();
       await this.getMedicos();
     } catch (err) {
-      console.error('Erro ao inicializar CidadeService:', err);
+      console.error('Erro ao inicializar MedicoService:', err);
     }
   }
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
    */
-  async getMedicos(): Promise<void> {
+  async getMedicos(): Promise<Medico[]> {
     try {
       const data = await firstValueFrom(this.http.get<Medico[]>(`${this.backURL}/medicos`));
       this.medicos.set(data);
 
       console.log('Medicos carregados com sucesso: ', this.medicosUI());
+      return data;
     } catch (err) {
-      console.error('Erro ao buscar cidades:', err);
+      console.error('Erro ao buscar médicos:', err);
+      return [];
     }
   }
 

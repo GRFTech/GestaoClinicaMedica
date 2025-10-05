@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {PacienteService} from '../../../core/services/paciente-service';
 import {MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
@@ -26,9 +26,15 @@ export class Pacientes implements OnInit {
 
   constructor() {
   }
+  cidadeOptions = signal<{ label: string, value: string }[]>([]);
 
+  async ngOnInit() {
 
-  ngOnInit(): void {
+    const cidades = await this.cidadeService.getCidades();
+    this.cidadeOptions.set(cidades.map(c => ({
+      label: c.descricao,
+      value: c.descricao
+    })));
 
     this.cols = [
       { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
@@ -125,15 +131,4 @@ export class Pacientes implements OnInit {
      });
    }
   }
-
-  cidadeOptions() {
-    return this.cidadeService.cidadesDto().map(c => ({
-      label: c.descricao,
-      value: c.descricao
-    }));
-  }
-
-
-
-
 }
