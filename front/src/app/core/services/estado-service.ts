@@ -1,7 +1,8 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import Estado from '../model/estado/Estado';
-import { HttpClient } from '@angular/common/http'; // Importar HttpClient
+import { HttpClient } from '@angular/common/http';
+import {firstValueFrom} from 'rxjs'; // Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -19,21 +20,24 @@ export class EstadoService {
   estadosDto = this.estados.asReadonly();
 
   constructor() {
-    this.getEstados();
   }
+
+  /** Carrega estados do backend e retorna quando concluído */
+
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
    */
-  getEstados() {
-    this.http.get<Estado[]>(`${environment.apiURL}/estados`) // Chamada HTTP GET
-      .subscribe({
-        next: data => {
-          console.log("Estado: ", data);
-          this.estados.set(data)
-        },
-        error: (err) => console.error(err)
-      });
+  async getEstados(): Promise<Estado[]> {
+    if (this.estados().length) return this.estados();
+    try {
+      const data = await firstValueFrom(this.http.get<Estado[]>(`${this.backURL}/estados`));
+      this.estados.set(data);
+      return data;
+    } catch (err) {
+      console.error('Erro ao buscar estados:', err);
+      return [];
+    }
   }
 
   /**

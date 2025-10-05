@@ -4,7 +4,6 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {TableColumn} from '../../../core/interfaces/table-column';
 import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';
 import {EstadoService} from '../../../core/services/estado-service';
-import Cidade from '../../../core/model/cidade/Cidade';
 import {CidadeUI} from '../../../core/model/cidade/CidadeUI';
 import {Toast} from 'primeng/toast';
 
@@ -25,12 +24,24 @@ export class Cidades implements OnInit {
   entityName = "Cidade";
   title = "Gerenciar Cidades";
   t_class = CidadeUI;
+  estadoOptions = signal<{ label: string, value: string }[]>([]);
 
   cidadeService = inject(CidadeService)
 
   constructor(private estadoService: EstadoService, private messageService: MessageService) {}
 
-  ngOnInit(): void {
+
+  async ngOnInit() {
+    // 🔹 Aguarda os estados carregarem
+    const estados = await this.estadoService.getEstados();
+
+    // 🔹 Atualiza o signal com os options
+    this.estadoOptions.set(estados.map(e => ({
+      label: e.estado,
+      value: e.estado
+    })));
+
+    // 🔹 Configura as colunas
     this.cols = [
       { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'descricao', header: 'Descrição', editable: true, type: 'text', insertable: true, exhibitable: true },
@@ -113,18 +124,5 @@ export class Cidades implements OnInit {
         life: 3000
       });
     }
-  }
-
-  async awaitEstado() {
-    await this.estadoService.getEstados();
-  }
-
-  estadoOptions() {
-    this.awaitEstado();
-
-    return this.estadoService.estadosDto().map(e => ({
-      label: e.estado,
-      value: e.estado
-    }));
   }
 }

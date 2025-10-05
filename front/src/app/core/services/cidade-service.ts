@@ -4,6 +4,7 @@ import Cidade from '../model/cidade/Cidade';
 import {CidadeUI} from '../model/cidade/CidadeUI';
 import {EstadoService} from './estado-service';
 import {HttpClient} from '@angular/common/http';
+import {firstValueFrom} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,22 +22,35 @@ export class CidadeService {
   );
 
   constructor(private estadoService: EstadoService, private http: HttpClient) {
-    Promise.all([
-      this.estadoService.getEstados()
-    ]).then(() => this.getCidades());
+    this.initializeData()
   }
+
+
+  /**
+   * Método responsável por carregar os dados de maneira assíncrona e garantir que tudo apareça na UI
+   */
+  private async initializeData(): Promise<void> {
+    try {
+      await this.estadoService.getEstados();
+      await this.getCidades();
+    } catch (err) {
+      console.error('Erro ao inicializar CidadeService:', err);
+    }
+  }
+
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos
    */
-  getCidades() {
-    this.http.get<Cidade[]>(`${environment.apiURL}/cidades`)
-      .subscribe({
-        next: data => {
-          this.cidades.set(data)
-        },
-        error: (err) => console.error(err)
-      });
+  async getCidades(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.http.get<Cidade[]>(`${this.backURL}/cidades`));
+      this.cidades.set(data);
+
+      console.log('Cidades carregadas com estados resolvidos:', this.cidadesUI());
+    } catch (err) {
+      console.error('Erro ao buscar cidades:', err);
+    }
   }
 
   /**
@@ -45,8 +59,9 @@ export class CidadeService {
    * @returns Cidade
    */
   private UItoDto(cidadeUI: CidadeUI): Cidade {
-    const estado = this.estadoService.estadosDto().find(e => e.estado === cidadeUI.estado);
-    return new Cidade(cidadeUI.id, cidadeUI.descricao, estado!.id);
+    const estados = this.estadoService.estadosDto;
+    const estado = estados().find(e => e.estado === cidadeUI.estado);
+    return new Cidade(cidadeUI.id, cidadeUI.descricao, estado?.id ?? 0);
   }
 
   /**
@@ -55,7 +70,8 @@ export class CidadeService {
    * @returns Cidade
    */
   private DTOtoUI(cidade: Cidade): CidadeUI {
-    const estado = this.estadoService.estadosDto().find(e => e.id === cidade.estadoId);
+    const estados = this.estadoService.estadosDto;
+    const estado = estados().find(e => +e.id === +cidade.estadoId); // 🔹 comparando number x string
     return new CidadeUI(cidade.id, cidade.descricao, estado?.estado ?? '');
   }
 
