@@ -3,7 +3,9 @@ import { environment } from '../../../environments/environment.development';
 import Exame from '../model/exame/Exame';
 import ExameUI from '../model/exame/ExameUI';
 import {EspecialidadeService} from './especialidade-service';
-import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
+import { HttpClient } from '@angular/common/http';
+import Medico from '../model/medico/Medico';
+import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class ExameService {
 
   // Injeções
   especialidadeService = inject(EspecialidadeService);
-  private http = inject(HttpClient); // 2. Injetar HttpClient
+  private http = inject(HttpClient);
 
   // Propriedades e Signals
   backURL = environment.apiURL;
@@ -26,21 +28,33 @@ export class ExameService {
   );
 
   constructor() {
-    this.getExames();
+    this.initializeData();
   }
+
+  private async initializeData(): Promise<void> {
+    try {
+      await this.especialidadeService.getEspecialidades();
+      await this.getExames();
+    } catch (err) {
+      console.error('Erro ao inicializar EspecialidadeService:', err);
+    }
+  }
+
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
    */
-  getExames() {
-    this.http.get<Exame[]>(`${environment.apiURL}/exames`) // Chamada HTTP GET
-      .subscribe({
-        next: data => {
-          console.log(data);
-          this.exames.set(data)
-        },
-        error: (err) => console.error(err)
-      });
+  async getExames(): Promise<Exame[]> {
+    try {
+      const data = await firstValueFrom(this.http.get<Exame[]>(`${this.backURL}/exames`));
+      this.exames.set(data);
+
+      console.log('Exames carregados com sucesso: ', this.examesUI());
+      return data;
+    } catch (err) {
+      console.error('Erro ao buscar exames:', err);
+      return [];
+    }
   }
 
   /**
@@ -49,7 +63,10 @@ export class ExameService {
    * @returns Exame
    */
   private UItoDto(exameUI: ExameUI): Exame {
-    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.descricao === exameUI.especialidade);
+
+    const especialidades = this.especialidadeService.especialidadesDto;
+    const especialidade = especialidades().find(e => +e.descricao === +exameUI.especialidade);
+
     return new Exame(
       exameUI.id,
       exameUI.descricao,
@@ -64,7 +81,9 @@ export class ExameService {
    * @returns ExameUI
    */
   private DTOtoUI(exame: Exame): ExameUI {
-    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.id === exame.especialidadeId);
+    const especialidades = this.especialidadeService.especialidadesDto;
+    const especialidade = especialidades().find(e => +e.id === +exame.especialidadeId);
+
     return new ExameUI(
       exame.id,
       exame.descricao,

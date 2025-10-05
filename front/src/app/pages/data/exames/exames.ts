@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';
 import {Toast} from 'primeng/toast';
 import {MessageService} from 'primeng/api';
@@ -34,7 +34,17 @@ export class Exames implements OnInit {
 
   t_class = ExameUI
 
-  ngOnInit(): void {
+  especialidadeOptions = signal<{ label: string, value: string }[]>([]);
+
+
+  async ngOnInit() {
+    const especialidades = await this.especialidadeService.getEspecialidades();
+
+    this.especialidadeOptions.set(especialidades.map(e => ({
+      label: e.descricao,
+      value: e.descricao
+    })));
+
     this.cols = [
       { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'descricao', header: 'Descrição', editable: true, type: 'text', insertable: true, exhibitable: true },
@@ -119,13 +129,5 @@ export class Exames implements OnInit {
       });
     }
   }
-
-  especialidadeOptions() {
-    return this.especialidadeService.especialidadesDto().map(e => ({
-      label: e.descricao,
-      value: e.descricao
-    }));
-  }
-
 
 }

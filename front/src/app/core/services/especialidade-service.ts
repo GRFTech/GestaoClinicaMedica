@@ -23,7 +23,17 @@ export class EspecialidadeService {
   especialidadesUI = this.especialidades.asReadonly() as Signal<Especialidade[]>;
 
   constructor() {
+    this.initializeData()
   }
+
+  private async initializeData(): Promise<void> {
+    try {
+      await this.getEspecialidades();
+    } catch (err) {
+      console.error('Erro ao inicializar MedicoService:', err);
+    }
+  }
+
 
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos.
@@ -32,7 +42,6 @@ export class EspecialidadeService {
     if (this.especialidades().length) return this.especialidades();
     try {
       const data = await firstValueFrom(this.http.get<Especialidade[]>(`${this.backURL}/especialidades`));
-      console.log("Especialidades carregadas")
       this.especialidades.set(data);
       return data;
     } catch (err) {
