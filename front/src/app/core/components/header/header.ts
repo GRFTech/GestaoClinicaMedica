@@ -85,7 +85,9 @@ export class Header implements OnInit {
       {
         label: 'Sobre',
         icon: 'pi pi-info-circle',
-        routerLink: '/home' // Ou crie uma rota específica para 'sobre'
+        command: () => {
+          window.open('https://github.com/GRFTech/GestaoClinicaMedica', '_blank');
+        }
       }
     ]
   }
