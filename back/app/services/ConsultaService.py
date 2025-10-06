@@ -117,4 +117,14 @@ class ConsultaService:
         # LISTAGEM ORDENADA
         return self.repo.listar_todos_ordenado()
 
-
+    def gerar_proximo_codigo(self) -> int:
+        """
+        Retorna o próximo código sequencial para uma nova consulta.
+        Se não houver nenhuma consulta, retorna 1.
+        """
+        consultas = self.listar_ordenado()
+        if not consultas:
+            return 1
+        # Pega o último código da lista ordenada e soma 1
+        ultimo_codigo = consultas[-1].codigo_consulta
+        return ultimo_codigo + 1

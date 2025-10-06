@@ -118,18 +118,30 @@ export class ConsultaService {
   /** Cria nova consulta */
   createConsulta(ui: ConsultaUI) {
     const dto = this.UItoDto(ui);
+
     this.http.post<{ status: string; mensagem: string }>(
       `${environment.apiURL}/consultas`,
       dto.toJSON()
     ).subscribe({
       next: (res) => {
         if (res.status === 'SUCESSO') {
-          this.getConsultas(); // recarrega a lista
+          // Extrai o código da consulta da mensagem retornada
+          const match = res.mensagem.match(/\(Cód:\s*(\d+)\)/);
+          if (match && match[1]) {
+            ui.codigo_consulta = parseInt(match[1], 10);
+          }
+
+          // Atualiza a lista de consultas
+          this.consultas.update(consultas => [...consultas, this.UItoDto(ui)]);
+          console.log(`Consulta salva com código: ${ui.codigo_consulta}`);
+        } else {
+          console.error('Falha ao criar consulta:', res.mensagem);
         }
       },
-      error: (err) => console.error('Erro ao criar consulta:', err)
+      error: (err) => console.error('Erro HTTP ao criar consulta:', err)
     });
   }
+
 
   /** Atualiza consulta existente */
   updateConsulta(ui: ConsultaUI) {
@@ -140,6 +152,9 @@ export class ConsultaService {
     ).subscribe({
       next: (res) => {
         if (res.status === 'SUCESSO') this.getConsultas();
+        this.consultas.update(cidades =>
+          cidades.map(c => c.codigo_consulta === ui.codigo_consulta ? this.UItoDto(ui) : c)
+        );
       },
       error: (err) => console.error('Erro ao atualizar consulta:', err)
     });

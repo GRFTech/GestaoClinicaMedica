@@ -9,7 +9,7 @@ consulta_bp = Blueprint('consulta_bp', __name__, url_prefix='/api')
 @consulta_bp.route('/consultas', methods=['POST'])
 def incluir_consulta():
     data = request.json
-    codigo = data.get('codigo_consulta')
+    codigo = consulta_service.gerar_proximo_codigo()
     codigo_paciente = data.get('codigo_paciente')
     codigo_medico = data.get('codigo_medico')
     codigo_exame = data.get('codigo_exame')
