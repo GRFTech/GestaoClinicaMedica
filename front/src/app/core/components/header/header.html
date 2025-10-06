@@ -1,21 +1,21 @@
-<p-toolbar class="relative p-px-4 p-py-2 shadow-2 surface-card border-round-none">
-  <!-- Lado esquerdo: logo + título -->
+<p-toolbar class="flex items-center justify-between p-px-4 p-py-2 shadow-2 surface-card border-round-none">
+  <!-- Lado esquerdo -->
   <div class="flex items-center gap-3">
     <span class="text-primary font-bold text-xl whitespace-nowrap">
       Sistema Clínica Médica
     </span>
   </div>
 
-  <!-- Centro absoluto: menu -->
-  <div class="absolute left-1/2 transform -translate-x-1/2">
+  <!-- Centro: menu com flex-grow e justify-center -->
+  <div class="flex-grow flex justify-center">
     <p-menubar
       [model]="items"
-      styleClass="surface-card border-none shadow-none"
+      styleClass="surface-card border-none shadow-none w-full sm:w-auto"
     ></p-menubar>
   </div>
 
-  <!-- Lado direito: botão de tema -->
-  <div class="flex items-center ml-auto">
+  <!-- Lado direito -->
+  <div class="flex items-center ml-4">
     <p-button
       [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
       (click)="themeService.toggleDarkMode()"

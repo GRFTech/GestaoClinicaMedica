@@ -1,1 +1,92 @@
-<app-header/>
+<app-header />
+
+<!-- Container principal -->
+<div class="flex flex-col items-center bg-surface-100 dark:bg-surface-900 p-6 pt-10 space-y-10 min-h-screen">
+
+  <!-- Card principal de boas-vindas -->
+  <p-card
+    header="🏥 Sistema de Gestão para Clínica Médica"
+    styleClass="w-full max-w-3xl text-center shadow-3 border-round-2xl bg-surface-card"
+  >
+    <p class="mb-4 text-lg text-surface-700 dark:text-surface-200">
+      Bem-vindo ao sistema de gestão de clínica médica.
+      Aqui você pode consultar, cadastrar e gerenciar dados de pacientes, médicos e atendimentos de forma prática e organizada.
+    </p>
+
+    <p-divider></p-divider>
+
+    <!-- Botões de ação -->
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mt-4">
+      <p-button
+        label="Ver Dados"
+        icon="pi pi-database"
+        routerLink="/data/cidades"
+        styleClass="p-button-raised p-button-primary px-6 py-2 text-lg font-semibold"
+      ></p-button>
+
+      <a
+        pButton
+        label="Sobre o Projeto"
+        icon="pi pi-info-circle"
+        href="https://github.com/GRFTech/GestaoClinicaMedica"
+        target="_blank"
+        class="p-button-outlined p-button-secondary px-6 py-2 text-lg font-semibold"
+      ></a>
+    </div>
+  </p-card>
+
+  <!-- Seção de badges e destaque acadêmico -->
+  <div class="text-center space-y-3">
+    <p-tag severity="info" value="Projeto Acadêmico" styleClass="text-base"></p-tag>
+    <p class="italic text-surface-600 dark:text-surface-300 max-w-lg mx-auto">
+      📚 Desenvolvido na disciplina de <span class="font-semibold">Estrutura de Arquivos</span> — utilizando arquivos indexados e ABB em Python.
+    </p>
+  </div>
+
+  <!-- Tecnologias usadas -->
+  <div class="w-full max-w-4xl">
+    <p-panel header="💻 Tecnologias Utilizadas" [toggleable]="true" class="shadow-2 mb-6">
+      <ul class="list-disc list-inside text-left leading-relaxed text-surface-700 dark:text-surface-200">
+        <li><span class="font-semibold">Back-end:</span> Python + Flask</li>
+        <li><span class="font-semibold">Front-end:</span> Angular 20 + PrimeNG 20 + Tailwind CSS</li>
+        <li><span class="font-semibold">Persistência de dados:</span> Arquivos indexados com ABB em memória</li>
+        <li><span class="font-semibold">Interface:</span> Menus claros, feedback interativo, responsividade completa</li>
+      </ul>
+    </p-panel>
+  </div>
+
+  <!-- Funcionalidades principais -->
+  <div class="w-full max-w-4xl">
+    <p-panel header="📊 Funcionalidades Principais" [toggleable]="true" class="shadow-2 mb-6">
+      <ul class="list-disc list-inside text-left leading-relaxed text-surface-700 dark:text-surface-200">
+        <li>Inserção, consulta e exclusão de registros em arquivos indexados</li>
+        <li>Persistência de dados em disco e manutenção de índices em memória via ABB</li>
+        <li>Geração de relatórios detalhados e cálculos de faturamento por dia, médico ou especialidade</li>
+        <li>Integração de múltiplas entidades (Pacientes, Médicos, Exames, Consultas, Diárias, Especialidades)</li>
+        <li>Validações consistentes entre tabelas e limites de consultas diárias por especialidade</li>
+        <li>Exibição de IMC e diagnóstico para pacientes</li>
+      </ul>
+    </p-panel>
+  </div>
+
+  <!-- Sobre o projeto e detalhes adicionais -->
+  <div class="w-full max-w-4xl">
+    <p-panel header="📄 Sobre o Projeto" [toggleable]="true" class="shadow-2 mb-6">
+      <p class="text-left text-surface-700 dark:text-surface-200 leading-relaxed">
+        Este projeto foi desenvolvido como trabalho prático da disciplina de Algoritmos e Estruturas de Dados.
+        O sistema simula um banco de dados simples utilizando arquivos indexados, onde os dados são persistidos em disco,
+        e os índices são mantidos em memória por meio de uma Árvore Binária de Busca (ABB).
+        O front-end é feito em Angular 20, consumindo uma API REST construída com Flask, garantindo separação clara entre apresentação e lógica.
+      </p>
+    </p-panel>
+  </div>
+
+  <!-- Rodapé acadêmico / crédito -->
+  <div class="text-center mt-10 mb-6">
+    <p-tag severity="warning" value="⚠️ Projeto Acadêmico"></p-tag>
+    <p class="mt-2 italic text-surface-600 dark:text-surface-300 max-w-lg mx-auto">
+      Todos os dados apresentados são fictícios e utilizados apenas para fins acadêmicos.
+    </p>
+  </div>
+
+</div>
