@@ -1,5 +1,16 @@
+# app/models/Cidade.py
 class Cidade:
-    def __init__(self, codigo_cidade, descricao, estado):
-        self.codigo_cidade = int(codigo_cidade)
-        self.descricao = str(descricao)
-        self.estado = str(estado)
+    def __init__(self, codigo, descricao, estado):
+        self.codigo = codigo
+        self.descricao = descricao
+        self.estado = estado
+
+    def to_dict(self):
+        return {
+            "codigo": self.codigo,
+            "descricao": self.descricao,
+            "estado": self.estado
+        }
+
+    def __str__(self):
+        return f"Cód: {self.codigo} | Desc: {self.descricao} | UF: {self.estado}"
