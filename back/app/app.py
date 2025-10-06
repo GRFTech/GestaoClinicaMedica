@@ -1,3 +1,29 @@
+from http.cookiejar import debug
+
+from flask import Flask
+
+app = Flask(__name__)
+
+# Importar todos os Blueprints
+from app.controller.CidadeController import cidade_bp
+from app.controller.ConsultaController import consulta_bp
+from app.controller.DiariaController import diaria_bp
+from app.controller.EspecialidadeController import especialidade_bp
+from app.controller.ExameController import exame_bp
+from app.controller.FaturamentoController import faturamento_bp
+from app.controller.MedicoController import medico_bp
+from app.controller.PacienteController import paciente_bp
+
+# Registrar todos os Blueprints
+app.register_blueprint(cidade_bp, url_prefix='/api')
+app.register_blueprint(consulta_bp, url_prefix='/api')
+app.register_blueprint(diaria_bp, url_prefix='/api')
+app.register_blueprint(especialidade_bp, url_prefix='/api')
+app.register_blueprint(exame_bp, url_prefix='/api')
+app.register_blueprint(faturamento_bp, url_prefix='/api')
+app.register_blueprint(medico_bp, url_prefix='/api')
+app.register_blueprint(paciente_bp, url_prefix='/api')
+
 import os
 import sys
 # Importa os serviços necessários para a aplicação
@@ -1071,4 +1097,4 @@ class App:
 
 if __name__ == "__main__":
     app = App()
-    app.run()
+    app.run(debug=True)
