@@ -24,11 +24,11 @@ export default class MedicoUI {
   }
 
 
-  get id(): number {
+  get codigo_medico(): number {
     return this._codigo_medico;
   }
 
-  set id(value: number) {
+  set codigo_medico(value: number) {
     this._codigo_medico = value;
   }
 

@@ -83,7 +83,7 @@ export class MedicoService {
     const especialidade = especialidades().find(e => e.descricao === medicoUI.especialidade);
 
     return new Medico(
-      medicoUI.id,
+      medicoUI.codigo_medico,
       medicoUI.nome,
       medicoUI.endereco,
       medicoUI.telefone,
@@ -119,16 +119,28 @@ export class MedicoService {
    * @param ui é um objeto de UI
    */
   createMedico(ui: MedicoUI) {
-    let dto = this.UItoDto(ui);
+    const dto = this.UItoDto(ui);
 
-    this.http.post<Medico>(`${environment.apiURL}/medicos`, dto).subscribe({
-      next: data => {
-        // 'data' é o DTO retornado pelo backend (com ID, etc.)
-        this.medicos.update(medicos => [...medicos, data]);
+    this.http.post<{ status: string; mensagem: string }>(`${environment.apiURL}/medicos`, dto).subscribe({
+      next: response => {
+        if (response.status === 'SUCESSO') {
+          // Extrai o código do médico da mensagem retornada
+          const match = response.mensagem.match(/\(Cód:\s*(\d+)\)/);
+          if (match && match[1]) {
+            ui.codigo_medico = parseInt(match[1], 10);
+          }
+
+          // Atualiza a lista de médicos com o novo objeto UI
+          this.medicos.update(medicos => [...medicos, this.UItoDto(ui)]);
+          console.log(`Médico salvo com código: ${ui.codigo_medico}`);
+        } else {
+          console.error('Falha ao criar médico:', response.mensagem);
+        }
       },
-      error: (err) => console.error(err)
+      error: err => console.error('Erro HTTP ao criar médico:', err)
     });
   }
+
 
   /**
    * Atualiza um médico existente no banco de dados
@@ -137,11 +149,11 @@ export class MedicoService {
   updateMedico(ui: MedicoUI) {
     let dto = this.UItoDto(ui);
 
-    this.http.put<Medico>(`${environment.apiURL}/medicos/${ui.id}`, dto).subscribe({
+    this.http.put<Medico>(`${environment.apiURL}/medicos/${ui.codigo_medico}`, dto).subscribe({
       next: data => {
         this.medicos.update(medicos =>
           // 'data' é o DTO atualizado retornado pelo backend
-          medicos.map(m => (m.codigo_medico === ui.id ? data : m))
+          medicos.map(m => (m.codigo_medico === ui.codigo_medico ? this.UItoDto(ui) : m))
         );
       },
       error: (err) => console.error(err)
@@ -153,10 +165,10 @@ export class MedicoService {
    * @param ui é um objeto de UI
    */
   deleteMedico(ui: MedicoUI) {
-    this.http.delete(`${environment.apiURL}/medicos/${ui.id}`).subscribe({
+    this.http.delete(`${environment.apiURL}/medicos/${ui.codigo_medico}`).subscribe({
       next: () => {
         this.medicos.update(medicos =>
-          medicos.filter(m => m.codigo_medico !== ui.id)
+          medicos.filter(m => m.codigo_medico !== ui.codigo_medico)
         );
       },
       error: (err) => console.error(err)
@@ -168,7 +180,7 @@ export class MedicoService {
    * @param uis é um array de objetos de UI
    */
   deleteMedicos(uis: MedicoUI[]) {
-    const ids = uis.map(u => u.id);
+    const ids = uis.map(u => u.codigo_medico);
 
     // Replicando a lógica de deletar em loop
     for (let i = 0; i < ids.length; i++) {

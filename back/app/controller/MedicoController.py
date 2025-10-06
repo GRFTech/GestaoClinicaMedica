@@ -9,7 +9,7 @@ medico_bp = Blueprint('medico_bp', __name__, url_prefix='/api')
 @medico_bp.route('/medicos', methods=['POST'])
 def incluir_medico():
     data = request.json
-    codigo = data.get('codigo_medico')
+    codigo = medico_service.gerar_proximo_codigo()
     nome = data.get('nome')
     endereco = data.get('endereco')
     telefone = data.get('telefone')

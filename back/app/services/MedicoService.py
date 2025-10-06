@@ -86,3 +86,15 @@ class MedicoService:
     def listar_ordenado(self):
         # LISTAGEM ORDENADA
         return self.repo.listar_todos_ordenado()
+
+    def gerar_proximo_codigo(self) -> int:
+        """
+        Retorna o próximo código disponível para um novo médico.
+        Se não houver médicos cadastrados, retorna 1.
+        """
+        medicos = self.listar_ordenado()
+        if not medicos:
+            return 1
+        # Pega o último código da lista ordenada e soma 1
+        ultimo_codigo = medicos[-1].codigo_medico
+        return ultimo_codigo + 1

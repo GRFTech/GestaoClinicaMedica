@@ -45,7 +45,7 @@ export class Medicos implements OnInit {
       label: c.descricao,
       value: c.descricao
     })));
-    
+
     const especialidades = await this.especialidadeService.getEspecialidades();
     this.especialidadeOptions.set(especialidades.map(e => ({
       label: e.descricao,
@@ -53,7 +53,7 @@ export class Medicos implements OnInit {
     })));
 
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'codigo_medico', header: 'Código do Médico', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'nome', header: 'Nome', editable: true, type: 'text', insertable: true, exhibitable: true },
       { field: 'endereco', header: 'Endereço', editable: true, type: 'text', insertable: true, exhibitable: true },
       { field: 'telefone', header: 'Telefone', editable: true, type: 'text', insertable: true, exhibitable: true },

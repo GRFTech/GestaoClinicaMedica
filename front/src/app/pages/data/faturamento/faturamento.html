@@ -1,0 +1,44 @@
+<app-header/>
+
+<div class="p-4 flex flex-column gap-3 w-full max-w-30rem mx-auto">
+  <p-card header="💰 Faturamento da Clínica" class="shadow-3">
+
+    <!-- Faturamento por dia -->
+    <div class="flex gap-2 align-items-center">
+      <input type="date" [(ngModel)]="data" name="data" placeholder="Data" class="p-inputtext flex-1">
+      <button pButton label="Buscar por dia" icon="pi pi-search" (click)="buscarPorDia()"></button>
+    </div>
+
+    <!-- Faturamento por período -->
+    <div class="flex gap-2 align-items-center mt-2">
+      <input type="date" [(ngModel)]="inicio" name="inicio" placeholder="Início" class="p-inputtext flex-1">
+      <input type="date" [(ngModel)]="fim" name="fim" placeholder="Fim" class="p-inputtext flex-1">
+      <button pButton label="Buscar por período" icon="pi pi-search" (click)="buscarPorPeriodo()"></button>
+    </div>
+
+    <!-- Faturamento por médico -->
+    <div class="flex gap-2 align-items-center mt-2">
+      <input type="number" pInputText placeholder="Código do médico" [(ngModel)]="codigoMedico">
+      <button pButton label="Buscar por médico" icon="pi pi-search" (click)="buscarPorMedico()"></button>
+    </div>
+
+    <!-- Faturamento por especialidade -->
+    <div class="flex gap-2 align-items-center mt-2">
+      <input type="number" pInputText placeholder="Código da especialidade" [(ngModel)]="codigoEspecialidade">
+      <button pButton label="Buscar por especialidade" icon="pi pi-search" (click)="buscarPorEspecialidade()"></button>
+    </div>
+
+    <p-divider></p-divider>
+
+    <ng-container *ngIf="faturamento">
+      <p class="m-0">Faturamento: R$ {{ faturamento.faturamento | number:'1.2-2' }}</p>
+      <p *ngIf="faturamento.data">Data: {{ faturamento.data }}</p>
+      <p *ngIf="faturamento.inicio && faturamento.fim">Período: {{ faturamento.inicio }} até {{ faturamento.fim }}</p>
+      <p *ngIf="faturamento.codigo_medico">Médico: {{ faturamento.codigo_medico }}</p>
+      <p *ngIf="faturamento.codigo_especialidade">Especialidade: {{ faturamento.codigo_especialidade }}</p>
+    </ng-container>
+
+    <p-message *ngIf="erro" severity="error" text="{{ erro }}"></p-message>
+
+  </p-card>
+</div>

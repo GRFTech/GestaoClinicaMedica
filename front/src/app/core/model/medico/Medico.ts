@@ -78,7 +78,7 @@ export default class Medico {
       endereco: this._endereco,
       telefone: this._telefone,
       codigo_cidade: this._codigo_cidade,
-      especialidadeId: this._codigo_especialidade
+      codigo_especialidade: this._codigo_especialidade
     };
   }
 }

@@ -1,0 +1,52 @@
+<app-header/>
+
+<div class="p-4 flex flex-column gap-3 w-full max-w-30rem mx-auto">
+  <p-card header="👨‍⚕️ Consulta de Médico" class="shadow-3">
+    <form class="flex gap-2 align-items-center" (ngSubmit)="buscarMedico()">
+      <input
+        pInputText
+        type="text"
+        placeholder="Digite o código do médico..."
+        [(ngModel)]="medicoId"
+        name="medicoId"
+        class="flex-1"
+      />
+      <button
+        pButton
+        type="submit"
+        label="Buscar"
+        icon="pi pi-search"
+      ></button>
+    </form>
+
+    <p-divider></p-divider>
+
+    <ng-container *ngIf="medico">
+      <div class="mt-3">
+        <h3 class="m-0">{{ medico.nome }}</h3>
+        <p class="text-sm text-color-secondary m-0">
+          Telefone: {{ medico.telefone }}
+        </p>
+        <p class="text-sm text-color-secondary m-0">
+          Endereço: {{ medico.endereco }}
+        </p>
+        <p class="text-sm text-color-secondary m-0" *ngIf="cidade">
+          Cidade: {{ cidade.descricao }} | Estado: {{ cidade.estado }}
+        </p>
+
+        <ng-container *ngIf="especialidade">
+          <p-divider></p-divider>
+          <p class="m-0">Especialidade: {{ especialidade.descricao }}</p>
+          <p class="m-0">
+            Valor da consulta: R$ {{ especialidade.valor_consulta | number:'1.2-2' }}
+          </p>
+          <p class="m-0">
+            Limite diário de consultas: {{ especialidade.limite_diario }}
+          </p>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <p-message *ngIf="erro" severity="error" text="{{ erro }}"></p-message>
+  </p-card>
+</div>

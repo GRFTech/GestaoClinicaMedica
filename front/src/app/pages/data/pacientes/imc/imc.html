@@ -1,0 +1,47 @@
+<app-header/>
+
+<div class="flex justify-center w-full mx-auto mt-5">
+  <div class="w-4/5">
+
+    <div class="p-4 flex flex-column gap-3 w-full max-w-30rem mx-auto">
+      <p-card header="📊 Cálculo de IMC do Paciente" class="shadow-3">
+        <form class="flex gap-2 align-items-center" (ngSubmit)="buscarPaciente()">
+          <input
+            pInputText
+            type="text"
+            placeholder="Digite o código do paciente..."
+            [(ngModel)]="pacienteId"
+            name="pacienteId"
+            class="flex-1"
+          />
+          <button
+            pButton
+            type="submit"
+            label="Buscar"
+            icon="pi pi-search"
+          ></button>
+        </form>
+
+        <p-divider />
+
+        <ng-container *ngIf="paciente">
+          <div class="mt-3">
+            <h3 class="m-0">{{ paciente.nome }}</h3>
+            <p class="text-sm text-color-secondary m-0">
+              Peso: {{ paciente.peso }} kg | Altura: {{ paciente.altura }} m
+            </p>
+            <p class="text-sm text-color-secondary m-0">
+              <strong>IMC:</strong> {{ imc | number:'1.2-2' }}
+            </p>
+            <p class="text-sm text-color-secondary m-0">
+              <strong>Diagnóstico:</strong> {{ diagnostico }}
+            </p>
+          </div>
+        </ng-container>
+
+        <p-message *ngIf="erro" severity="error" text="{{ erro }}"></p-message>
+      </p-card>
+    </div>
+
+  </div>
+</div>
