@@ -184,4 +184,35 @@ export class MedicoService {
       })
     }
   }
+
+
+  /**
+   * Busca um médico específico pelo código (ID) no backend.
+   * @param codigo Código do médico.
+   */
+  async getMedicoById(codigo: number): Promise<Medico | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Medico }>(`${this.backURL}/medicos/${codigo}`)
+      );
+
+      if (response.status === 'SUCESSO' && response.dados) {
+        console.log('Médico carregado com sucesso:', response.dados);
+        return new Medico(
+          response.dados.codigo_medico,
+          response.dados.nome,
+          response.dados.endereco,
+          response.dados.telefone,
+          response.dados.codigo_cidade,
+          response.dados.codigo_especialidade
+        );
+      } else {
+        console.error('Falha ao buscar médico:', response);
+        return null;
+      }
+    } catch (err) {
+      console.error(`Erro ao buscar médico com código ${codigo}:`, err);
+      return null;
+    }
+  }
 }

@@ -88,31 +88,6 @@ export class EspecialidadeService {
     });
   }
 
-
-  // /**
-  //  * Salva uma cidade no banco de dados.
-  //  * @param ui é um objeto de UI
-  //  */
-  // createCidade(ui: CidadeUI) {
-  //   this.http.post<{ status: string; mensagem: string }>(`${environment.apiURL}/cidades`, ui).subscribe({
-  //     next: response => {
-  //       if (response.status === 'SUCESSO') {
-  //         const match = response.mensagem.match(/\(Cód:\s*(\d+)\)/);
-  //
-  //         if (match && match[1]) {
-  //           ui.codigo = parseInt(match[1], 10);
-  //         }
-  //
-  //         this.cidades.update(cidades => [...cidades, ui]);
-  //         console.log(`Cidade salva com código: ${ui.codigo}`);
-  //       } else {
-  //         console.error('Falha ao criar cidade:', response.mensagem);
-  //       }
-  //     },
-  //     error: err => console.error('Erro HTTP ao criar cidade:', err)
-  //   });
-  // }
-
   /**
    * Atualiza uma especialidade existente no banco de dados.
    * @param especialidade é um objeto de Especialidade
@@ -166,4 +141,30 @@ export class EspecialidadeService {
       })
     }
   }
+
+  /**
+   * Busca uma especialidade específica pelo código (ID) no backend.
+   * @param codigo Código da especialidade.
+   */
+  async getEspecialidadeById(codigo: number): Promise<Especialidade | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Especialidade }>(
+          `${this.backURL}/especialidades/${codigo}`
+        )
+      );
+
+      if (response.status === 'SUCESSO' && response.dados) {
+        console.log('Especialidade carregada com sucesso:', response.dados);
+        return response.dados;
+      } else {
+        console.error('Falha ao buscar especialidade:', response);
+        return null;
+      }
+    } catch (err) {
+      console.error(`Erro ao buscar especialidade com código ${codigo}:`, err);
+      return null;
+    }
+  }
+
 }

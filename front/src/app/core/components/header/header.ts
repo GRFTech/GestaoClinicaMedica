@@ -53,22 +53,39 @@ export class Header implements OnInit {
           {
             label: 'Pacientes',
             icon: 'pi pi-user',
-            routerLink: '/data/pacientes'
+            items: [
+              {
+                label: 'CRUD',
+                icon: 'pi pi-user',
+                routerLink: '/data/pacientes'
+              },
+              {
+                label: 'IMC',
+                icon: 'pi pi-user',
+                routerLink: '/app/imc'
+              }
+            ]
           },
           {
             label: 'Médicos',
             icon: 'pi pi-wave-pulse',
-            routerLink: '/data/medicos'
+            items: [
+              {
+                label: 'CRUD',
+                icon: 'pi pi-wave-pulse',
+                routerLink: '/data/medicos'
+              },
+              {
+                label: 'Consultar Médico',
+                icon: 'pi pi-wave-pulse',
+                routerLink: '/app/consulta-medico'
+              }
+            ]
           },
           {
             label: 'Exames',
             icon: 'pi pi-file',
             routerLink: '/data/exames'
-          },
-          {
-            label: 'Estados',
-            icon: 'pi pi-map',
-            routerLink: '/data/estados'
           },
           {
             label: 'Especialidades',
@@ -79,6 +96,11 @@ export class Header implements OnInit {
             label: 'Diárias',
             icon: 'pi pi-money-bill',
             routerLink: '/data/diarias'
+          },
+          {
+            label: 'Faturamento',
+            icon: 'pi pi-heart',
+            routerLink: '/app/faturamento'
           }
         ]
       },

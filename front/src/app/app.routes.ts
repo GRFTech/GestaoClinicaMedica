@@ -8,6 +8,9 @@ import {Medicos} from './pages/data/medicos/medicos';
 import {Exames} from './pages/data/exames/exames';
 import {Especialidades} from './pages/data/especialidades/especialidades';
 import {Diarias} from './pages/data/diarias/diarias';
+import {IMC} from './pages/data/pacientes/imc/imc';
+import {ConsultaMedico} from './pages/data/medicos/consulta-medico/consulta-medico';
+import {Faturamento} from './pages/data/faturamento/faturamento';
 
 export const routes: Routes = [
   {
@@ -18,6 +21,23 @@ export const routes: Routes = [
   {
     path: "home",
     component: Home
+  },
+  {
+    path: "app",
+    children: [
+      {
+        path: "imc",
+        component: IMC
+      },
+      {
+        path: "consulta-medico",
+        component: ConsultaMedico
+      },
+      {
+        path: "faturamento",
+        component: Faturamento
+      }
+    ]
   },
   {
     path: "data",

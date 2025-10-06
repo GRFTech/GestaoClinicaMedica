@@ -196,4 +196,31 @@ export class PacienteService {
       });
     }
   }
+
+
+  /**
+   * Busca um paciente específico pelo código (ID) no backend.
+   * @param codigo Código do paciente.
+   */
+  async getPacienteById(codigo: number): Promise<Paciente | null> {
+    try {
+      // 1. Chamada HTTP
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Paciente }>(`${this.backURL}/pacientes/${codigo}`)
+      );
+
+      // 2. Verifica o status e os dados
+      if (response.status === 'SUCESSO' && response.dados) {
+        console.log('Paciente carregado com sucesso:', response.dados);
+        return response.dados;
+      } else {
+        console.error('Falha ao buscar paciente:', response);
+        return null;
+      }
+    } catch (err) {
+      console.error(`Erro ao buscar paciente com código ${codigo}:`, err);
+      return null;
+    }
+  }
+
 }

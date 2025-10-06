@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+
 from app.services.PacienteService import PacienteService
 
 paciente_service = PacienteService()

@@ -144,4 +144,32 @@ export class CidadeService {
       })
     }
   }
+
+
+  /**
+   * Busca uma cidade específica pelo código (ID) no backend.
+   * @param codigo Código da cidade.
+   */
+  async getCidadeById(codigo: number): Promise<CidadeUI | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: CidadeUI }>(`${this.backURL}/cidades/${codigo}`)
+      );
+
+      if (response.status === 'SUCESSO' && response.dados) {
+        console.log('Cidade carregada com sucesso:', response.dados);
+        return new CidadeUI(
+          response.dados.codigo,
+          response.dados.descricao,
+          response.dados.estado
+        );
+      } else {
+        console.error('Falha ao buscar cidade:', response);
+        return null;
+      }
+    } catch (err) {
+      console.error(`Erro ao buscar cidade com código ${codigo}:`, err);
+      return null;
+    }
+  }
 }
