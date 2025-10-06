@@ -1,5 +1,5 @@
 export default class MedicoUI {
-  private _id: number;
+  private _codigo_medico: number;
   private _nome: string;
   private _endereco: string;
   private _telefone: string;
@@ -8,14 +8,14 @@ export default class MedicoUI {
 
 
   constructor(
-    id: number = 0,
+    codigo_medico: number = 0,
     nome: string = '',
     endereco: string = '',
     telefone: string = '',
     cidade: string = '',
     especialidade: string = ''
   ) {
-    this._id = id;
+    this._codigo_medico = codigo_medico;
     this._nome = nome;
     this._endereco = endereco;
     this._telefone = telefone;
@@ -25,11 +25,11 @@ export default class MedicoUI {
 
 
   get id(): number {
-    return this._id;
+    return this._codigo_medico;
   }
 
   set id(value: number) {
-    this._id = value;
+    this._codigo_medico = value;
   }
 
   get nome(): string {

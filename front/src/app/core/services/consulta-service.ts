@@ -80,7 +80,7 @@ export class ConsultaService {
     return new Consulta(
       ui.codigo_consulta,
       paciente?.codigo_paciente ?? 0,
-      medico?.id ?? 0,
+      medico?.codigo_medico ?? 0,
       exame?.codigo_exame ?? 0,
       ui.data.toLocaleDateString('pt-BR'),
       ui.data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
@@ -90,7 +90,7 @@ export class ConsultaService {
   /** Converte DTO → UI */
   private DTOtoUI(dto: Consulta): ConsultaUI {
     const paciente = this.pacienteService.pacientesDto().find(p => p.codigo_paciente === dto.codigo_paciente);
-    const medico = this.medicoService.medicosDto().find(m => m.id === dto.codigo_medico);
+    const medico = this.medicoService.medicosDto().find(m => m.codigo_medico === dto.codigo_medico);
     const exame = this.exameService.examesDto().find(e => e.codigo_exame === dto.codigo_exame);
 
     const data = this.parseDate(dto.data, dto.hora);

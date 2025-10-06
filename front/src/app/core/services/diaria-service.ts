@@ -1,29 +1,23 @@
-import {Injectable, signal, computed, inject} from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import Diaria from '../model/diaria/Diaria';
 import DiariaUI from '../model/diaria/DiariaUI';
-import {EspecialidadeService} from './especialidade-service';
+import { EspecialidadeService } from './especialidade-service';
 import { HttpClient } from '@angular/common/http';
-import Consulta from '../model/consulta/Consulta';
-import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DiariaService {
-
-  // Injeções
   private especialidadeService = inject(EspecialidadeService);
   private http = inject(HttpClient);
 
-  // Propriedades
   backURL = environment.apiURL;
   private diarias = signal<Diaria[]>([]);
-
-  // Exposição como readonly
   diariasDto = this.diarias.asReadonly();
 
-  // Exposição já como UI (mapeado automaticamente)
+  // UI derivada automaticamente
   diariasUI = computed<DiariaUI[]>(() =>
     this.diarias().map(d => this.DTOtoUI(d))
   );
@@ -32,209 +26,155 @@ export class DiariaService {
     this.initializeData();
   }
 
-  /**
-   * Método responsável por carregar os dados de maneira assíncrona e garantir que tudo apareça na UI
-   */
   private async initializeData(): Promise<void> {
     try {
       await this.especialidadeService.getEspecialidades();
       await this.getDiarias();
     } catch (err) {
-      console.error('Erro ao inicializar CidadeService:', err);
+      console.error('Erro ao inicializar DiariaService:', err);
     }
   }
 
+  // --- utilitários de data ---
+  private parseAAAAMMDDToDate(codigo: number | string): Date {
+    const s = String(codigo).padStart(8, '0');
+    const ano = Number(s.substring(0, 4));
+    const mes = Number(s.substring(4, 6)) - 1;
+    const dia = Number(s.substring(6, 8));
+    return new Date(ano, mes, dia);
+  }
 
-  /**
-   * Busca os dados no endpoint e inicializa a lista com os dados recebidos
-   */
+  private formatDateToAAAAMMDD(date: Date | string): number {
+    const d = new Date(date);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return Number(`${ano}${mes}${dia}`);
+  }
+
+  // --- GET diarias (usa { status, dados } do backend) ---
   async getDiarias(): Promise<Diaria[]> {
     if (this.diarias().length) return this.diarias();
-    try {
-      const data = await firstValueFrom(this.http.get<Diaria[]>(`${this.backURL}/diarias`));
-      this.diarias.set(data);
 
-      console.log('Diarias carregadas com estados resolvidos: ', this.diariasUI());
-      return data;
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: any[] }>(`${this.backURL}/diarias`)
+      );
+
+      const lista = Array.isArray(response?.dados) ? response.dados.map(obj => Diaria.fromJSON(obj)) : [];
+      this.diarias.set(lista);
+      console.log('Diarias carregadas:', lista);
+      return lista;
     } catch (err) {
       console.error('Erro ao buscar diarias:', err);
       return [];
     }
   }
 
-  /**
-   * Mapeia um objeto de UI para um de DTO
-   * @param diariaUI é um objeto de UI
-   * @returns Diaria
-   */
-  private UItoDto(diariaUI: DiariaUI): Diaria {
-
-    const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.descricao === +diariaUI.especialidade)!.codigo_especialidade
-
-    return new Diaria(
-      diariaUI.codigoDia,
-      diariaUI.quantidadeConsultas,
-      especialidade
+  // Converte UI -> DTO (para enviar ao backend)
+  private UItoDto(ui: DiariaUI): Diaria {
+    // localizar especialidade pelo nome (descricao) com fallback
+    const especialidades = this.especialidadeService.especialidadesDto();
+    const esp = especialidades.find(e =>
+      e.descricao === ui.especialidade || String(e.codigo_especialidade) === ui.especialidade
     );
+
+    const codigo_dia = this.formatDateToAAAAMMDD(ui.codigoDia);
+    const codigo_especialidade = esp ? Number(esp.codigo_especialidade) : 0;
+
+    return new Diaria(codigo_dia, codigo_especialidade, ui.quantidadeConsultas);
   }
 
-  private formatarDataAAAAMMDD(data: string | Date): string {
-    const d = new Date(data);
-    const ano = d.getFullYear();
-    const mes = String(d.getMonth() + 1).padStart(2, '0');
-    const dia = String(d.getDate()).padStart(2, '0');
-    return `${ano}${mes}${dia}`;
+  // Converte DTO -> UI
+  private DTOtoUI(dto: Diaria): DiariaUI {
+    const especialidades = this.especialidadeService.especialidadesDto();
+    const esp = especialidades.find(e => Number(e.codigo_especialidade) === Number(dto.codigo_especialidade));
+    const especialidadeNome = esp ? esp.descricao : '';
+
+    const dataDate = this.parseAAAAMMDDToDate(dto.codigo_dia);
+
+    return new DiariaUI(dataDate, String(dto.codigo_dia).padStart(8, '0'), dto.quantidade_consultas, especialidadeNome);
   }
 
-  /**
-   * Mapeia um objeto de DTO para um de UI
-   * @param diaria é um objeto de DTO
-   * @returns DiariaUI
-   */
-  private DTOtoUI(diaria: Diaria): DiariaUI {
-
-    const especialidades = this.especialidadeService.especialidadesDto;
-
-    const especialidade = especialidades().find(e => +e.codigo_especialidade === +diaria.especialidadeId)!.descricao
-
-    return new DiariaUI(
-      diaria.codigoDia,
-      this.formatarDataAAAAMMDD(diaria.codigoDia),
-      diaria.quantidadeConsultas,
-      especialidade
-    );
-  }
-
-
-  /**
-   * Normaliza uma data para o início do dia (00:00:00).
-   * Isso garante que a comparação de duas datas do mesmo dia funcione.
-   * @param date A data a ser normalizada.
-   * @returns Um novo objeto Date com o horário zerado.
-   */
+  // Normalize date (start of day)
   private normalizeDate(date: Date): Date {
-    const normalized = new Date(date);
-    normalized.setHours(0, 0, 0, 0);
-    return normalized;
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
   }
 
-
-  /**
-   * Salva uma diária no banco de dados.
-   * Assume que o backend fará a lógica de SOMAR as consultas se já existir.
-   * @param ui é um objeto de UI
-   */
+  // --- CREATE ---
   createDiaria(ui: DiariaUI) {
     const dto = this.UItoDto(ui);
 
-    // POST: Assumimos que a rota POST trata a lógica de agregação (somar) no backend.
-    this.http.post<Diaria>(`${environment.apiURL}/diarias`, dto).subscribe({
-      next: data => {
-        // O backend retorna a diária atualizada (que pode ser a somada ou a nova).
-        const currentDiarias = this.diarias();
-        const index = currentDiarias.findIndex(d =>
-          this.normalizeDate(d.codigoDia).getTime() === this.normalizeDate(data.codigoDia).getTime() &&
-          d.especialidadeId === data.especialidadeId
-        );
-
-        if (index !== -1) {
-          // Atualiza se existia (lógica de soma do backend)
-          this.diarias.update(diarias =>
-            diarias.map((d, i) => (i === index ? data : d))
-          );
-        } else {
-          // Adiciona se for novo
-          this.diarias.update(diarias => [...diarias, data]);
-        }
-      },
-      error: (err) => console.error(err)
-    });
+    this.http.post<{ status: string; dados?: any; mensagem?: string }>(`${this.backURL}/diarias`, dto.toJSON())
+      .subscribe({
+        next: res => {
+          // Se backend retornou 'dados' com a diária criada/atualizada, use ela; senão recarrega
+          if (res?.dados) {
+            const nova = Diaria.fromJSON(res.dados);
+            this.upsertDiariaInSignal(nova);
+          } else {
+            // fallback: recarrega lista atualizada do servidor
+            this.getDiarias();
+          }
+        },
+        error: err => console.error('Erro ao criar diária:', err)
+      });
   }
 
-  /**
-   * Atualiza uma diária no banco de dados.
-   * Assume que o backend fará a lógica de SUBSTITUIR as consultas se já existir.
-   * @param ui é um objeto de UI
-   */
+  // --- UPDATE (assumindo PUT /diarias que recebe DTO e retorna diario atualizado em dados) ---
   updateDiaria(ui: DiariaUI) {
     const dto = this.UItoDto(ui);
 
-    // PUT: Assumimos que a rota PUT trata a lógica de substituição no backend.
-    this.http.put<Diaria>(`${environment.apiURL}/diarias`, dto).subscribe({
-      next: data => {
-        // O backend retorna a diária atualizada (que pode ser a substituída ou a nova).
-        const currentDiarias = this.diarias();
-        const index = currentDiarias.findIndex(d =>
-          this.normalizeDate(d.codigoDia).getTime() === this.normalizeDate(data.codigoDia).getTime() &&
-          d.especialidadeId === data.especialidadeId
-        );
-
-        if (index !== -1) {
-          // Atualiza se existia (lógica de substituição do backend)
-          this.diarias.update(diarias =>
-            diarias.map((d, i) => (i === index ? data : d))
-          );
-        } else {
-          // Adiciona se for novo
-          this.diarias.update(diarias => [...diarias, data]);
-        }
-      },
-      error: (err) => console.error(err)
-    });
-  }
-
-  /**
-   * Deleta uma diária do banco de dados.
-   * @param ui é um objeto de UI
-   */
-  deleteDiaria(ui: DiariaUI) {
-    const dataFormatada = ui.codigoDia.toISOString().split('T')[0];
-    const url = `${environment.apiURL}/diarias/${dataFormatada}/${this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade)!.codigo_especialidade}`;
-
-    // DELETE: Assume-se uma rota com identificadores compostos (Data e EspecialidadeId)
-    this.http.delete(url).subscribe({
-      next: () => {
-        this.diarias.update(diarias =>
-          diarias.filter(d =>
-            !(this.normalizeDate(d.codigoDia).getTime() === this.normalizeDate(ui.codigoDia).getTime() &&
-              this.especialidadeService.especialidadesDto().find(e => e.codigo_especialidade === d.especialidadeId)!.descricao === ui.especialidade)
-          )
-        );
-      },
-      error: (err) => console.error(err)
-    });
-  }
-
-  /**
-   * Deleta várias diárias selecionadas do banco de dados.
-   * Nota: A lógica original deletava APENAS pelo dia, o que apagava TODAS as especialidades daquele dia.
-   * Mantendo a lógica de apagar TODAS as diárias para o dia selecionado (pelo código do dia).
-   * @param uis é um array de objetos de UI
-   */
-  deleteDiarias(uis: DiariaUI[]) {
-    const dias = uis.map(u => this.normalizeDate(u.codigoDia).getTime());
-
-    // Não existe um endpoint de "delete em massa", então replicamos o loop do CidadeService.
-    // Usaremos a lógica de DELETE que apaga todos os registros de um DIA, se o backend suportar.
-    for (const ui of uis) {
-      const dataFormatada = ui.codigoDia.toISOString().split('T')[0];
-      // Rota de DELETE por Dia (assumindo que apagar por dia/especialidade foi o pretendido)
-      const especialidadeId = this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade)!.codigo_especialidade;
-      const url = `${environment.apiURL}/diarias/${dataFormatada}/${especialidadeId}`;
-
-
-      this.http.delete(url).subscribe({
-        next: () => {
-          this.diarias.update(diarias =>
-            diarias.filter(d =>
-              !(this.normalizeDate(d.codigoDia).getTime() === this.normalizeDate(ui.codigoDia).getTime() &&
-                this.especialidadeService.especialidadesDto().find(e => e.codigo_especialidade === d.especialidadeId)!.descricao === ui.especialidade)
-            )
-          );
+    this.http.put<{ status: string; dados?: any; mensagem?: string }>(`${this.backURL}/diarias`, dto.toJSON())
+      .subscribe({
+        next: res => {
+          if (res?.dados) {
+            const atualizada = Diaria.fromJSON(res.dados);
+            this.upsertDiariaInSignal(atualizada);
+          } else {
+            this.getDiarias();
+          }
         },
-        error: (err) => console.error(err)
+        error: err => console.error('Erro ao atualizar diária:', err)
       });
+  }
+
+  // --- DELETE (rota: /diarias/<codigo_dia>/<codigo_especialidade>) ---
+  deleteDiaria(ui: DiariaUI) {
+    const codigoDia = ui.codigoDiaString; // AAAAMMDD
+    const esp = this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade);
+    const espId = esp ? esp.codigo_especialidade : 0;
+    const url = `${this.backURL}/diarias/${codigoDia}/${espId}`;
+
+    this.http.delete<{ status: string; mensagem?: string }>(url).subscribe({
+      next: () => {
+        this.diarias.update(list =>
+          list.filter(d => !(String(d.codigo_dia) === String(codigoDia) && Number(d.codigo_especialidade) === Number(espId)))
+        );
+      },
+      error: err => console.error('Erro ao deletar diária:', err)
+    });
+  }
+
+  // --- DELETE MULTIPLO ---
+  deleteDiarias(uis: DiariaUI[]) {
+    for (const ui of uis) this.deleteDiaria(ui);
+  }
+
+  // --- helper para inserir/atualizar na signal mantendo coercões corretas ---
+  private upsertDiariaInSignal(d: Diaria) {
+    const current = this.diarias();
+    const idx = current.findIndex(existing =>
+      Number(existing.codigo_dia) === Number(d.codigo_dia) &&
+      Number(existing.codigo_especialidade) === Number(d.codigo_especialidade)
+    );
+
+    if (idx !== -1) {
+      this.diarias.update(list => list.map((x, i) => (i === idx ? d : x)));
+    } else {
+      this.diarias.update(list => [...list, d]);
     }
   }
 }

@@ -99,13 +99,13 @@ export class MedicoService {
    */
   private DTOtoUI(medico: Medico): MedicoUI {
     const cidades = this.cidadeService.cidadesDto;
-    const cidade = cidades().find(c => +c.codigo === +medico.cidadeId);
+    const cidade = cidades().find(c => +c.codigo === +medico.codigo_cidade);
 
     const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.codigo_especialidade === +medico.especialidadeId);
+    const especialidade = especialidades().find(e => +e.codigo_especialidade === +medico.codigo_especialidade);
 
     return new MedicoUI(
-      medico.id,
+      medico.codigo_medico,
       medico.nome,
       medico.endereco,
       medico.telefone,
@@ -141,7 +141,7 @@ export class MedicoService {
       next: data => {
         this.medicos.update(medicos =>
           // 'data' é o DTO atualizado retornado pelo backend
-          medicos.map(m => (m.id === ui.id ? data : m))
+          medicos.map(m => (m.codigo_medico === ui.id ? data : m))
         );
       },
       error: (err) => console.error(err)
@@ -156,7 +156,7 @@ export class MedicoService {
     this.http.delete(`${environment.apiURL}/medicos/${ui.id}`).subscribe({
       next: () => {
         this.medicos.update(medicos =>
-          medicos.filter(m => m.id !== ui.id)
+          medicos.filter(m => m.codigo_medico !== ui.id)
         );
       },
       error: (err) => console.error(err)
@@ -177,7 +177,7 @@ export class MedicoService {
           console.log(`Médico com id ${ids[i]} deletado`);
           // Atualiza o signal para remover o item que acabou de ser deletado
           this.medicos.update(medicos =>
-            medicos.filter(m => m.id !== ids[i])
+            medicos.filter(m => m.codigo_medico !== ids[i])
           );
         },
         error: (err) => console.error(err)

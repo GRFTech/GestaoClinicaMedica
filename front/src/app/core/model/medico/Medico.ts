@@ -1,34 +1,34 @@
 export default class Medico {
-  private _id: number;
+  private _codigo_medico: number;
   private _nome: string;
   private _endereco: string;
   private _telefone: string;
-  private _cidadeId: number;
-  private _especialidadeId: number;
+  private _codigo_cidade: number;
+  private _codigo_especialidade: number;
 
 
   constructor(
-    id: number = 0,
+    codigo_medico: number = 0,
     nome: string = '',
     endereco: string = '',
     telefone: string = '',
-    cidadeId: number = 0,
+    codigo_cidade: number = 0,
     especialidadeId: number = 0
   ) {
-    this._id = id;
+    this._codigo_medico = codigo_medico;
     this._nome = nome;
     this._endereco = endereco;
     this._telefone = telefone;
-    this._cidadeId = cidadeId;
-    this._especialidadeId = especialidadeId;
+    this._codigo_cidade = codigo_cidade;
+    this._codigo_especialidade = especialidadeId;
   }
 
-  get id(): number {
-    return this._id;
+  get codigo_medico(): number {
+    return this._codigo_medico;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_medico(value: number) {
+    this._codigo_medico = value;
   }
 
   get nome(): string {
@@ -55,30 +55,30 @@ export default class Medico {
     this._telefone = value;
   }
 
-  get cidadeId(): number {
-    return this._cidadeId;
+  get codigo_cidade(): number {
+    return this._codigo_cidade;
   }
 
-  set cidadeId(value: number) {
-    this._cidadeId = value;
+  set codigo_cidade(value: number) {
+    this._codigo_cidade = value;
   }
 
-  get especialidadeId(): number {
-    return this._especialidadeId;
+  get codigo_especialidade(): number {
+    return this._codigo_especialidade;
   }
 
-  set especialidadeId(value: number) {
-    this._especialidadeId = value;
+  set codigo_especialidade(value: number) {
+    this._codigo_especialidade = value;
   }
 
   toJSON() {
     return {
-      id: String(this._id),
+      codigo_medico: String(this._codigo_medico),
       nome: this._nome,
       endereco: this._endereco,
       telefone: this._telefone,
-      cidadeId: this._cidadeId,
-      especialidadeId: this._especialidadeId
+      codigo_cidade: this._codigo_cidade,
+      especialidadeId: this._codigo_especialidade
     };
   }
 }

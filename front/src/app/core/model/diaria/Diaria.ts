@@ -1,56 +1,31 @@
 export default class Diaria {
-  private _codigoDia: Date;
-  private _quantidadeConsultas: number;
-  private _especialidadeId: number;
+  // Representa o formato usado pelo backend:
+  // { codigo_dia: 20251006, codigo_especialidade: 1, quantidade_consultas: 5 }
+  codigo_dia: number; // AAAAMMDD como número
+  codigo_especialidade: number;
+  quantidade_consultas: number;
 
-
-  formatarDataAAAAMMDD(data: Date): string {
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}${mes}${dia}`;
+  constructor(codigo_dia: number = 0, codigo_especialidade: number = 0, quantidade_consultas: number = 0) {
+    this.codigo_dia = codigo_dia;
+    this.codigo_especialidade = codigo_especialidade;
+    this.quantidade_consultas = quantidade_consultas;
   }
 
-  constructor(
-    codigoDia: Date = new Date(),
-    quantidadeConsultas: number = 0,
-    especialidadeId: number = 0
-  ) {
-    this._codigoDia = codigoDia;
-    this._quantidadeConsultas = quantidadeConsultas;
-    this._especialidadeId = especialidadeId;
+  static fromJSON(obj: any): Diaria {
+    if (!obj) return new Diaria(0, 0, 0);
+    // Aceita campos em snake_case (backend) ou camelCase (por segurança)
+    const codigo_dia = obj.codigo_dia ?? obj.codigoDia ?? obj.codigoDiaString ?? 0;
+    const codigo_especialidade = obj.codigo_especialidade ?? obj.especialidadeId ?? obj.codigo_especialidade ?? 0;
+    const quantidade_consultas = obj.quantidade_consultas ?? obj.quantidadeConsultas ?? 0;
+    return new Diaria(Number(codigo_dia), Number(codigo_especialidade), Number(quantidade_consultas));
   }
 
-
-  get codigoDia(): Date {
-    return this._codigoDia;
-  }
-
-  set codigoDia(value: Date) {
-    this._codigoDia = value;
-  }
-
-  get quantidadeConsultas(): number {
-    return this._quantidadeConsultas;
-  }
-
-  set quantidadeConsultas(value: number) {
-    this._quantidadeConsultas = value;
-  }
-
-  get especialidadeId(): number {
-    return this._especialidadeId;
-  }
-
-  set especialidadeId(value: number) {
-    this._especialidadeId = value;
-  }
-
-  toJSON() {
+  toJSON(): any {
+    // Formato que o backend espera (snake_case)
     return {
-      codigoDia: this.formatarDataAAAAMMDD(this._codigoDia),
-      quantidadeConsultas: this._quantidadeConsultas,
-      especialidadeId: this._especialidadeId
+      codigo_dia: Number(this.codigo_dia),
+      codigo_especialidade: Number(this.codigo_especialidade),
+      quantidade_consultas: Number(this.quantidade_consultas)
     };
   }
 }
