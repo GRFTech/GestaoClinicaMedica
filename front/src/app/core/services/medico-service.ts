@@ -50,16 +50,25 @@ export class MedicoService {
    */
   async getMedicos(): Promise<Medico[]> {
     try {
-      const data = await firstValueFrom(this.http.get<Medico[]>(`${this.backURL}/medicos`));
-      this.medicos.set(data);
+      // 1. Chamada HTTP
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Medico[] }>(`${this.backURL}/medicos`)
+      );
 
-      console.log('Medicos carregados com sucesso: ', this.medicosUI());
-      return data;
+      // 2. Extrai o array de médicos (fallback para [] se não existir)
+      const lista = Array.isArray(response?.dados) ? response.dados : [];
+
+      // 3. Atualiza a signal
+      this.medicos.set(lista);
+
+      console.log('Médicos carregados com sucesso: ', this.medicosUI());
+      return lista;
     } catch (err) {
       console.error('Erro ao buscar médicos:', err);
       return [];
     }
   }
+
 
   /**
    * Mapeia um objeto de UI (MedicoUI) para um de banco (Medico)
@@ -79,7 +88,7 @@ export class MedicoService {
       medicoUI.endereco,
       medicoUI.telefone,
       cidade!.codigo,
-      especialidade!.id
+      especialidade!.codigo_especialidade
     );
   }
 
@@ -93,7 +102,7 @@ export class MedicoService {
     const cidade = cidades().find(c => +c.codigo === +medico.cidadeId);
 
     const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.id === +medico.especialidadeId);
+    const especialidade = especialidades().find(e => +e.codigo_especialidade === +medico.especialidadeId);
 
     return new MedicoUI(
       medico.id,

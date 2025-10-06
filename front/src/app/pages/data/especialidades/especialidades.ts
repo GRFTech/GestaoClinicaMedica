@@ -32,10 +32,10 @@ export class Especialidades implements OnInit {
 
   ngOnInit(): void {
     this.cols = [
-      { field: 'id', header: 'ID', editable: true, type: 'number', insertable: true, exhibitable: true },
+      { field: 'codigo_especialidade', header: 'Código da Especialidade', editable: true, type: 'number', insertable: true, exhibitable: true },
       { field: 'descricao', header: 'Descrição', editable: true, type: 'text', insertable: true, exhibitable: true },
-      { field: 'valorConsulta', header: 'Valor da Consulta', editable: true, type: 'currency', insertable: true, exhibitable: true },
-      { field: 'limiteDiario', header: 'Limite Diario', editable: true, type: 'number', insertable: true, exhibitable: true },
+      { field: 'valor_consulta', header: 'Valor da Consulta', editable: true, type: 'currency', insertable: true, exhibitable: true },
+      { field: 'limite_diario', header: 'Limite Diario', editable: true, type: 'number', insertable: true, exhibitable: true },
     ];
   }
 

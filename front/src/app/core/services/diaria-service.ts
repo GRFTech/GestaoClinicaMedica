@@ -70,7 +70,7 @@ export class DiariaService {
   private UItoDto(diariaUI: DiariaUI): Diaria {
 
     const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.descricao === +diariaUI.especialidade)!.id
+    const especialidade = especialidades().find(e => +e.descricao === +diariaUI.especialidade)!.codigo_especialidade
 
     return new Diaria(
       diariaUI.codigoDia,
@@ -96,7 +96,7 @@ export class DiariaService {
 
     const especialidades = this.especialidadeService.especialidadesDto;
 
-    const especialidade = especialidades().find(e => +e.id === +diaria.especialidadeId)!.descricao
+    const especialidade = especialidades().find(e => +e.codigo_especialidade === +diaria.especialidadeId)!.descricao
 
     return new DiariaUI(
       diaria.codigoDia,
@@ -190,7 +190,7 @@ export class DiariaService {
    */
   deleteDiaria(ui: DiariaUI) {
     const dataFormatada = ui.codigoDia.toISOString().split('T')[0];
-    const url = `${environment.apiURL}/diarias/${dataFormatada}/${this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade)!.id}`;
+    const url = `${environment.apiURL}/diarias/${dataFormatada}/${this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade)!.codigo_especialidade}`;
 
     // DELETE: Assume-se uma rota com identificadores compostos (Data e EspecialidadeId)
     this.http.delete(url).subscribe({
@@ -198,7 +198,7 @@ export class DiariaService {
         this.diarias.update(diarias =>
           diarias.filter(d =>
             !(this.normalizeDate(d.codigoDia).getTime() === this.normalizeDate(ui.codigoDia).getTime() &&
-              this.especialidadeService.especialidadesDto().find(e => e.id === d.especialidadeId)!.descricao === ui.especialidade)
+              this.especialidadeService.especialidadesDto().find(e => e.codigo_especialidade === d.especialidadeId)!.descricao === ui.especialidade)
           )
         );
       },
@@ -220,7 +220,7 @@ export class DiariaService {
     for (const ui of uis) {
       const dataFormatada = ui.codigoDia.toISOString().split('T')[0];
       // Rota de DELETE por Dia (assumindo que apagar por dia/especialidade foi o pretendido)
-      const especialidadeId = this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade)!.id;
+      const especialidadeId = this.especialidadeService.especialidadesDto().find(e => e.descricao === ui.especialidade)!.codigo_especialidade;
       const url = `${environment.apiURL}/diarias/${dataFormatada}/${especialidadeId}`;
 
 
@@ -229,7 +229,7 @@ export class DiariaService {
           this.diarias.update(diarias =>
             diarias.filter(d =>
               !(this.normalizeDate(d.codigoDia).getTime() === this.normalizeDate(ui.codigoDia).getTime() &&
-                this.especialidadeService.especialidadesDto().find(e => e.id === d.especialidadeId)!.descricao === ui.especialidade)
+                this.especialidadeService.especialidadesDto().find(e => e.codigo_especialidade === d.especialidadeId)!.descricao === ui.especialidade)
             )
           );
         },

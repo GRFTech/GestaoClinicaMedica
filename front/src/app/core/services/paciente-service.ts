@@ -49,16 +49,25 @@ export class PacienteService {
    */
   async getPacientes(): Promise<Paciente[]> {
     try {
-      const data = await firstValueFrom(this.http.get<Paciente[]>(`${this.backURL}/pacientes`));
-      this.pacientes.set(data);
+      // 1. Chamada HTTP
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Paciente[] }>(`${this.backURL}/pacientes`)
+      );
+
+      // 2. Extrai o array de pacientes (fallback para [] se não existir)
+      const lista = Array.isArray(response?.dados) ? response.dados : [];
+
+      // 3. Atualiza a signal
+      this.pacientes.set(lista);
 
       console.log('Pacientes carregados com sucesso: ', this.pacientesUI());
-      return data;
+      return lista;
     } catch (err) {
       console.error('Erro ao buscar pacientes:', err);
       return [];
     }
   }
+
 
 
   /**
@@ -92,10 +101,10 @@ export class PacienteService {
   private DTOtoUI(paciente: Paciente): PacienteUI {
 
     const cidades = this.cidadeService.cidadesDto;
-    const cidade = cidades().find(c => +c.codigo === +paciente.cidadeId);
+    const cidade = cidades().find(c => +c.codigo === +paciente.codigo_cidade);
 
     return new PacienteUI(
-      paciente.id,
+      paciente.codigo_paciente,
       paciente.nome,
       paciente.dataNascimento,
       paciente.endereco,
@@ -129,7 +138,7 @@ export class PacienteService {
     this.http.put<Paciente>(`${environment.apiURL}/pacientes/${ui.id}`, dto).subscribe({
       next: data => {
         this.pacientes.update(pacientes =>
-          pacientes.map(p => (p.id === ui.id ? data : p))
+          pacientes.map(p => (p.codigo_paciente === ui.id ? data : p))
         );
       },
       error: (err) => console.error(err)
@@ -144,7 +153,7 @@ export class PacienteService {
     this.http.delete(`${environment.apiURL}/pacientes/${ui.id}`).subscribe({
       next: () => {
         this.pacientes.update(pacientes =>
-          pacientes.filter(p => p.id !== ui.id)
+          pacientes.filter(p => p.codigo_paciente !== ui.id)
         );
       },
       error: (err) => console.error(err)
@@ -164,7 +173,7 @@ export class PacienteService {
         next: () => {
           console.log(`Paciente com id ${id} deletado`);
           this.pacientes.update(pacientes =>
-            pacientes.filter(p => p.id !== id)
+            pacientes.filter(p => p.codigo_paciente !== id)
           );
         },
         error: (err) => console.error(err)

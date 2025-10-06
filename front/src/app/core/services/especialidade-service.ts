@@ -39,12 +39,21 @@ export class EspecialidadeService {
    */
   async getEspecialidades(): Promise<Especialidade[]> {
     if (this.especialidades().length) return this.especialidades();
+
     try {
-      const data = await firstValueFrom(this.http.get<Especialidade[]>(`${this.backURL}/especialidades`));
-      this.especialidades.set(data);
-      return data;
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Especialidade[] }>(`${this.backURL}/especialidades`)
+      );
+
+      // Extrai o array de dados do backend
+      const lista = Array.isArray(response?.dados) ? response.dados : [];
+
+      this.especialidades.set(lista);
+
+      console.log('Especialidades carregadas com sucesso:', lista);
+      return lista;
     } catch (err) {
-      console.error('Erro ao buscar estados:', err);
+      console.error('Erro ao buscar especialidades:', err);
       return [];
     }
   }
@@ -69,11 +78,11 @@ export class EspecialidadeService {
    */
   updateEspecialidade(especialidade: Especialidade) {
     console.log("Especialidade: ");
-    this.http.put<Especialidade>(`${environment.apiURL}/especialidades/${especialidade.id}`, especialidade).subscribe({
+    this.http.put<Especialidade>(`${environment.apiURL}/especialidades/${especialidade.codigo_especialidade}`, especialidade).subscribe({
       next: data => {
         console.log(data)
         this.especialidades.update(especialidades =>
-          especialidades.map(e => (e.id === especialidade.id ? data : e))
+          especialidades.map(e => (e.codigo_especialidade === especialidade.codigo_especialidade ? data : e))
         );
       },
       error: (err) => console.error(err)
@@ -85,10 +94,10 @@ export class EspecialidadeService {
    * @param especialidade é um objeto de Especialidade
    */
   deleteEspecialidade(especialidade: Especialidade) {
-    this.http.delete(`${environment.apiURL}/especialidades/${especialidade.id}`).subscribe({
+    this.http.delete(`${environment.apiURL}/especialidades/${especialidade.codigo_especialidade}`).subscribe({
       next: () => {
         this.especialidades.update(especialidades =>
-          especialidades.filter(e => e.id !== especialidade.id)
+          especialidades.filter(e => e.codigo_especialidade !== especialidade.codigo_especialidade)
         );
       },
       error: (err) => console.error(err)
@@ -100,7 +109,7 @@ export class EspecialidadeService {
    * @param especialidades é um array de objetos de Especialidade
    */
   deleteEspecialidades(especialidades: Especialidade[]) {
-    const ids = especialidades.map(u => u.id);
+    const ids = especialidades.map(u => u.codigo_especialidade);
 
     // Replicando a lógica de deletar em loop (como no CidadeService)
     for (let i = 0; i < ids.length; i++) {
@@ -109,7 +118,7 @@ export class EspecialidadeService {
           console.log(`Especialidade com id ${ids[i]} deletada`);
           // Atualiza o signal para remover o item que acabou de ser deletado
           this.especialidades.update(e =>
-            e.filter(item => item.id !== ids[i])
+            e.filter(item => item.codigo_especialidade !== ids[i])
           );
         },
         error: (err) => console.error(err)

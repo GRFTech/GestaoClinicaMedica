@@ -1,29 +1,29 @@
 export default class ExameUI {
-  private _id: number;
+  private _codigo_exame: number;
   private _descricao: string;
   private _valor: number;
   private _especialidade: string;
 
 
   constructor(
-    id: number = 0,
+    codigo_exame: number = 0,
     descricao: string = '',
     valor: number = 0,
     especialidade: string = ''
   ) {
-    this._id = id;
+    this._codigo_exame = codigo_exame;
     this._descricao = descricao;
     this._valor = valor;
     this._especialidade = especialidade;
   }
 
 
-  get id(): number {
-    return this._id;
+  get codigo_exame(): number {
+    return this._codigo_exame;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_exame(value: number) {
+    this._codigo_exame = value;
   }
 
   get descricao(): string {

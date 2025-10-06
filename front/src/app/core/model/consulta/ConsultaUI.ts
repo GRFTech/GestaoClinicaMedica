@@ -1,5 +1,5 @@
 export default class ConsultaUI {
-  private _id: number;
+  private _codigo_consulta: number;
   private _data: Date;
   private _paciente: string;
   private _medico: string;
@@ -12,7 +12,7 @@ export default class ConsultaUI {
     medico: string = '',
     exame: string = ''
   ) {
-    this._id = id;
+    this._codigo_consulta = id;
     this._data = data;
     this._paciente = paciente;
     this._medico = medico;
@@ -20,12 +20,12 @@ export default class ConsultaUI {
   }
 
 
-  get id(): number {
-    return this._id;
+  get codigo_consulta(): number {
+    return this._codigo_consulta;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_consulta(value: number) {
+    this._codigo_consulta = value;
   }
 
   get data(): Date {

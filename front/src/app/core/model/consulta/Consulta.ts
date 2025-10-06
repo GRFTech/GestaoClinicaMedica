@@ -1,72 +1,92 @@
 export default class Consulta {
-  private _id: number;
-  private _data: Date;
-  private _pacienteId: number;
-  private _medicoId: number;
-  private _exameId: number;
+  private _codigo_consulta: number;
+  private _codigo_paciente: number;
+  private _codigo_medico: number;
+  private _codigo_exame: number;
+  private _data: string;
+  private _hora: string;
 
   constructor(
-    id: number = 0,
-    data: Date = new Date(),
-    pacienteId: number = 0,
-    medicoId: number = 0,
-    exameId: number = 0
+    codigo_consulta: number = 0,
+    codigo_paciente: number = 0,
+    codigo_medico: number = 0,
+    codigo_exame: number = 0,
+    data: string = '',
+    hora: string = ''
   ) {
-    this._id = id;
+    this._codigo_consulta = codigo_consulta;
+    this._codigo_paciente = codigo_paciente;
+    this._codigo_medico = codigo_medico;
+    this._codigo_exame = codigo_exame;
     this._data = data;
-    this._pacienteId = pacienteId;
-    this._medicoId = medicoId;
-    this._exameId = exameId;
+    this._hora = hora;
   }
 
+  // --- Getters e Setters ---
 
-  get id(): number {
-    return this._id;
+  get codigo_consulta(): number {
+    return this._codigo_consulta;
+  }
+  set codigo_consulta(value: number) {
+    this._codigo_consulta = value;
   }
 
-  set id(value: number) {
-    this._id = value;
+  get codigo_paciente(): number {
+    return this._codigo_paciente;
+  }
+  set codigo_paciente(value: number) {
+    this._codigo_paciente = value;
   }
 
-  get data(): Date {
+  get codigo_medico(): number {
+    return this._codigo_medico;
+  }
+  set codigo_medico(value: number) {
+    this._codigo_medico = value;
+  }
+
+  get codigo_exame(): number {
+    return this._codigo_exame;
+  }
+  set codigo_exame(value: number) {
+    this._codigo_exame = value;
+  }
+
+  get data(): string {
     return this._data;
   }
-
-  set data(value: Date) {
+  set data(value: string) {
     this._data = value;
   }
 
-  get pacienteId(): number {
-    return this._pacienteId;
+  get hora(): string {
+    return this._hora;
+  }
+  set hora(value: string) {
+    this._hora = value;
   }
 
-  set pacienteId(value: number) {
-    this._pacienteId = value;
-  }
-
-  get medicoId(): number {
-    return this._medicoId;
-  }
-
-  set medicoId(value: number) {
-    this._medicoId = value;
-  }
-
-  get exameId(): number {
-    return this._exameId;
-  }
-
-  set exameId(value: number) {
-    this._exameId = value;
-  }
-
+  // --- Serialização para envio ao backend ---
   toJSON() {
     return {
-      id: this._id.toString(),
-      data: this._data.toISOString(),
-      pacienteId: this._pacienteId,
-      medicoId: this._medicoId,
-      exameId: this._exameId
+      codigo_consulta: this._codigo_consulta,
+      codigo_paciente: this._codigo_paciente,
+      codigo_medico: this._codigo_medico,
+      codigo_exame: this._codigo_exame,
+      data: this._data,
+      hora: this._hora
     };
+  }
+
+  // --- Criação a partir de JSON do backend ---
+  static fromJSON(json: any): Consulta {
+    return new Consulta(
+      json.codigo_consulta ?? 0,
+      json.codigo_paciente ?? 0,
+      json.codigo_medico ?? 0,
+      json.codigo_exame ?? 0,
+      json.data ?? '',
+      json.hora ?? ''
+    );
   }
 }

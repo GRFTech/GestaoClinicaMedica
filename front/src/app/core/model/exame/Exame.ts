@@ -1,29 +1,29 @@
 export default class Exame {
-  private _id: number;
+  private _codigo_exame: number;
   private _descricao: string;
-  private _valor: number;
-  private _especialidadeId: number;
+  private _valor_exame: number;
+  private _codigo_especialidade: number;
 
 
   constructor(
-    id: number = 0,
+    codigo_exame: number = 0,
     descricao: string = '',
-    valor: number = 0,
-    especialidadeId: number = 0
+    valor_exame: number = 0,
+    codigo_especialidade: number = 0
   ) {
-    this._id = id;
+    this._codigo_exame = codigo_exame;
     this._descricao = descricao;
-    this._valor = valor;
-    this._especialidadeId = especialidadeId;
+    this._valor_exame = valor_exame;
+    this._codigo_especialidade = codigo_especialidade;
   }
 
 
-  get id(): number {
-    return this._id;
+  get codigo_exame(): number {
+    return this._codigo_exame;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_exame(value: number) {
+    this._codigo_exame = value;
   }
 
   get descricao(): string {
@@ -34,28 +34,28 @@ export default class Exame {
     this._descricao = value;
   }
 
-  get valor(): number {
-    return this._valor;
+  get valor_exame(): number {
+    return this._valor_exame;
   }
 
-  set valor(value: number) {
-    this._valor = value;
+  set valor_exame(value: number) {
+    this._valor_exame = value;
   }
 
-  get especialidadeId(): number {
-    return this._especialidadeId;
+  get codigo_especialidade(): number {
+    return this._codigo_especialidade;
   }
 
-  set especialidadeId(value: number) {
-    this._especialidadeId = value;
+  set codigo_especialidade(value: number) {
+    this._codigo_especialidade = value;
   }
 
   toJSON() {
     return {
-      id: String(this._id),
+      id: String(this._codigo_exame),
       descricao: this._descricao,
-      valor: this._valor,
-      especialidadeId: this._especialidadeId
+      valor: this._valor_exame,
+      especialidadeId: this._codigo_especialidade
     };
   }
 }

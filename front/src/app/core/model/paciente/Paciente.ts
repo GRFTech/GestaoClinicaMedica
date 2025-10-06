@@ -1,39 +1,39 @@
 export default class Paciente {
-  private _id: number;
+  private _codigo_paciente: number;
   private _nome: string;
   private _dataNascimento: Date;
   private _endereco: string;
   private _telefone: string;
   private _peso: number;
   private _altura: number;
-  private _cidadeId: number;
+  private _codigo_cidade: number;
 
   constructor(
-    id: number = 0,
+    codigo_paciente: number = 0,
     nome: string = '',
     dataNascimento: Date = new Date(),
     endereco: string = '',
     telefone: string = '',
     peso: number = 0,
     altura: number = 0,
-    cidadeId: number = 0
+    codigo_cidade: number = 0
   ) {
-    this._id = id;
+    this._codigo_paciente = codigo_paciente;
     this._nome = nome;
     this._dataNascimento = dataNascimento;
     this._endereco = endereco;
     this._telefone = telefone;
     this._peso = peso;
     this._altura = altura;
-    this._cidadeId = cidadeId;
+    this._codigo_cidade = codigo_cidade;
   }
 
-  get id(): number {
-    return this._id;
+  get codigo_paciente(): number {
+    return this._codigo_paciente;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_paciente(value: number) {
+    this._codigo_paciente = value;
   }
 
   get nome(): string {
@@ -84,11 +84,11 @@ export default class Paciente {
     this._altura = value;
   }
 
-  get cidadeId(): number {
-    return this._cidadeId;
+  get codigo_cidade(): number {
+    return this._codigo_cidade;
   }
 
-  set cidadeId(value: number) {
-    this._cidadeId = value;
+  set codigo_cidade(value: number) {
+    this._codigo_cidade = value;
   }
 }

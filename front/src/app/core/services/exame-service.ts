@@ -46,16 +46,25 @@ export class ExameService {
    */
   async getExames(): Promise<Exame[]> {
     try {
-      const data = await firstValueFrom(this.http.get<Exame[]>(`${this.backURL}/exames`));
-      this.exames.set(data);
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: Exame[] }>(`${this.backURL}/exames`)
+      );
+
+      console.log(response);
+
+
+      const lista = Array.isArray(response?.dados) ? response.dados : [];
+
+      this.exames.set(lista);
 
       console.log('Exames carregados com sucesso: ', this.examesUI());
-      return data;
+      return lista;
     } catch (err) {
       console.error('Erro ao buscar exames:', err);
       return [];
     }
   }
+
 
   /**
    * Mapeia um objeto de UI (ExameUI) para um de banco (Exame)
@@ -68,10 +77,10 @@ export class ExameService {
     const especialidade = especialidades().find(e => +e.descricao === +exameUI.especialidade);
 
     return new Exame(
-      exameUI.id,
+      exameUI.codigo_exame,
       exameUI.descricao,
       exameUI.valor,
-      especialidade!.id
+      especialidade!.codigo_especialidade
     );
   }
 
@@ -82,12 +91,12 @@ export class ExameService {
    */
   private DTOtoUI(exame: Exame): ExameUI {
     const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.id === +exame.especialidadeId);
+    const especialidade = especialidades().find(e => +e.codigo_especialidade === +exame.codigo_especialidade);
 
     return new ExameUI(
-      exame.id,
+      exame.codigo_exame,
       exame.descricao,
-      exame.valor,
+      exame.valor_exame,
       especialidade?.descricao ?? ''
     );
   }
@@ -115,11 +124,11 @@ export class ExameService {
   updateExame(ui: ExameUI) {
     let dto = this.UItoDto(ui);
 
-    this.http.put<Exame>(`${environment.apiURL}/exames/${ui.id}`, dto).subscribe({
+    this.http.put<Exame>(`${environment.apiURL}/exames/${ui.codigo_exame}`, dto).subscribe({
       next: data => {
         this.exames.update(exames =>
           // 'data' é o DTO atualizado retornado pelo backend
-          exames.map(e => (e.id === ui.id ? data : e))
+          exames.map(e => (e.codigo_exame === ui.codigo_exame ? data : e))
         );
       },
       error: (err) => console.error(err)
@@ -131,10 +140,10 @@ export class ExameService {
    * @param ui é um objeto de UI
    */
   deleteExame(ui: ExameUI) {
-    this.http.delete(`${environment.apiURL}/exames/${ui.id}`).subscribe({
+    this.http.delete(`${environment.apiURL}/exames/${ui.codigo_exame}`).subscribe({
       next: () => {
         this.exames.update(exames =>
-          exames.filter(e => e.id !== ui.id)
+          exames.filter(e => e.codigo_exame !== ui.codigo_exame)
         );
       },
       error: (err) => console.error(err)
@@ -146,7 +155,7 @@ export class ExameService {
    * @param uis é um array de objetos de UI
    */
   deleteExames(uis: ExameUI[]) {
-    const ids = uis.map(u => u.id);
+    const ids = uis.map(u => u.codigo_exame);
 
     // Replicando a lógica de deletar em loop
     for (let i = 0; i < ids.length; i++) {
@@ -155,7 +164,7 @@ export class ExameService {
           console.log(`Exame com id ${ids[i]} deletado`);
           // Atualiza o signal para remover o item que acabou de ser deletado
           this.exames.update(exames =>
-            exames.filter(e => e.id !== ids[i])
+            exames.filter(e => e.codigo_exame !== ids[i])
           );
         },
         error: (err) => console.error(err)

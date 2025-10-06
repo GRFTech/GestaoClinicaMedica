@@ -1,29 +1,29 @@
 export default class Especialidade {
-  private _id: number;
+  private _codigo_especialidade: number;
   private _descricao: string;
-  private _valorConsulta: number;
-  private _limiteDiario: number;
+  private _valor_consulta: number;
+  private _limite_diario: number;
 
 
   constructor(
-    id: number = 0,
+    codigo_especialidade: number = 0,
     descricao: string = '',
-    valorConsulta: number = 0,
-    limiteDiario: number = 0
+    _valor_consulta: number = 0,
+    limite_diario: number = 0
   ) {
-    this._id = id;
+    this._codigo_especialidade = codigo_especialidade;
     this._descricao = descricao;
-    this._valorConsulta = valorConsulta;
-    this._limiteDiario = limiteDiario;
+    this._valor_consulta = _valor_consulta;
+    this._limite_diario = limite_diario;
   }
 
 
-  get id(): number {
-    return this._id;
+  get codigo_especialidade(): number {
+    return this._codigo_especialidade;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_especialidade(value: number) {
+    this._codigo_especialidade = value;
   }
 
   get descricao(): string {
@@ -34,28 +34,28 @@ export default class Especialidade {
     this._descricao = value;
   }
 
-  get valorConsulta(): number {
-    return this._valorConsulta;
+  get valor_consulta(): number {
+    return this._valor_consulta;
   }
 
-  set valorConsulta(value: number) {
-    this._valorConsulta = value;
+  set valor_consulta(value: number) {
+    this._valor_consulta = value;
   }
 
-  get limiteDiario(): number {
-    return this._limiteDiario;
+  get limite_diario(): number {
+    return this._limite_diario;
   }
 
-  set limiteDiario(value: number) {
-    this._limiteDiario = value;
+  set limite_diario(value: number) {
+    this._limite_diario = value;
   }
 
   toJSON() {
     return {
-      id: this._id,
+      id: this._codigo_especialidade,
       descricao: this._descricao,
-      valorConsulta: this._valorConsulta,
-      limiteDiario: this._limiteDiario
+      valorConsulta: this._valor_consulta,
+      limite_diario: this._limite_diario
     };
   }
 }
