@@ -74,7 +74,7 @@ export class ExameService {
   private UItoDto(exameUI: ExameUI): Exame {
 
     const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.descricao === +exameUI.especialidade);
+    const especialidade = especialidades().find(e => e.descricao === exameUI.especialidade);
 
     return new Exame(
       exameUI.codigo_exame,
@@ -91,7 +91,7 @@ export class ExameService {
    */
   private DTOtoUI(exame: Exame): ExameUI {
     const especialidades = this.especialidadeService.especialidadesDto;
-    const especialidade = especialidades().find(e => +e.codigo_especialidade === +exame.codigo_especialidade);
+    const especialidade = especialidades().find(e => e.codigo_especialidade === exame.codigo_especialidade);
 
     return new ExameUI(
       exame.codigo_exame,
@@ -106,16 +106,26 @@ export class ExameService {
    * @param ui é um objeto de UI
    */
   createExame(ui: ExameUI) {
-    let dto = this.UItoDto(ui);
+    this.http.post<{ status: string; mensagem: string }>(`${environment.apiURL}/exames`, this.UItoDto(ui)).subscribe({
+      next: response => {
+        if (response.status === 'SUCESSO') {
+          // Extrai o código do exame da mensagem do backend
+          const match = response.mensagem.match(/\(Cód:\s*(\d+)\)/);
 
-    this.http.post<Exame>(`${environment.apiURL}/exames`, dto).subscribe({
-      next: data => {
-        // 'data' é o DTO retornado pelo backend (com ID, etc.)
-        this.exames.update(exames => [...exames, data]);
+          if (match && match[1]) {
+            ui.codigo_exame = parseInt(match[1], 10);
+          }
+
+          this.exames.update(exames => [...exames, this.UItoDto(ui)]);
+          console.log(`Exame salvo com código: ${ui.codigo_exame}`);
+        } else {
+          console.error('Falha ao criar exame:', response.mensagem);
+        }
       },
-      error: (err) => console.error(err)
+      error: err => console.error('Erro HTTP ao criar exame:', err)
     });
   }
+
 
   /**
    * Atualiza um exame existente no banco de dados.

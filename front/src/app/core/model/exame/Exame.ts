@@ -52,10 +52,10 @@ export default class Exame {
 
   toJSON() {
     return {
-      id: String(this._codigo_exame),
+      codigo_exame: String(this._codigo_exame),
       descricao: this._descricao,
-      valor: this._valor_exame,
-      especialidadeId: this._codigo_especialidade
+      valor_exame: this._valor_exame,
+      codigo_especialidade: this._codigo_especialidade
     };
   }
 }

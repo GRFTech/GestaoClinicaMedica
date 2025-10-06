@@ -46,7 +46,7 @@ export class Exames implements OnInit {
     })));
 
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'codigo_exame', header: 'Código do Exame', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'descricao', header: 'Descrição', editable: true, type: 'text', insertable: true, exhibitable: true },
       { field: 'valor', header: 'Valor', editable: true, type: 'currency', insertable: true, exhibitable: true },
       { field: 'especialidade', header: 'Especialidade', editable: true, type: 'select', insertable: true, options: this.especialidadeOptions(), exhibitable: true }

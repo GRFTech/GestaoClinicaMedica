@@ -1,8 +1,9 @@
-import { computed, Injectable, Signal, signal, inject } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import {computed, Injectable, Signal, signal, inject} from '@angular/core';
+import {environment} from '../../../environments/environment.development';
 import Especialidade from '../model/especialidade/Especialidade';
-import { HttpClient } from '@angular/common/http';
-import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
+import {HttpClient} from '@angular/common/http';
+import {firstValueFrom} from 'rxjs';
+import {CidadeUI} from '../model/cidade/CidadeUI'; // 1. Importar HttpClient
 
 @Injectable({
   providedIn: 'root'
@@ -63,14 +64,54 @@ export class EspecialidadeService {
    * @param especialidade é um objeto de Especialidade
    */
   createEspecialidade(especialidade: Especialidade) {
-    this.http.post<Especialidade>(`${environment.apiURL}/especialidades`, especialidade).subscribe({
+    this.http.post<{
+      status: string;
+      mensagem: string
+    }>(`${environment.apiURL}/especialidades`, especialidade).subscribe({
       next: data => {
-        // Assume-se que 'data' é o objeto completo (com ID gerado pelo backend)
-        this.especialidades.update(e => [...e, data]);
+        console.log(data);
+
+        if (data.status === 'SUCESSO') {
+          const match = data.mensagem.match(/\(Cód:\s*(\d+)\)/);
+
+          if (match && match[1]) {
+            especialidade.codigo_especialidade = parseInt(match[1], 10);
+          }
+
+          this.especialidades.update(especialidades => [...especialidades, especialidade]);
+          console.log(`Especialidade salva com código: ${especialidade.codigo_especialidade}`);
+        } else {
+          console.error('Falha ao criar cidade:', data.mensagem);
+        }
       },
       error: (err) => console.error(err)
     });
   }
+
+
+  // /**
+  //  * Salva uma cidade no banco de dados.
+  //  * @param ui é um objeto de UI
+  //  */
+  // createCidade(ui: CidadeUI) {
+  //   this.http.post<{ status: string; mensagem: string }>(`${environment.apiURL}/cidades`, ui).subscribe({
+  //     next: response => {
+  //       if (response.status === 'SUCESSO') {
+  //         const match = response.mensagem.match(/\(Cód:\s*(\d+)\)/);
+  //
+  //         if (match && match[1]) {
+  //           ui.codigo = parseInt(match[1], 10);
+  //         }
+  //
+  //         this.cidades.update(cidades => [...cidades, ui]);
+  //         console.log(`Cidade salva com código: ${ui.codigo}`);
+  //       } else {
+  //         console.error('Falha ao criar cidade:', response.mensagem);
+  //       }
+  //     },
+  //     error: err => console.error('Erro HTTP ao criar cidade:', err)
+  //   });
+  // }
 
   /**
    * Atualiza uma especialidade existente no banco de dados.
@@ -82,7 +123,7 @@ export class EspecialidadeService {
       next: data => {
         console.log(data)
         this.especialidades.update(especialidades =>
-          especialidades.map(e => (e.codigo_especialidade === especialidade.codigo_especialidade ? data : e))
+          especialidades.map(e => (e.codigo_especialidade === especialidade.codigo_especialidade ? especialidade : e))
         );
       },
       error: (err) => console.error(err)

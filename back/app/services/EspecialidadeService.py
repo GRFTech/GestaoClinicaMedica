@@ -77,3 +77,11 @@ class EspecialidadeService:
     def listar_ordenado(self):
         # LISTAGEM ORDENADA
         return self.repo.listar_todos_ordenado()
+
+    def gerar_proximo_codigo(self):
+        """Retorna o próximo código disponível para Especialidade."""
+        todas = self.repo.listar_todos_ordenado()
+        if todas:
+            ultimo = todas[-1].codigo_especialidade
+            return ultimo + 1
+        return 1

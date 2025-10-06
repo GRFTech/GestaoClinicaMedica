@@ -8,10 +8,10 @@ cidade_bp = Blueprint('cidade_bp', __name__, url_prefix='/api')  # Prefixo opcio
 @cidade_bp.route('/cidades', methods=['POST'])
 def incluir_cidade():
     data = request.json
-    codigo = data.get('codigo')
+    codigo = cidade_service.obter_ultimo_codigo() + 1
     descricao = data.get('descricao')
     estado = data.get('estado')
-    resultado = cidade_service.incluir(cidade_service.obter_ultimo_codigo() + 1, descricao, estado)
+    resultado = cidade_service.incluir(codigo, descricao, estado)
     return jsonify(resultado)
 
 # Consultar cidade por código

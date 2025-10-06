@@ -52,9 +52,9 @@ export default class Especialidade {
 
   toJSON() {
     return {
-      id: this._codigo_especialidade,
+      codigo_especialidade: this._codigo_especialidade,
       descricao: this._descricao,
-      valorConsulta: this._valor_consulta,
+      valor_consulta: this._valor_consulta,
       limite_diario: this._limite_diario
     };
   }

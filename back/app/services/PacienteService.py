@@ -79,3 +79,11 @@ class PacienteService:
         # LISTAGEM ORDENADA
         # O Repositório já retorna a lista ordenada pela ABB
         return self.repo.listar_todos_ordenado()
+
+    def proximo_codigo(self) -> int:
+        """Retorna o próximo código sequencial de paciente disponível."""
+        pacientes = self.repo.listar_todos_ordenado()
+        if not pacientes:
+            return 1  # Inicia em 1 se não houver registros
+        # Retorna o maior código + 1
+        return max(p.codigo_paciente for p in pacientes) + 1

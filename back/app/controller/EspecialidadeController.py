@@ -9,7 +9,7 @@ especialidade_bp = Blueprint('especialidade_bp', __name__, url_prefix='/api')
 @especialidade_bp.route('/especialidades', methods=['POST'])
 def incluir_especialidade():
     data = request.json
-    codigo = data.get('codigo_especialidade')
+    codigo = especialidade_service.gerar_proximo_codigo()
     descricao = data.get('descricao')
     valor_consulta = data.get('valor_consulta')
     limite_diario = data.get('limite_diario')

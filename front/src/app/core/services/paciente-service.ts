@@ -78,10 +78,10 @@ export class PacienteService {
   private UItoDto(pacienteUI: PacienteUI): Paciente {
 
     const cidades = this.cidadeService.cidadesDto;
-    const cidade = cidades().find(c => +c.descricao === +pacienteUI.cidade);
+    const cidade = cidades().find(c => c.descricao === pacienteUI.cidade);
 
     return new Paciente(
-      pacienteUI.id,
+      pacienteUI.codigo_paciente,
       pacienteUI.nome,
       pacienteUI.dataNascimento,
       pacienteUI.endereco,
@@ -120,14 +120,30 @@ export class PacienteService {
    * @param ui é um objeto de UI
    */
   createPaciente(ui: PacienteUI) {
-    const dto = this.UItoDto(ui);
-    this.http.post<Paciente>(`${environment.apiURL}/pacientes`, dto).subscribe({
-      next: data => {
-        this.pacientes.update(pacientes => [...pacientes, data]);
-      },
-      error: (err) => console.error(err)
-    });
+    this.http.post<{ status: string; mensagem: string }>(`${environment.apiURL}/pacientes`, this.UItoDto(ui))
+      .subscribe({
+        next: response => {
+
+          console.log(response);
+
+          if (response.status === 'SUCESSO') {
+            const match = response.mensagem.match(/\(Cód:\s*(\d+)\)/);
+            if (match && match[1]) {
+              ui.codigo_paciente = parseInt(match[1], 10);
+            }
+
+            this.pacientes.update(pacientes => [...pacientes, this.UItoDto(ui)]);
+            console.log(`Paciente salvo com código: ${ui.codigo_paciente}`);
+          } else {
+            console.error('Falha ao criar paciente:', response.mensagem);
+          }
+        },
+        error: err => console.error('Erro HTTP ao criar paciente:', err)
+      });
   }
+
+
+
 
   /**
    * Atualiza um paciente existente no banco de dados
@@ -135,10 +151,10 @@ export class PacienteService {
    */
   updatePaciente(ui: PacienteUI) {
     const dto = this.UItoDto(ui);
-    this.http.put<Paciente>(`${environment.apiURL}/pacientes/${ui.id}`, dto).subscribe({
+    this.http.put<Paciente>(`${environment.apiURL}/pacientes/${ui.codigo_paciente}`, dto).subscribe({
       next: data => {
         this.pacientes.update(pacientes =>
-          pacientes.map(p => (p.codigo_paciente === ui.id ? data : p))
+          pacientes.map(p => (p.codigo_paciente === ui.codigo_paciente ? this.UItoDto(ui) : p))
         );
       },
       error: (err) => console.error(err)
@@ -150,10 +166,10 @@ export class PacienteService {
    * @param ui é um objeto de UI
    */
   deletePaciente(ui: PacienteUI) {
-    this.http.delete(`${environment.apiURL}/pacientes/${ui.id}`).subscribe({
+    this.http.delete(`${environment.apiURL}/pacientes/${ui.codigo_paciente}`).subscribe({
       next: () => {
         this.pacientes.update(pacientes =>
-          pacientes.filter(p => p.codigo_paciente !== ui.id)
+          pacientes.filter(p => p.codigo_paciente !== ui.codigo_paciente)
         );
       },
       error: (err) => console.error(err)
@@ -165,7 +181,7 @@ export class PacienteService {
    * @param uis é um array de objetos de UI
    */
   deletePacientes(uis: PacienteUI[]) {
-    const ids = uis.map(u => u.id);
+    const ids = uis.map(u => u.codigo_paciente);
 
     // Replicando o padrão de deleção em loop, atualizando o signal em cada sucesso
     for (const id of ids) {

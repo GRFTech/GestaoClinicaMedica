@@ -37,7 +37,7 @@ export class Pacientes implements OnInit {
     })));
 
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'codigo_paciente', header: 'Código do Paciente', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'nome', header: 'Nome', editable: true, type: 'text', insertable: true, exhibitable: true },
       { field: 'dataNascimento', header: 'Data de Nascimento', editable: false, type: 'date', insertable: true, exhibitable: true },
       { field: 'endereco', header: 'Endereço', editable: true, type: 'text', insertable: true, exhibitable: true },

@@ -91,4 +91,22 @@ export default class Paciente {
   set codigo_cidade(value: number) {
     this._codigo_cidade = value;
   }
+
+
+  toJSON() {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const dataStr = `${pad(this._dataNascimento.getDate())}/${pad(this._dataNascimento.getMonth() + 1)}/${this._dataNascimento.getFullYear()}`;
+
+    return {
+      codigo_paciente: this._codigo_paciente,
+      nome: this._nome,
+      data_nascimento: dataStr,
+      endereco: this._endereco,
+      telefone: this._telefone,
+      peso: this._peso,
+      altura: this._altura,
+      codigo_cidade: this._codigo_cidade
+    };
+  }
 }

@@ -9,7 +9,7 @@ paciente_bp = Blueprint('paciente_bp', __name__, url_prefix='/api')
 @paciente_bp.route('/pacientes', methods=['POST'])
 def incluir_paciente():
     data = request.json
-    codigo = data.get('codigo_paciente')
+    codigo = paciente_service.proximo_codigo()
     nome = data.get('nome')
     data_nascimento = data.get('data_nascimento')
     endereco = data.get('endereco')

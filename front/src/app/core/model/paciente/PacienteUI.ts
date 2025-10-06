@@ -1,5 +1,5 @@
 export default class PacienteUI {
-  private _id: number;
+  private _codigo_paciente: number;
   private _nome: string;
   private _dataNascimento: Date;
   private _endereco: string;
@@ -9,7 +9,7 @@ export default class PacienteUI {
   private _cidade: string;
 
   constructor(
-    id: number = 0,
+    codigo_paciente: number = 0,
     nome: string = '',
     dataNascimento: Date = new Date(),
     endereco: string = '',
@@ -18,7 +18,7 @@ export default class PacienteUI {
     altura: number = 0,
     cidade: string = ''
   ) {
-    this._id = id;
+    this._codigo_paciente = codigo_paciente;
     this._nome = nome;
     this._dataNascimento = dataNascimento;
     this._endereco = endereco;
@@ -29,12 +29,12 @@ export default class PacienteUI {
   }
 
 
-  get id(): number {
-    return this._id;
+  get codigo_paciente(): number {
+    return this._codigo_paciente;
   }
 
-  set id(value: number) {
-    this._id = value;
+  set codigo_paciente(value: number) {
+    this._codigo_paciente = value;
   }
 
   get nome(): string {

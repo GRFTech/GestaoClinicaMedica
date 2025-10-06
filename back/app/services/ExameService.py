@@ -85,3 +85,11 @@ class ExameService:
     def listar_ordenado(self):
         # LISTAGEM ORDENADA
         return self.repo.listar_todos_ordenado()
+
+    def gerar_proximo_codigo(self):
+        """Retorna o próximo código de exame disponível."""
+        exames = self.repo.listar_todos_ordenado()
+        if not exames:
+            return 1
+        ultimo_codigo = max(exame.codigo_exame for exame in exames)
+        return ultimo_codigo + 1

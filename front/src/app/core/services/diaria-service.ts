@@ -110,12 +110,10 @@ export class DiariaService {
     this.http.post<{ status: string; dados?: any; mensagem?: string }>(`${this.backURL}/diarias`, dto.toJSON())
       .subscribe({
         next: res => {
-          // Se backend retornou 'dados' com a diária criada/atualizada, use ela; senão recarrega
           if (res?.dados) {
             const nova = Diaria.fromJSON(res.dados);
             this.upsertDiariaInSignal(nova);
           } else {
-            // fallback: recarrega lista atualizada do servidor
             this.getDiarias();
           }
         },

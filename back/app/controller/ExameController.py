@@ -9,13 +9,14 @@ exame_bp = Blueprint('exame_bp', __name__, url_prefix='/api')
 @exame_bp.route('/exames', methods=['POST'])
 def incluir_exame():
     data = request.json
-    codigo = data.get('codigo_exame')
+    codigo = exame_service.gerar_proximo_codigo()
     descricao = data.get('descricao')
     codigo_especialidade = data.get('codigo_especialidade')
     valor_exame = data.get('valor_exame')
 
     resultado = exame_service.incluir(codigo, descricao, codigo_especialidade, valor_exame)
     return jsonify(resultado)
+
 
 @exame_bp.route('/exames/<int:codigo>', methods=['GET'])
 def consultar_exame(codigo):
