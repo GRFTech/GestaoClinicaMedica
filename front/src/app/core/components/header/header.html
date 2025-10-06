@@ -1,14 +1,19 @@
-<p-toolbar class="p-p-2 p-card p-shadow-1">
-  <div class="p-toolbar-group-left p-d-flex p-ai-center">
-    <img src="assets/images/logo.png" alt="Logo" style="height: 40px;" class="p-mr-3" />
-    <span class="p-text-bold p-text-xl">Sistema Clínica Médica</span>
+<p-toolbar class="p-px-4 p-py-2 shadow-2 surface-card border-round-none">
+  <div class="p-d-flex p-ai-center gap-3">
+    <span class="text-primary font-bold text-xl">Sistema Clínica Médica</span>
   </div>
 
-  <div class="p-toolbar-group-right">
-    <p-menubar [model]="items" />
+  <div class="p-flex-grow-1 p-d-flex p-jc-center">
+    <p-menubar [model]="items" styleClass="w-full sm:w-auto surface-card border-none shadow-none"></p-menubar>
   </div>
 
-  <div class="p-toolbar-group-right">
-    <p-button [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon' " (click)="themeService.toggleDarkMode()" class="p-button-text p-button-secondary"></p-button>
+  <div class="p-d-flex p-ai-center">
+    <p-button
+      [icon]="themeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+      (click)="themeService.toggleDarkMode()"
+      styleClass="p-button-rounded p-button-text p-button-secondary p-ml-2"
+      tooltip="Alternar tema"
+      tooltipPosition="bottom">
+    </p-button>
   </div>
 </p-toolbar>
