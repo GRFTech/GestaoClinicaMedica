@@ -1,8 +1,43 @@
 from http.cookiejar import debug
 
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
+
+
+# --- Implementação Manual de CORS Sem Pacotes ---
+
+@app.after_request
+def add_cors_headers(response):
+    """
+    Função que adiciona os cabeçalhos CORS a TODAS as respostas do servidor.
+    Isso 'desabilita' o bloqueio de CORS pelo navegador.
+    """
+
+    # 1. Permite todas as origens ('*'). Para segurança em produção,
+    # substitua por domínios específicos (ex: 'http://localhost:3000').
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    # 2. Permite os métodos HTTP que podem ser usados nas requisições cross-origin.
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+
+    # 3. Permite os cabeçalhos personalizados que o cliente pode enviar.
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+
+    # 4. Define o tempo de cache (em segundos) para as respostas preflight OPTIONS.
+    response.headers['Access-Control-Max-Age'] = '3600'
+
+    return response
+
+
+# Rota específica para lidar com requisições OPTIONS (preflight)
+# O navegador envia OPTIONS antes de requisições complexas (POST, PUT, DELETE).
+@app.before_request
+def preflight():
+    """Lida com as requisições OPTIONS do navegador."""
+    if request.method == 'OPTIONS':
+        # Retorna 204 No Content. Os cabeçalhos CORS são injetados pelo @app.after_request.
+        return '', 204
 
 # Importar todos os Blueprints
 from app.controller.CidadeController import cidade_bp

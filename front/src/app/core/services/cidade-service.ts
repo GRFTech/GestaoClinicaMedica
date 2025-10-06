@@ -1,8 +1,6 @@
-import {Injectable, signal, computed} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {environment} from '../../../environments/environment.development';
-import Cidade from '../model/cidade/Cidade';
 import {CidadeUI} from '../model/cidade/CidadeUI';
-import {EstadoService} from './estado-service';
 import {HttpClient} from '@angular/common/http';
 import {firstValueFrom} from 'rxjs';
 
@@ -11,17 +9,13 @@ import {firstValueFrom} from 'rxjs';
 })
 export class CidadeService {
   backURL = environment.apiURL;
-  private cidades = signal<Cidade[]>([]);
+  private cidades = signal<CidadeUI[]>([]);
 
   // Exposição como readonly
   cidadesDto = this.cidades.asReadonly();
 
-  // Exposição já como UI (mapeado automaticamente)
-  cidadesUI = computed<CidadeUI[]>(() =>
-    this.cidades().map(c => this.DTOtoUI(c))
-  );
 
-  constructor(private estadoService: EstadoService, private http: HttpClient) {
+  constructor(private http: HttpClient) {
     this.initializeData();
   }
 
@@ -31,7 +25,6 @@ export class CidadeService {
    */
   private async initializeData(): Promise<void> {
     try {
-      await this.estadoService.getEstados();
       await this.getCidades();
     } catch (err) {
       console.error('Erro ao inicializar CidadeService:', err);
@@ -42,86 +35,90 @@ export class CidadeService {
   /**
    * Busca os dados no endpoint e inicializa a lista com os dados recebidos
    */
-  async getCidades(): Promise<Cidade[]> {
+  async getCidades(): Promise<CidadeUI[]> {
     if (this.cidades().length) return this.cidades();
-    try {
-      const data = await firstValueFrom(this.http.get<Cidade[]>(`${this.backURL}/cidades`));
-      this.cidades.set(data);
 
-      console.log('Cidades carregadas com estados resolvidos:', this.cidadesUI());
-      return data;
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ status: string; dados: CidadeUI[] }>(`${this.backURL}/cidades`)
+      );
+
+      const lista = response.dados ?? [];
+
+      this.cidades.set(lista);
+      console.log('Cidades carregadas com estados resolvidos:', this.cidadesDto());
+
+      return lista;
     } catch (err) {
       console.error('Erro ao buscar cidades:', err);
       return [];
     }
   }
 
-  /**
-   * Mapeia um objeto de UI para um de banco
-   * @param cidadeUI é um objeto de UI
-   * @returns Cidade
-   */
-  private UItoDto(cidadeUI: CidadeUI): Cidade {
-    const estados = this.estadoService.estadosDto;
-    const estado = estados().find(e => e.estado === cidadeUI.estado);
-    return new Cidade(cidadeUI.id, cidadeUI.descricao, estado?.id ?? 0);
-  }
-
-  /**
-   * Mapeia um objeto de banco para um de UI
-   * @param cidade é um objeto de banco
-   * @returns Cidade
-   */
-  private DTOtoUI(cidade: Cidade): CidadeUI {
-    const estados = this.estadoService.estadosDto;
-    const estado = estados().find(e => +e.id === +cidade.estadoId);
-    return new CidadeUI(cidade.id, cidade.descricao, estado?.estado ?? '');
-  }
 
   /**
    * Salva uma cidade no banco de dados.
    * @param ui é um objeto de UI
    */
   createCidade(ui: CidadeUI) {
+    this.http.post<{ status: string; mensagem: string }>(`${environment.apiURL}/cidades`, ui).subscribe({
+      next: response => {
+        if (response.status === 'SUCESSO') {
+          const match = response.mensagem.match(/\(Cód:\s*(\d+)\)/);
 
-    let dto = this.UItoDto(ui);
+          if (match && match[1]) {
+            ui.codigo = parseInt(match[1], 10);
+          }
 
-
-    this.http.post<Cidade>(`${environment.apiURL}/cidades`, dto).subscribe({
-      next: data => {
-        this.cidades.update(cidades => [...cidades, data]);
+          this.cidades.update(cidades => [...cidades, ui]);
+          console.log(`Cidade salva com código: ${ui.codigo}`);
+        } else {
+          console.error('Falha ao criar cidade:', response.mensagem);
+        }
       },
-      error: (err) => console.error(err)
+      error: err => console.error('Erro HTTP ao criar cidade:', err)
     });
   }
+
+
 
   /**
    * Atualiza um objeto no banco de dados
    * @param ui é um objeto de UI
    */
   updateCidade(ui: CidadeUI) {
-
-    let dto = this.UItoDto(ui);
-
-    this.http.put<Cidade>(`${environment.apiURL}/cidades/${ui.id}`, dto).subscribe({
-      next: data => {
-        this.cidades.update(cidades =>
-          cidades.map(c => (c.id === ui.id ? data : c))
-        );
+    this.http.put<{ status: string; mensagem: string }>(
+      `${environment.apiURL}/cidades/${ui.codigo}`,
+      ui
+    ).subscribe({
+      next: response => {
+        if (response.status === 'SUCESSO') {
+          this.cidades.update(cidades =>
+            cidades.map(c =>
+              c.codigo === ui.codigo
+                ? { ...c, ...ui }
+                : c
+            )
+          );
+          console.log(`Cidade ${ui.descricao} atualizada com sucesso.`);
+        } else {
+          console.error('Falha ao atualizar cidade:', response.mensagem);
+        }
       },
-      error: (err) => console.error(err)
+      error: err => console.error('Erro HTTP ao atualizar cidade:', err)
     });
   }
+
 
   /**
    * Deleta um objeto do banco de dadas.
    * @param ui é um objeto de UI
    */
   deleteCidade(ui: CidadeUI) {
-    this.http.delete(`${environment.apiURL}/cidades/${ui.id}`).subscribe({
+    this.http.delete(`${environment.apiURL}/cidades/${ui.codigo}`).subscribe({
       next: data => {
         this.cidades.update(cidades =>
-          cidades.filter(c => c.id !== ui.id)
+          cidades.filter(c => c.codigo !== ui.codigo)
         );
       },
       error: (err) => console.error(err)
@@ -133,14 +130,14 @@ export class CidadeService {
    * @param uis é um array de objetos de UI
    */
   deleteCidades(uis: CidadeUI[]) {
-    const ids = uis.map(u => u.id);
+    const ids = uis.map(u => u.codigo);
 
     for (let i = 0; i < ids.length; i++) {
       this.http.delete(`${environment.apiURL}/cidades/${ids[i]}`).subscribe({
         next: data => {
           console.log("deletou")
           this.cidades.update(cidades =>
-            cidades.filter(c => c.id !== ids[i])
+            cidades.filter(c => c.codigo !== ids[i])
           );
         },
         error: (err) => console.error(err)

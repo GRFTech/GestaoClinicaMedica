@@ -3,7 +3,6 @@ import {CidadeService} from '../../../core/services/cidade-service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {TableColumn} from '../../../core/interfaces/table-column';
 import {DynamicCrud} from '../../../core/components/dynamic-crud/dynamic-crud';
-import {EstadoService} from '../../../core/services/estado-service';
 import {CidadeUI} from '../../../core/model/cidade/CidadeUI';
 import {Toast} from 'primeng/toast';
 
@@ -24,28 +23,18 @@ export class Cidades implements OnInit {
   entityName = "Cidade";
   title = "Gerenciar Cidades";
   t_class = CidadeUI;
-  estadoOptions = signal<{ label: string, value: string }[]>([]);
 
   cidadeService = inject(CidadeService)
 
-  constructor(private estadoService: EstadoService, private messageService: MessageService) {}
+  constructor(private messageService: MessageService) {}
 
 
   async ngOnInit() {
-    // 🔹 Aguarda os estados carregarem
-    const estados = await this.estadoService.getEstados();
-
-    // 🔹 Atualiza o signal com os options
-    this.estadoOptions.set(estados.map(e => ({
-      label: e.estado,
-      value: e.estado
-    })));
-
     // 🔹 Configura as colunas
     this.cols = [
-      { field: 'id', header: 'ID', editable: false, type: 'number', insertable: false, exhibitable: true },
+      { field: 'codigo', header: 'Código', editable: false, type: 'number', insertable: false, exhibitable: true },
       { field: 'descricao', header: 'Descrição', editable: true, type: 'text', insertable: true, exhibitable: true },
-      { field: 'estado', header: 'Estado', editable: false, type: 'select', insertable: true, options: this.estadoOptions(), exhibitable: true },
+      { field: 'estado', header: 'Estado', editable: false, type: 'text', insertable: true, exhibitable: true },
     ];
   }
 

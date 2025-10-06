@@ -6,8 +6,7 @@ import {PacienteService} from './paciente-service';
 import {MedicoService} from './medico-service';
 import {ExameService} from './exame-service';
 import { HttpClient } from '@angular/common/http';
-import Cidade from '../model/cidade/Cidade';
-import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
+import {firstValueFrom} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

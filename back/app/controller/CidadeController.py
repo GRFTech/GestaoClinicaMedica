@@ -11,7 +11,7 @@ def incluir_cidade():
     codigo = data.get('codigo')
     descricao = data.get('descricao')
     estado = data.get('estado')
-    resultado = cidade_service.incluir(codigo, descricao, estado)
+    resultado = cidade_service.incluir(cidade_service.obter_ultimo_codigo() + 1, descricao, estado)
     return jsonify(resultado)
 
 # Consultar cidade por código

@@ -56,3 +56,12 @@ class CidadeService:
         # LISTAGEM ORDENADA
         # O Repositório já retorna a lista ordenada pela ABB
         return self.repo.listar_todos_ordenado()
+
+    def obter_ultimo_codigo(self):
+        """Retorna o maior código de cidade cadastrado, ou 0 se não houver cidades."""
+        cidades = self.repo.listar_todos_ordenado()
+        if not cidades:
+            return 0  # Nenhum registro
+        # Assume que os objetos têm atributo 'codigo'
+        ultimo = max(cidades, key=lambda c: c.codigo)
+        return ultimo.codigo

@@ -79,7 +79,7 @@ export class PacienteService {
       pacienteUI.telefone,
       pacienteUI.peso,
       pacienteUI.altura,
-      cidade!.id
+      cidade!.codigo
     );
   }
 
@@ -92,7 +92,7 @@ export class PacienteService {
   private DTOtoUI(paciente: Paciente): PacienteUI {
 
     const cidades = this.cidadeService.cidadesDto;
-    const cidade = cidades().find(c => +c.id === +paciente.cidadeId);
+    const cidade = cidades().find(c => +c.codigo === +paciente.cidadeId);
 
     return new PacienteUI(
       paciente.id,

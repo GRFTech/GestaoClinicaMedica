@@ -2,7 +2,6 @@ import { computed, Injectable, Signal, signal, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import Especialidade from '../model/especialidade/Especialidade';
 import { HttpClient } from '@angular/common/http';
-import Estado from '../model/estado/Estado';
 import {firstValueFrom} from 'rxjs'; // 1. Importar HttpClient
 
 @Injectable({

@@ -6,7 +6,6 @@ import {CidadeService} from './cidade-service';
 import {EspecialidadeService} from './especialidade-service';
 import { HttpClient } from '@angular/common/http';
 import {firstValueFrom} from 'rxjs';
-import Cidade from '../model/cidade/Cidade';
 import {CidadeUI} from '../model/cidade/CidadeUI'; // 1. Importar HttpClient
 
 @Injectable({
@@ -79,7 +78,7 @@ export class MedicoService {
       medicoUI.nome,
       medicoUI.endereco,
       medicoUI.telefone,
-      cidade!.id,
+      cidade!.codigo,
       especialidade!.id
     );
   }
@@ -91,7 +90,7 @@ export class MedicoService {
    */
   private DTOtoUI(medico: Medico): MedicoUI {
     const cidades = this.cidadeService.cidadesDto;
-    const cidade = cidades().find(c => +c.id === +medico.cidadeId);
+    const cidade = cidades().find(c => +c.codigo === +medico.cidadeId);
 
     const especialidades = this.especialidadeService.especialidadesDto;
     const especialidade = especialidades().find(e => +e.id === +medico.especialidadeId);
