@@ -2,6 +2,7 @@ import re
 from app.repository.DiariaRepository import DiariaRepository
 from app.models.Diaria import Diaria
 from app.services.EspecialidadeService import EspecialidadeService
+from datetime import datetime # NOVO: Adicionado import de datetime para conversão de data
 
 
 class DiariaService:
@@ -22,12 +23,11 @@ class DiariaService:
     def _converter_data_para_codigo(self, data_ddmmaaaa):
         """Converte 'DD/MM/AAAA' → inteiro 'AAAAMMDD'."""
         try:
-            partes = data_ddmmaaaa.strip().split('/')
-            if len(partes) != 3:
-                raise ValueError("Formato de data inválido.")
-            return int(f"{partes[2]}{partes[1]}{partes[0]}")
+            # Usando datetime.strptime para validação e conversão
+            dt_obj = datetime.strptime(data_ddmmaaaa, "%d/%m/%Y")
+            return int(dt_obj.strftime("%Y%m%d"))
         except Exception:
-            raise ValueError(f"Erro ao converter data '{data_ddmmaaaa}'.")
+            raise ValueError(f"Erro ao converter data '{data_ddmmaaaa}'. Formato esperado: DD/MM/AAAA.")
 
     # ------------------ CONSULTAS DE DIÁRIA ------------------
 
@@ -37,9 +37,11 @@ class DiariaService:
         diaria = self.repo.buscar_por_chave(chave)
 
         if not diaria:
+            # Se não encontrar, retorna objeto Diaria inicializado com 0
             diaria = Diaria(codigo_dia, codigo_especialidade, 0)
-            self.repo.incluir_registro(diaria)
-            self.repo.salvar_dados()
+            # NÃO salva aqui, apenas retorna o objeto com a contagem zero
+            # A inclusão/criação é responsabilidade dos métodos incrementar/decrementar
+            # que garantem o salvamento.
 
         return {"status": "SUCESSO", "dados": diaria}
 
@@ -52,7 +54,6 @@ class DiariaService:
     def verificar_limite(self, data_consulta_ddmmaaaa, codigo_especialidade):
         """
         Verifica se a especialidade atingiu o limite de consultas para o dia.
-        Caso o registro de diária não exista, ele é criado automaticamente.
         """
         # Consulta especialidade
         resultado_esp = self.especialidade_service.consultar(codigo_especialidade)
@@ -69,12 +70,8 @@ class DiariaService:
         except ValueError as e:
             return {"status": "ERRO", "mensagem": str(e)}
 
+        # Consulta a diária (assume 0 se não existir)
         diaria = self.consultar(codigo_dia, codigo_especialidade)["dados"]
-
-        # Evita erro de contagem negativa ou corrompida
-        if diaria.quantidade_consultas < 0:
-            diaria.quantidade_consultas = 0
-            self.repo.salvar_dados()
 
         # Valida limite
         if diaria.quantidade_consultas >= limite_diario:
@@ -100,11 +97,13 @@ class DiariaService:
         diaria = self.repo.buscar_por_chave(chave)
 
         if not diaria:
+            # Se não existe, cria o registro na base
             diaria = Diaria(codigo_dia, codigo_especialidade, incremento)
             self.repo.incluir_registro(diaria)
         else:
+            # Se existe, apenas incrementa em memória
             diaria.quantidade_consultas += incremento
-            if diaria.quantidade_consultas < 0:
+            if diaria.quantidade_consultas < 0: # Proteção contra contagem negativa
                 diaria.quantidade_consultas = 0
 
         self.repo.salvar_dados()
@@ -114,7 +113,7 @@ class DiariaService:
         }
 
     def decrementar_contagem(self, data_consulta_ddmmaaaa, codigo_especialidade):
-        """Decrementa a contagem de consultas do dia ao excluir uma consulta."""
+        """Decrementa a contagem de consultas do dia ao excluir uma consulta (5.4)."""
         try:
             codigo_dia = self._converter_data_para_codigo(data_consulta_ddmmaaaa)
         except ValueError as e:

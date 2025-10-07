@@ -682,24 +682,62 @@ class App:
 
     # --- CRUD CONSULTAS (FOCO NO TESTE DE LIMITE) ---
 
+    # --- CRUD CONSULTAS (FOCO NO TESTE DE LIMITE) ---
+
+    # --- CRUD CONSULTAS (FOCO NO TESTE DE LIMITE) ---
+
     def menu_consultas_crud(self):
         """CRUD completo de Consultas, integrando verificação e consumo de limite diário."""
 
+        # FUNÇÃO AUXILIAR CORRIGIDA: Definida no escopo do menu_consultas_crud
+        def _to_dict_safe(data):
+            """Converte o resultado do service (objeto ou dict) para dict de forma segura."""
+            if hasattr(data, 'to_dict'):
+                return data.to_dict()
+            return data
+
         def exibir_consulta(consulta):
-            paciente = self.paciente_service.consultar(consulta.codigo_paciente)["dados"]
-            cidade = self.cidade_service.consultar(paciente["codigo_cidade"])["dados"]
-            medico = self.medico_service.consultar(consulta.codigo_medico)["dados"]
-            exame = self.exame_service.consultar(consulta.codigo_exame)["dados"].__dict__
-            especialidade = self.especialidade_service.consultar(medico["codigo_especialidade"])["dados"].__dict__
-            valor_total = especialidade["valor_consulta"] + exame["valor_exame"]
+            # A consulta é um objeto Consulta (raw object)
+
+            # 1. Recupera dados básicos
+            paciente_res = self.paciente_service.consultar(consulta.codigo_paciente)
+            medico_res = self.medico_service.consultar(consulta.codigo_medico)
+            exame_res = self.exame_service.consultar(consulta.codigo_exame)
+
+            if paciente_res["status"] == "ERRO" or medico_res["status"] == "ERRO" or exame_res["status"] == "ERRO":
+                print(f"Erro ao exibir dados relacionados para Cód Consulta: {consulta.codigo_consulta}")
+                # Imprime informações detalhadas para debug, se algum dado estiver faltando
+                print(
+                    f"Status Paciente: {paciente_res['status']} | Status Médico: {medico_res['status']} | Status Exame: {exame_res['status']}")
+                return
+
+            paciente_dict = paciente_res["dados"]
+            medico_data = medico_res["dados"]
+            exame_data = exame_res["dados"]
+
+            # 2. Converte dados para dicionário de forma segura
+            medico_dict = _to_dict_safe(medico_data)
+            exame_dict = _to_dict_safe(exame_data)
+
+            # 3. Recupera Especialidade
+            # Especialidade é sempre um objeto, deve funcionar com a conversão segura
+            especialidade_obj = self.especialidade_service.consultar(medico_dict["codigo_especialidade"])["dados"]
+            especialidade_dict = _to_dict_safe(especialidade_obj)
+
+            # 4. Recupera Cidade
+            cidade_res = self.cidade_service.consultar(paciente_dict["codigo_cidade"])
+            cidade_dict = cidade_res["dados"]
+
+            # 5. Cálculo do Valor Total (5.2)
+            valor_total = especialidade_dict["valor_consulta"] + exame_dict["valor_exame"]
 
             print(f"\nCód Consulta: {consulta.codigo_consulta}")
-            print(f"Paciente: {paciente['nome']} - Cidade: {cidade['descricao']}/{cidade['estado']}")
-            print(f"Médico: {medico['nome']}")
-            print(f"Exame: {exame['descricao']}")
-            print(f"Especialidade: {especialidade['descricao']}")
+            print(f"Paciente: {paciente_dict['nome']} - Cidade: {cidade_dict['descricao']}/{cidade_dict['estado']}")
+            print(f"Médico: {medico_dict['nome']}")
+            print(f"Exame: {exame_dict['descricao']}")
+            print(f"Especialidade: {especialidade_dict['descricao']}")
             print(f"Data/Hora: {consulta.data} às {consulta.hora}")
-            print(f"Valor total a pagar: R$ {valor_total:.2f}")
+            print(f"Valor total a pagar: R$ {valor_total:.2f}")  # Exibição do valor total (5.2)
 
         while True:
             self.limpar_tela()
@@ -727,26 +765,17 @@ class App:
                     input("Pressione Enter para continuar...")
                     continue
 
-                cod_especialidade = medico_info["dados"]["codigo_especialidade"]
+                # CORRIGIDO: _to_dict_safe agora está acessível
+                cod_especialidade = _to_dict_safe(medico_info["dados"])["codigo_especialidade"]
 
-                # 1. Verifica limite antes de incluir
-                resultado_limite = self.diaria_service.verificar_limite(data, cod_especialidade)
-                if resultado_limite["status"] == "ERRO":
-                    print(resultado_limite["mensagem"])
-                    input("Pressione Enter para continuar...")
-                    continue
+                # A lógica de VERIFICAÇÃO DE LIMITE (5.1) foi movida para o ConsultaService.incluir()
 
-                # 2. Inclui a consulta
+                # Inclui a consulta (e o serviço fará a verificação de limite e o incremento da diária)
                 resultado = self.consulta_service.incluir(codigo, cod_paciente, cod_medico, cod_exame, data, hora)
                 print(resultado["mensagem"])
 
-                # 3. Incrementa a contagem da diária somente se inclusão bem-sucedida
+                # Exibe a consulta (se sucesso)
                 if resultado["status"] == "SUCESSO":
-                    self.diaria_service.incluir_ou_atualizar(
-                        int(data[6:10] + data[3:5] + data[0:2]),
-                        cod_especialidade,
-                        incremento=1
-                    )
                     consulta = self.consulta_service.consultar(codigo)["dados"]
                     exibir_consulta(consulta)
 
@@ -758,7 +787,7 @@ class App:
                 if resultado["status"] == "ERRO":
                     print(resultado["mensagem"])
                 else:
-                    exibir_consulta(resultado["dados"])
+                    exibir_consulta(resultado["dados"])  # O consultaService retorna o objeto (dados)
                 input("Pressione Enter para continuar...")
 
             elif opcao == "3":  # Alterar Consulta
@@ -771,29 +800,21 @@ class App:
 
                 resultado = self.consulta_service.alterar(
                     codigo,
-                    int(cod_paciente) if cod_paciente else None,
-                    int(cod_medico) if cod_medico else None,
-                    int(cod_exame) if cod_exame else None,
-                    data if data else None,
-                    hora if hora else None
+                    int(cod_paciente) if cod_paciente.strip() else None,
+                    int(cod_medico) if cod_medico.strip() else None,
+                    int(cod_exame) if cod_exame.strip() else None,
+                    data if data.strip() else None,
+                    hora if hora.strip() else None
                 )
                 print(resultado["mensagem"])
                 input("Pressione Enter para continuar...")
 
             elif opcao == "4":  # Excluir Consulta
                 codigo = self._obter_codigo_consulta("excluir")
-                consulta_info = self.consulta_service.consultar(codigo)
-                if consulta_info["status"] == "ERRO":
-                    print(consulta_info["mensagem"])
-                else:
-                    consulta = consulta_info["dados"]
-                    medico = self.medico_service.consultar(consulta.codigo_medico)["dados"]
-                    cod_especialidade = medico["codigo_especialidade"]
-                    # Decrementa contagem da diária
-                    self.diaria_service.decrementar_contagem(consulta.data, cod_especialidade)
 
-                    resultado = self.consulta_service.excluir(codigo)
-                    print(resultado["mensagem"])
+                # O ConsultaService.excluir agora cuida do decremento da diária (5.4)
+                resultado = self.consulta_service.excluir(codigo)
+                print(resultado["mensagem"])
 
                 input("Pressione Enter para continuar...")
 
@@ -803,7 +824,7 @@ class App:
                     print("Nenhuma consulta cadastrada.")
                 else:
                     for c in consultas:
-                        exibir_consulta(c)
+                        exibir_consulta(c)  # Exibe as informações completas (5, 5.2)
                 input("Pressione Enter para continuar...")
 
             elif opcao == "0":  # Voltar
@@ -1132,4 +1153,4 @@ class App:
 
 if __name__ == "__main__":
     app = App()
-    app.run(debug=True)
+    app.run()
