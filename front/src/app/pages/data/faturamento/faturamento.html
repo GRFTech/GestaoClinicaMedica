@@ -19,13 +19,13 @@
 
     <!-- Faturamento por médico -->
     <div class="flex gap-2 align-items-center mt-2">
-      <p-input-number type="number" pInputText placeholder="Código do médico" [(ngModel)]="codigoMedico"/>
+      <p-input-number placeholder="Código do médico" [(ngModel)]="codigoMedico"/>
       <p-button label="Buscar por médico" icon="pi pi-search" (click)="buscarPorMedico()"></p-button>
     </div>
 
     <!-- Faturamento por especialidade -->
     <div class="flex gap-2 align-items-center mt-2">
-      <p-input-number type="number" pInputText placeholder="Código da Especialidade" [(ngModel)]="codigoEspecialidade"/>
+      <p-input-number placeholder="Código da Especialidade" [(ngModel)]="codigoEspecialidade"/>
       <p-button label="Buscar por especialidade" icon="pi pi-search" (click)="buscarPorEspecialidade()"></p-button>
     </div>
 
