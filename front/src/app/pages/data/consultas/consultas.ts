@@ -31,6 +31,7 @@ export class Consultas implements OnInit {
   constructor() {
   }
 
+
   cols!: TableColumn[];
 
   entityName = "Consultas";
@@ -77,6 +78,22 @@ export class Consultas implements OnInit {
         type: 'select',
         insertable: true,
         options: this.pacienteOptions(),
+        exhibitable: true
+      },
+      {
+        field: 'cidade_paciente',
+        header: 'Cidade do Paciente',
+        editable: false,
+        type: 'text',
+        insertable: false,
+        exhibitable: true
+      },
+      {
+        field: 'valor_total',
+        header: 'Valor a ser pago',
+        editable: false,
+        type: 'currency',
+        insertable: false,
         exhibitable: true
       },
       {

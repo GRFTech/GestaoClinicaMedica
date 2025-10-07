@@ -4,19 +4,26 @@ export default class ConsultaUI {
   private _paciente: string;
   private _medico: string;
   private _exame: string;
+  private _cidade_paciente: string;
+  private _valor_total: number;
+
 
   constructor(
     id: number = 0,
     data: Date = new Date(),
     paciente: string = '',
     medico: string = '',
-    exame: string = ''
+    exame: string = '',
+    cidadePaciente = '',
+    valor_total: number = 0
   ) {
     this._codigo_consulta = id;
     this._data = data;
     this._paciente = paciente;
     this._medico = medico;
     this._exame = exame;
+    this._cidade_paciente = cidadePaciente;
+    this._valor_total = valor_total;
   }
 
 
@@ -58,5 +65,23 @@ export default class ConsultaUI {
 
   set exame(value: string) {
     this._exame = value;
+  }
+
+
+  get cidade_paciente(): string {
+    return this._cidade_paciente;
+  }
+
+  set cidade_paciente(value: string) {
+    this._cidade_paciente = value;
+  }
+
+
+  get valor_total(): number {
+    return this._valor_total;
+  }
+
+  set valor_total(value: number) {
+    this._valor_total = value;
   }
 }

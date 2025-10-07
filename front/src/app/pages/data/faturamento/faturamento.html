@@ -5,40 +5,55 @@
 
     <!-- Faturamento por dia -->
     <div class="flex gap-2 align-items-center">
-      <input type="date" [(ngModel)]="data" name="data" placeholder="Data" class="p-inputtext flex-1">
-      <button pButton label="Buscar por dia" icon="pi pi-search" (click)="buscarPorDia()"></button>
+
+      <p-date-picker [(ngModel)]="data" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy"/>
+      <p-button label="Buscar por dia" icon="pi pi-search" (click)="buscarPorDia()"></p-button>
     </div>
 
     <!-- Faturamento por período -->
     <div class="flex gap-2 align-items-center mt-2">
-      <input type="date" [(ngModel)]="inicio" name="inicio" placeholder="Início" class="p-inputtext flex-1">
-      <input type="date" [(ngModel)]="fim" name="fim" placeholder="Fim" class="p-inputtext flex-1">
-      <button pButton label="Buscar por período" icon="pi pi-search" (click)="buscarPorPeriodo()"></button>
+      <p-date-picker [(ngModel)]="inicio" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy"/>
+      <p-date-picker [(ngModel)]="fim" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy"/>
+      <p-button label="Buscar por período" icon="pi pi-search" (click)="buscarPorPeriodo()"></p-button>
     </div>
 
     <!-- Faturamento por médico -->
     <div class="flex gap-2 align-items-center mt-2">
-      <input type="number" pInputText placeholder="Código do médico" [(ngModel)]="codigoMedico">
-      <button pButton label="Buscar por médico" icon="pi pi-search" (click)="buscarPorMedico()"></button>
+      <p-input-number type="number" pInputText placeholder="Código do médico" [(ngModel)]="codigoMedico"/>
+      <p-button label="Buscar por médico" icon="pi pi-search" (click)="buscarPorMedico()"></p-button>
     </div>
 
     <!-- Faturamento por especialidade -->
     <div class="flex gap-2 align-items-center mt-2">
-      <input type="number" pInputText placeholder="Código da especialidade" [(ngModel)]="codigoEspecialidade">
-      <button pButton label="Buscar por especialidade" icon="pi pi-search" (click)="buscarPorEspecialidade()"></button>
+      <p-input-number type="number" pInputText placeholder="Código da Especialidade" [(ngModel)]="codigoEspecialidade"/>
+      <p-button label="Buscar por especialidade" icon="pi pi-search" (click)="buscarPorEspecialidade()"></p-button>
     </div>
 
     <p-divider></p-divider>
 
-    <ng-container *ngIf="faturamento">
+    @if (faturamento) {
       <p class="m-0">Faturamento: R$ {{ faturamento.faturamento | number:'1.2-2' }}</p>
-      <p *ngIf="faturamento.data">Data: {{ faturamento.data }}</p>
-      <p *ngIf="faturamento.inicio && faturamento.fim">Período: {{ faturamento.inicio }} até {{ faturamento.fim }}</p>
-      <p *ngIf="faturamento.codigo_medico">Médico: {{ faturamento.codigo_medico }}</p>
-      <p *ngIf="faturamento.codigo_especialidade">Especialidade: {{ faturamento.codigo_especialidade }}</p>
-    </ng-container>
 
-    <p-message *ngIf="erro" severity="error" text="{{ erro }}"></p-message>
+      @if (faturamento.data) {
+        <p>Data: {{ faturamento.data }}</p>
+      }
+
+      @if (faturamento.inicio && faturamento.fim) {
+        <p>Período: {{ faturamento.inicio }} até {{ faturamento.fim }}</p>
+      }
+
+      @if (faturamento.codigo_medico) {
+        <p>Médico: {{ faturamento.codigo_medico }}</p>
+      }
+
+      @if (faturamento.codigo_especialidade) {
+        <p>Especialidade: {{ faturamento.codigo_especialidade }}</p>
+      }
+    }
+
+    @if (erro) {
+      <p-message severity="error" text="{{ erro }}"></p-message>
+    }
 
   </p-card>
 </div>

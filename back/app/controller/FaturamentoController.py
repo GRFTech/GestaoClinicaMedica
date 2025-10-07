@@ -25,17 +25,22 @@ faturamento_bp = Blueprint('faturamento_bp', __name__, url_prefix='/api')
 
 @faturamento_bp.route('/faturamento/dia', methods=['GET'])
 def faturamento_por_dia():
-    data_str = request.args.get("data")  # YYYY-MM-DD
+    data_str = request.args.get("data")  # Ex: "06/10/2025"
     if not data_str:
         return jsonify({"status": "ERRO", "mensagem": "Parâmetro 'data' é obrigatório"}), 400
 
+    # Verifica formato DD/MM/YYYY
     try:
-        data = datetime.strptime(data_str, "%Y-%m-%d").date()
+        datetime.strptime(data_str, "%d/%m/%Y")
     except ValueError:
-        return jsonify({"status": "ERRO", "mensagem": "Formato de data inválido. Use YYYY-MM-DD"}), 400
+        return jsonify({"status": "ERRO", "mensagem": "Formato de data inválido. Use DD/MM/YYYY"}), 400
 
-    total = faturamento_service.faturamento_por_dia(data)
-    return jsonify({"status": "SUCESSO", "dados": {"data": str(data), "faturamento": total}})
+    total = faturamento_service.faturamento_por_dia(data_str)
+    return jsonify({
+        "status": "SUCESSO",
+        "dados": {"data": data_str, "faturamento": total}
+    })
+
 
 @faturamento_bp.route('/faturamento/periodo', methods=['GET'])
 def faturamento_por_periodo():
@@ -44,24 +49,33 @@ def faturamento_por_periodo():
     if not inicio_str or not fim_str:
         return jsonify({"status": "ERRO", "mensagem": "Parâmetros 'inicio' e 'fim' são obrigatórios"}), 400
 
+    # Valida formato DD/MM/YYYY
     try:
-        inicio = datetime.strptime(inicio_str, "%Y-%m-%d").date()
-        fim = datetime.strptime(fim_str, "%Y-%m-%d").date()
+        datetime.strptime(inicio_str, "%d/%m/%Y")
+        datetime.strptime(fim_str, "%d/%m/%Y")
     except ValueError:
-        return jsonify({"status": "ERRO", "mensagem": "Formato de data inválido. Use YYYY-MM-DD"}), 400
+        return jsonify({"status": "ERRO", "mensagem": "Formato de data inválido. Use DD/MM/YYYY"}), 400
 
-    total = faturamento_service.faturamento_por_periodo(inicio, fim)
+    total = faturamento_service.faturamento_por_periodo(inicio_str, fim_str)
     return jsonify({
         "status": "SUCESSO",
-        "dados": {"inicio": str(inicio), "fim": str(fim), "faturamento": total}
+        "dados": {"inicio": inicio_str, "fim": fim_str, "faturamento": total}
     })
+
 
 @faturamento_bp.route('/faturamento/medico/<int:codigo_medico>', methods=['GET'])
 def faturamento_por_medico(codigo_medico):
     total = faturamento_service.faturamento_por_medico(codigo_medico)
-    return jsonify({"status": "SUCESSO", "dados": {"codigo_medico": codigo_medico, "faturamento": total}})
+    return jsonify({
+        "status": "SUCESSO",
+        "dados": {"codigo_medico": codigo_medico, "faturamento": total}
+    })
+
 
 @faturamento_bp.route('/faturamento/especialidade/<int:codigo_especialidade>', methods=['GET'])
 def faturamento_por_especialidade(codigo_especialidade):
     total = faturamento_service.faturamento_por_especialidade(codigo_especialidade)
-    return jsonify({"status": "SUCESSO", "dados": {"codigo_especialidade": codigo_especialidade, "faturamento": total}})
+    return jsonify({
+        "status": "SUCESSO",
+        "dados": {"codigo_especialidade": codigo_especialidade, "faturamento": total}
+    })

@@ -43,31 +43,37 @@ export class Diarias implements OnInit {
 
 
     this.cols = [
-      { field: 'codigoDiaString', header: 'Código do Dia', editable: false, type: 'text', insertable: false, exhibitable: true },
-      { field: 'codigoDia', header: 'Data', editable: false, type: 'date', insertable: true, exhibitable: false },
+      { field: 'codigoDiaString', header: 'Código do Dia', editable: true, type: 'text', insertable: false, exhibitable: true },
+      { field: 'codigoDia', header: 'Data', editable: true, type: 'date', insertable: true, exhibitable: false },
       { field: 'quantidadeConsultas', header: 'Quantidade de Consultas', editable: true, type: 'number', insertable: true, exhibitable: true },
-      { field: 'especialidade', header: 'Especialidade', editable: false, type: 'select', insertable: true, options: this.especialidadeOptions(), exhibitable: true },
+      { field: 'especialidade', header: 'Especialidade', editable: true, type: 'select', insertable: true, options: this.especialidadeOptions(), exhibitable: true },
     ];
   }
 
   onSave(diaria: DiariaUI): void {
-    try {
-      this.diariaService.createDiaria(diaria);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Diária salva com sucesso!',
-        life: 3000
-      });
-    } catch (ex) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Ocorreu um erro ao salvar a diária!',
-        life: 3000
-      });
-    }
+    this.diariaService.createDiaria(diaria).subscribe({
+      next: res => {
+
+        this.diariaService.diarias.update(list => [...list, this.diariaService.UItoDto(diaria)]);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: res.mensagem ?? 'Diária salva com sucesso!',
+          life: 3000
+        });
+      },
+      error: err => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: err.message,
+          life: 4000
+        });
+      }
+    });
   }
+
 
   onEdit(diaria: DiariaUI): void {
     try {

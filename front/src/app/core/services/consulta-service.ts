@@ -7,6 +7,7 @@ import { MedicoService } from './medico-service';
 import { ExameService } from './exame-service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import {CidadeService} from './cidade-service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class ConsultaService {
   pacienteService = inject(PacienteService);
   medicoService = inject(MedicoService);
   exameService = inject(ExameService);
+  cidadeService = inject(CidadeService);
   private http = inject(HttpClient);
 
   // Propriedades
@@ -92,6 +94,7 @@ export class ConsultaService {
     const paciente = this.pacienteService.pacientesDto().find(p => p.codigo_paciente === dto.codigo_paciente);
     const medico = this.medicoService.medicosDto().find(m => m.codigo_medico === dto.codigo_medico);
     const exame = this.exameService.examesDto().find(e => e.codigo_exame === dto.codigo_exame);
+    const cidade = this.cidadeService.cidadesDto().find(c => c.codigo === paciente?.codigo_cidade ? c.descricao : "")
 
     const data = this.parseDate(dto.data, dto.hora);
 
@@ -100,7 +103,9 @@ export class ConsultaService {
       data,
       paciente?.nome ?? '',
       medico?.nome ?? '',
-      exame?.descricao ?? ''
+      exame?.descricao ?? '',
+      cidade?.descricao ?? '',
+      exame?.valor_exame ?? 0
     );
   }
 

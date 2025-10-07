@@ -23,6 +23,9 @@ export class FaturamentoService {
    * Faturamento por dia
    */
   async faturamentoPorDia(data: string): Promise<FaturamentoDTO | null> {
+
+    console.log(data)
+
     try {
       const response = await firstValueFrom(
         this.http.get<{ status: string; dados: FaturamentoDTO }>(
