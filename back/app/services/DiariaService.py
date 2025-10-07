@@ -2,7 +2,7 @@ import re
 from app.repository.DiariaRepository import DiariaRepository
 from app.models.Diaria import Diaria
 from app.services.EspecialidadeService import EspecialidadeService
-from datetime import datetime # NOVO: Adicionado import de datetime para conversão de data
+from datetime import datetime
 
 
 class DiariaService:
@@ -23,39 +23,32 @@ class DiariaService:
     def _converter_data_para_codigo(self, data_ddmmaaaa):
         """Converte 'DD/MM/AAAA' → inteiro 'AAAAMMDD'."""
         try:
-            # Usando datetime.strptime para validação e conversão
+
             dt_obj = datetime.strptime(data_ddmmaaaa, "%d/%m/%Y")
             return int(dt_obj.strftime("%Y%m%d"))
         except Exception:
             raise ValueError(f"Erro ao converter data '{data_ddmmaaaa}'. Formato esperado: DD/MM/AAAA.")
 
-    # ------------------ CONSULTAS DE DIÁRIA ------------------
+
 
     def consultar(self, codigo_dia, codigo_especialidade):
-        """Busca uma diária existente, ou cria uma nova com 0 consultas."""
         chave = self._gerar_chave_composta(codigo_dia, codigo_especialidade)
         diaria = self.repo.buscar_por_chave(chave)
 
         if not diaria:
-            # Se não encontrar, retorna objeto Diaria inicializado com 0
+
             diaria = Diaria(codigo_dia, codigo_especialidade, 0)
-            # NÃO salva aqui, apenas retorna o objeto com a contagem zero
-            # A inclusão/criação é responsabilidade dos métodos incrementar/decrementar
-            # que garantem o salvamento.
+
 
         return {"status": "SUCESSO", "dados": diaria}
 
     def listar_ordenado(self):
-        """Lista todas as diárias em ordem crescente de chave."""
         return self.repo.listar_todos_ordenado()
 
-    # ------------------ REGRAS DE NEGÓCIO ------------------
+
 
     def verificar_limite(self, data_consulta_ddmmaaaa, codigo_especialidade):
-        """
-        Verifica se a especialidade atingiu o limite de consultas para o dia.
-        """
-        # Consulta especialidade
+
         resultado_esp = self.especialidade_service.consultar(codigo_especialidade)
         if resultado_esp["status"] == "ERRO":
             return {"status": "ERRO", "mensagem": f"Especialidade {codigo_especialidade} não encontrada."}
@@ -64,16 +57,13 @@ class DiariaService:
         limite_diario = especialidade.limite_diario
         descricao_esp = especialidade.descricao
 
-        # Converte a data para código
         try:
             codigo_dia = self._converter_data_para_codigo(data_consulta_ddmmaaaa)
         except ValueError as e:
             return {"status": "ERRO", "mensagem": str(e)}
 
-        # Consulta a diária (assume 0 se não existir)
         diaria = self.consultar(codigo_dia, codigo_especialidade)["dados"]
 
-        # Valida limite
         if diaria.quantidade_consultas >= limite_diario:
             return {
                 "status": "ERRO",
@@ -87,7 +77,7 @@ class DiariaService:
         return {"status": "SUCESSO", "mensagem": "Limite OK."}
 
     def incrementar_contagem(self, data_consulta_ddmmaaaa, codigo_especialidade, incremento=1):
-        """Incrementa o total de consultas para a diária informada."""
+
         try:
             codigo_dia = self._converter_data_para_codigo(data_consulta_ddmmaaaa)
         except ValueError as e:
@@ -97,13 +87,13 @@ class DiariaService:
         diaria = self.repo.buscar_por_chave(chave)
 
         if not diaria:
-            # Se não existe, cria o registro na base
+
             diaria = Diaria(codigo_dia, codigo_especialidade, incremento)
             self.repo.incluir_registro(diaria)
         else:
-            # Se existe, apenas incrementa em memória
+
             diaria.quantidade_consultas += incremento
-            if diaria.quantidade_consultas < 0: # Proteção contra contagem negativa
+            if diaria.quantidade_consultas < 0:
                 diaria.quantidade_consultas = 0
 
         self.repo.salvar_dados()
@@ -132,7 +122,7 @@ class DiariaService:
 
         return {"status": "AVISO", "mensagem": f"Diária {chave} não encontrada para decremento."}
 
-    # ------------------ CRUD SIMPLES ------------------
+
 
     def incluir(self, codigo_dia, codigo_especialidade, quantidade_consultas):
         chave = self._gerar_chave_composta(codigo_dia, codigo_especialidade)

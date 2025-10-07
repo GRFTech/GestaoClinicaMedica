@@ -4,7 +4,7 @@ from app.services.ConsultaService import ConsultaService
 consulta_service = ConsultaService()
 consulta_bp = Blueprint('consulta_bp', __name__, url_prefix='/api')
 
-# ------------------ CRUD ------------------
+
 
 @consulta_bp.route('/consultas', methods=['POST'])
 def incluir_consulta():
@@ -27,7 +27,7 @@ def consultar_consulta(codigo):
     resultado = consulta_service.consultar(codigo)
     if resultado["status"] == "SUCESSO":
         consulta = resultado["dados"]
-        resultado["dados"] = consulta.to_dict()  # <-- converte para dict
+        resultado["dados"] = consulta.to_dict()
     return jsonify(resultado)
 
 
@@ -55,5 +55,5 @@ def excluir_consulta(codigo):
 @consulta_bp.route('/consultas', methods=['GET'])
 def listar_consultas():
     consultas = consulta_service.listar_ordenado()
-    consultas_dict = [c.to_dict() for c in consultas]  # <-- converte cada objeto
+    consultas_dict = [c.to_dict() for c in consultas]
     return jsonify({"status": "SUCESSO", "dados": consultas_dict})

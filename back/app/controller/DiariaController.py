@@ -4,7 +4,7 @@ from app.services.DiariaService import DiariaService
 diaria_service = DiariaService()
 diaria_bp = Blueprint('diaria_bp', __name__, url_prefix='/api')
 
-# ------------------ CRUD Simples ------------------
+
 
 @diaria_bp.route('/diarias', methods=['POST'])
 def incluir_diaria():
@@ -21,7 +21,7 @@ def consultar_diaria(codigo_dia, codigo_especialidade):
     resultado = diaria_service.consultar(codigo_dia, codigo_especialidade)
     if resultado["status"] == "SUCESSO":
         diaria = resultado["dados"]
-        resultado["dados"] = diaria.to_dict()  # <-- converte para dict
+        resultado["dados"] = diaria.to_dict()
     return jsonify(resultado)
 
 @diaria_bp.route('/diarias/<int:codigo_dia>/<int:codigo_especialidade>', methods=['PUT'])
@@ -40,14 +40,11 @@ def excluir_diaria(codigo_dia, codigo_especialidade):
 @diaria_bp.route('/diarias', methods=['GET'])
 def listar_diarias():
     diarias = diaria_service.listar_ordenado()
-    diarias_dict = [d.to_dict() for d in diarias]  # <-- converte cada objeto
+    diarias_dict = [d.to_dict() for d in diarias]
 
-    # Cria a resposta JSON
     response = jsonify({"status": "SUCESSO", "dados": diarias_dict})
 
-    # --- CONFIGURAÇÃO ANTICACHE ---
-    # Garante que o navegador (e proxies) não armazenem a resposta em cache,
-    # forçando uma nova requisição GET a cada F5 ou recarga do componente.
+
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'

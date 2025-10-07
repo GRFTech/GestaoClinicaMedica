@@ -4,7 +4,7 @@ from app.services.MedicoService import MedicoService
 medico_service = MedicoService()
 medico_bp = Blueprint('medico_bp', __name__, url_prefix='/api')
 
-# ------------------ CRUD ------------------
+
 
 @medico_bp.route('/medicos', methods=['POST'])
 def incluir_medico():

@@ -60,7 +60,7 @@ class ConsultaService:
     def consultar(self, codigo_consulta):
         consulta = self.repo.buscar_por_chave(codigo_consulta)
         if consulta:
-            return {"status": "SUCESSO", "dados": consulta}  # Retorna o objeto Consulta
+            return {"status": "SUCESSO", "dados": consulta}
         return {"status": "ERRO", "mensagem": f"Consulta {codigo_consulta} não encontrada."}
 
     def alterar(self, codigo_consulta, codigo_paciente=None, codigo_medico=None, codigo_exame=None, data=None,

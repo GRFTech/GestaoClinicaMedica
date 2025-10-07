@@ -5,7 +5,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
-# --- Implementação Manual de CORS Sem Pacotes ---
+
 
 @app.after_request
 def add_cors_headers(response):
@@ -14,32 +14,30 @@ def add_cors_headers(response):
     Isso 'desabilita' o bloqueio de CORS pelo navegador.
     """
 
-    # 1. Permite todas as origens ('*'). Para segurança em produção,
-    # substitua por domínios específicos (ex: 'http://localhost:3000').
+
     response.headers['Access-Control-Allow-Origin'] = '*'
 
-    # 2. Permite os métodos HTTP que podem ser usados nas requisições cross-origin.
+
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
 
-    # 3. Permite os cabeçalhos personalizados que o cliente pode enviar.
+
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
 
-    # 4. Define o tempo de cache (em segundos) para as respostas preflight OPTIONS.
+
     response.headers['Access-Control-Max-Age'] = '3600'
 
     return response
 
 
-# Rota específica para lidar com requisições OPTIONS (preflight)
-# O navegador envia OPTIONS antes de requisições complexas (POST, PUT, DELETE).
+
 @app.before_request
 def preflight():
     """Lida com as requisições OPTIONS do navegador."""
     if request.method == 'OPTIONS':
-        # Retorna 204 No Content. Os cabeçalhos CORS são injetados pelo @app.after_request.
+
         return '', 204
 
-# Importar todos os Blueprints
+
 from app.controller.CidadeController import cidade_bp
 from app.controller.ConsultaController import consulta_bp
 from app.controller.DiariaController import diaria_bp
@@ -49,7 +47,7 @@ from app.controller.FaturamentoController import faturamento_bp
 from app.controller.MedicoController import medico_bp
 from app.controller.PacienteController import paciente_bp
 
-# Registrar todos os Blueprints
+
 app.register_blueprint(cidade_bp, url_prefix='/api')
 app.register_blueprint(consulta_bp, url_prefix='/api')
 app.register_blueprint(diaria_bp, url_prefix='/api')
@@ -61,9 +59,7 @@ app.register_blueprint(paciente_bp, url_prefix='/api')
 
 import os
 import sys
-# Importa os serviços necessários para a aplicação
-# Nota: Os Repositórios e Models devem ser importados em um ambiente real
-# Para simplificação, assumimos que os services importam os models/repos.
+
 from app.services.CidadeService import CidadeService
 from app.services.PacienteService import PacienteService
 from app.services.EspecialidadeService import EspecialidadeService
@@ -76,7 +72,6 @@ from app.services.FaturamentoService import FaturamentoService
 
 class App:
     def __init__(self):
-        # Inicializa todos os serviços que o app pode usar
         self.cidade_service = CidadeService()
         self.paciente_service = PacienteService()
         self.especialidade_service = EspecialidadeService()
@@ -91,7 +86,6 @@ class App:
             self.exame_service
         )
 
-        # Mapeamento para facilitar a navegação
         self.menus_crud = {
             "1": self.menu_cidades_crud,
             "2": self.menu_pacientes_crud,
@@ -120,7 +114,7 @@ class App:
         print("5) Exames")
         print("6) Consultas (Verificação e Consumo do Limite Diário)")
         print("7) Diárias (Manutenção da Contagem de Limites)")
-        print("8) Faturamento da clínica")  # Novo item no menu
+        print("8) Faturamento da clínica")
         print("0) Sair")
         print("=" * 60)
 
@@ -139,13 +133,12 @@ class App:
                 print("Opção inválida.")
                 input("Pressione Enter para continuar...")
 
-    # --- FUNÇÕES AUXILIARES DE ENTRADA ---
 
     def _obter_codigo_int(self, entidade, acao):
         """Função genérica para obter códigos numéricos e tratar erros."""
         while True:
             try:
-                # Trata o artigo 'a' ou 'o' no português (da/do)
+
                 artigo = 'a' if entidade in ['cidade', 'especialidade', 'consulta', 'diária'] else 'o'
                 return int(input(f"Digite o código d{artigo} {entidade} para {acao}: "))
             except ValueError:
@@ -169,7 +162,7 @@ class App:
     def _obter_codigo_consulta(self, acao):
         return self._obter_codigo_int("consulta", acao)
 
-    # --- CRUD CIDADES (Exemplo para a estrutura completa) ---
+
 
     def menu_cidades_crud(self):
         while True:
@@ -187,7 +180,7 @@ class App:
 
             opcao = input("Escolha uma opção: ")
 
-            # --- INCLUIR ---
+
             if opcao == '1':
                 codigo = self._obter_codigo_cidade("incluir")
                 descricao = input("Digite a descrição da cidade: ").strip()
@@ -196,7 +189,7 @@ class App:
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- CONSULTAR ---
+
             elif opcao == '2':
                 codigo = self._obter_codigo_cidade("consultar")
                 resultado = self.cidade_service.consultar(codigo)
@@ -207,7 +200,7 @@ class App:
                     print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- ALTERAR ---
+
             elif opcao == '3':
                 codigo = self._obter_codigo_cidade("alterar")
                 nova_desc = input("Digite a nova descrição (ou deixe em branco p/ manter): ").strip()
@@ -216,14 +209,14 @@ class App:
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- EXCLUIR ---
+
             elif opcao == '4':
                 codigo = self._obter_codigo_cidade("excluir")
                 resultado = self.cidade_service.excluir(codigo)
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- LISTAR ---
+
             elif opcao == '5':
                 cidades = self.cidade_service.listar_ordenado()
                 if cidades:
@@ -234,7 +227,7 @@ class App:
                     print("\nNenhuma cidade cadastrada.")
                 input("\nPressione Enter para continuar...")
 
-            # --- VOLTAR ---
+
             elif opcao == '0':
                 break
 
@@ -268,7 +261,7 @@ class App:
 
             opcao = input("Escolha uma opção: ")
 
-            # --- INCLUIR ---
+
             if opcao == '1':
                 codigo = self._obter_codigo_paciente("incluir")
                 nome = input("Nome: ").strip()
@@ -290,7 +283,7 @@ class App:
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- CONSULTAR ---
+
             elif opcao == '2':
                 codigo = self._obter_codigo_paciente("consultar")
                 resultado = self.paciente_service.consultar(codigo)
@@ -317,7 +310,7 @@ class App:
                     print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- ALTERAR ---
+
             elif opcao == '3':
                 codigo = self._obter_codigo_paciente("alterar")
                 nome = input("Novo Nome (ou deixe em branco para manter): ").strip() or None
@@ -344,14 +337,14 @@ class App:
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- EXCLUIR ---
+
             elif opcao == '4':
                 codigo = self._obter_codigo_paciente("excluir")
                 resultado = self.paciente_service.excluir(codigo)
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- LISTAR ---
+
             elif opcao == '5':
                 pacientes = self.paciente_service.listar_ordenado()
                 if pacientes:
@@ -368,7 +361,7 @@ class App:
                     print("\nNenhum paciente cadastrado.")
                 input("\nPressione Enter para continuar...")
 
-            # --- VOLTAR ---
+
             elif opcao == '0':
                 break
 
@@ -392,7 +385,7 @@ class App:
 
             opcao = input("Escolha uma opção: ")
 
-            # --- INCLUIR ---
+
             if opcao == '1':
                 codigo = self._obter_codigo_especialidade("incluir")
                 descricao = input("Descrição: ").strip()
@@ -408,7 +401,7 @@ class App:
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- CONSULTAR ---
+
             elif opcao == '2':
                 codigo = self._obter_codigo_especialidade("consultar")
                 resultado = self.especialidade_service.consultar(codigo)
@@ -423,7 +416,7 @@ class App:
                     print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- ALTERAR ---
+
             elif opcao == '3':
                 codigo = self._obter_codigo_especialidade("alterar")
                 descricao = input("Nova Descrição (ou deixe em branco para manter): ").strip() or None
@@ -438,14 +431,14 @@ class App:
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- EXCLUIR ---
+
             elif opcao == '4':
                 codigo = self._obter_codigo_especialidade("excluir")
                 resultado = self.especialidade_service.excluir(codigo)
                 print(f"\n{resultado['mensagem']}")
                 input("\nPressione Enter para continuar...")
 
-            # --- LISTAR ---
+
             elif opcao == '5':
                 especialidades = self.especialidade_service.listar_ordenado()
                 if especialidades:
@@ -457,7 +450,7 @@ class App:
                     print("\nNenhuma especialidade cadastrada.")
                 input("\nPressione Enter para continuar...")
 
-            # --- VOLTAR ---
+
             elif opcao == '0':
                 break
 
@@ -550,8 +543,7 @@ class App:
                 print("Opção inválida.")
                 input("Pressione Enter para continuar...")
 
-    # --- CRUD EXAMES ---
-    # --- CRUD EXAMES ---
+
     def menu_exames_crud(self):
         while True:
             self.limpar_tela()
@@ -592,7 +584,7 @@ class App:
 
                     descricao = input("Descrição do Exame: ")
 
-                    # Solicita o código da especialidade e já mostra os dados correspondentes
+
 
                     codigo_esp = int(input("Código da Especialidade: "))
 
@@ -680,16 +672,12 @@ class App:
                 print("Opção inválida!")
                 input("Pressione Enter para continuar...")
 
-    # --- CRUD CONSULTAS (FOCO NO TESTE DE LIMITE) ---
 
-    # --- CRUD CONSULTAS (FOCO NO TESTE DE LIMITE) ---
-
-    # --- CRUD CONSULTAS (FOCO NO TESTE DE LIMITE) ---
 
     def menu_consultas_crud(self):
         """CRUD completo de Consultas, integrando verificação e consumo de limite diário."""
 
-        # FUNÇÃO AUXILIAR CORRIGIDA: Definida no escopo do menu_consultas_crud
+
         def _to_dict_safe(data):
             """Converte o resultado do service (objeto ou dict) para dict de forma segura."""
             if hasattr(data, 'to_dict'):
@@ -697,16 +685,16 @@ class App:
             return data
 
         def exibir_consulta(consulta):
-            # A consulta é um objeto Consulta (raw object)
 
-            # 1. Recupera dados básicos
+
+
             paciente_res = self.paciente_service.consultar(consulta.codigo_paciente)
             medico_res = self.medico_service.consultar(consulta.codigo_medico)
             exame_res = self.exame_service.consultar(consulta.codigo_exame)
 
             if paciente_res["status"] == "ERRO" or medico_res["status"] == "ERRO" or exame_res["status"] == "ERRO":
                 print(f"Erro ao exibir dados relacionados para Cód Consulta: {consulta.codigo_consulta}")
-                # Imprime informações detalhadas para debug, se algum dado estiver faltando
+
                 print(
                     f"Status Paciente: {paciente_res['status']} | Status Médico: {medico_res['status']} | Status Exame: {exame_res['status']}")
                 return
@@ -715,20 +703,20 @@ class App:
             medico_data = medico_res["dados"]
             exame_data = exame_res["dados"]
 
-            # 2. Converte dados para dicionário de forma segura
+
             medico_dict = _to_dict_safe(medico_data)
             exame_dict = _to_dict_safe(exame_data)
 
-            # 3. Recupera Especialidade
-            # Especialidade é sempre um objeto, deve funcionar com a conversão segura
+
+
             especialidade_obj = self.especialidade_service.consultar(medico_dict["codigo_especialidade"])["dados"]
             especialidade_dict = _to_dict_safe(especialidade_obj)
 
-            # 4. Recupera Cidade
+
             cidade_res = self.cidade_service.consultar(paciente_dict["codigo_cidade"])
             cidade_dict = cidade_res["dados"]
 
-            # 5. Cálculo do Valor Total (5.2)
+
             valor_total = especialidade_dict["valor_consulta"] + exame_dict["valor_exame"]
 
             print(f"\nCód Consulta: {consulta.codigo_consulta}")
@@ -737,7 +725,7 @@ class App:
             print(f"Exame: {exame_dict['descricao']}")
             print(f"Especialidade: {especialidade_dict['descricao']}")
             print(f"Data/Hora: {consulta.data} às {consulta.hora}")
-            print(f"Valor total a pagar: R$ {valor_total:.2f}")  # Exibição do valor total (5.2)
+            print(f"Valor total a pagar: R$ {valor_total:.2f}")
 
         while True:
             self.limpar_tela()
@@ -751,7 +739,7 @@ class App:
 
             opcao = input("Escolha uma opção: ")
 
-            if opcao == "1":  # Incluir Consulta
+            if opcao == "1":
                 codigo = self._obter_codigo_consulta("incluir")
                 cod_paciente = self._obter_codigo_paciente("incluir")
                 cod_medico = self._obter_codigo_medico("incluir")
@@ -765,32 +753,32 @@ class App:
                     input("Pressione Enter para continuar...")
                     continue
 
-                # CORRIGIDO: _to_dict_safe agora está acessível
+
                 cod_especialidade = _to_dict_safe(medico_info["dados"])["codigo_especialidade"]
 
-                # A lógica de VERIFICAÇÃO DE LIMITE (5.1) foi movida para o ConsultaService.incluir()
 
-                # Inclui a consulta (e o serviço fará a verificação de limite e o incremento da diária)
+
+
                 resultado = self.consulta_service.incluir(codigo, cod_paciente, cod_medico, cod_exame, data, hora)
                 print(resultado["mensagem"])
 
-                # Exibe a consulta (se sucesso)
+
                 if resultado["status"] == "SUCESSO":
                     consulta = self.consulta_service.consultar(codigo)["dados"]
                     exibir_consulta(consulta)
 
                 input("Pressione Enter para continuar...")
 
-            elif opcao == "2":  # Consultar Consulta
+            elif opcao == "2":
                 codigo = self._obter_codigo_consulta("consultar")
                 resultado = self.consulta_service.consultar(codigo)
                 if resultado["status"] == "ERRO":
                     print(resultado["mensagem"])
                 else:
-                    exibir_consulta(resultado["dados"])  # O consultaService retorna o objeto (dados)
+                    exibir_consulta(resultado["dados"])
                 input("Pressione Enter para continuar...")
 
-            elif opcao == "3":  # Alterar Consulta
+            elif opcao == "3":
                 codigo = self._obter_codigo_consulta("alterar")
                 cod_paciente = input("Novo Código do Paciente (Enter para manter): ")
                 cod_medico = input("Novo Código do Médico (Enter para manter): ")
@@ -809,25 +797,25 @@ class App:
                 print(resultado["mensagem"])
                 input("Pressione Enter para continuar...")
 
-            elif opcao == "4":  # Excluir Consulta
+            elif opcao == "4":
                 codigo = self._obter_codigo_consulta("excluir")
 
-                # O ConsultaService.excluir agora cuida do decremento da diária (5.4)
+
                 resultado = self.consulta_service.excluir(codigo)
                 print(resultado["mensagem"])
 
                 input("Pressione Enter para continuar...")
 
-            elif opcao == "5":  # Listar Consultas
+            elif opcao == "5":
                 consultas = self.consulta_service.listar_ordenado()
                 if not consultas:
                     print("Nenhuma consulta cadastrada.")
                 else:
                     for c in consultas:
-                        exibir_consulta(c)  # Exibe as informações completas (5, 5.2)
+                        exibir_consulta(c)
                 input("Pressione Enter para continuar...")
 
-            elif opcao == "0":  # Voltar
+            elif opcao == "0":
                 break
 
             else:
@@ -881,9 +869,9 @@ class App:
         data = input("Data (DD/MM/AAAA): ")
         hora = input("Hora (HH:MM): ")
 
-        # OBTENDO CHAVES ESTRANGEIRAS
 
-        # CÓDIGO DO PACIENTE (FK)
+
+
         while True:
             try:
                 codigo_paciente = int(input("Cód. do Paciente: "))
@@ -896,7 +884,7 @@ class App:
             except ValueError:
                 print("[ERRO] Código do Paciente inválido, deve ser número inteiro.")
 
-        # CÓDIGO DO MÉDICO (FK) -> Fundamental para pegar a ESPECIALIDADE e checar o LIMITE
+
         while True:
             try:
                 codigo_medico = int(input("Cód. do Médico: "))
@@ -910,7 +898,7 @@ class App:
             except ValueError:
                 print("[ERRO] Código do Médico inválido, deve ser número inteiro.")
 
-        # CÓDIGO DO EXAME (FK)
+
         while True:
             try:
                 codigo_exame = int(input("Cód. do Exame: "))
@@ -923,7 +911,7 @@ class App:
             except ValueError:
                 print("[ERRO] Código do Exame inválido, deve ser número inteiro.")
 
-        # A chamada ao .incluir() irá, internamente, chamar o DiariaService.verificar_limite_e_agendar()
+
         resultado = self.consulta_service.incluir(
             codigo, codigo_paciente, codigo_medico, codigo_exame, data, hora
         )
@@ -955,14 +943,14 @@ class App:
 
         confirmar = input(f"Confirmar exclusão da consulta Cód '{codigo}' (S/N)? ").upper()
         if confirmar == 'S':
-            # A chamada ao .excluir() irá, internamente, chamar o DiariaService.decrementar_contagem()
+
             resultado = self.consulta_service.excluir(codigo)
             print(f"[{resultado['status']}] {resultado['mensagem']}")
         else:
             print("Operação cancelada.")
         input("Enter para continuar...")
 
-    # --- CRUD DIÁRIAS (APENAS MANUTENÇÃO) ---
+
 
     def menu_diarias_crud(self):
         from app.services.DiariaService import DiariaService
@@ -985,7 +973,7 @@ class App:
                 codigo_dia = input("Código do Dia (AAAAMMDD): ")
                 codigo_especialidade = int(input("Código da Especialidade: "))
 
-                # Mostrar o nome da especialidade e limite imediatamente
+
                 esp = especialidade_service.consultar(codigo_especialidade)
                 if esp["status"] == "SUCESSO":
                     print(f"Especialidade: {esp['dados'].descricao}, Limite Diário: {esp['dados'].limite_diario}")
@@ -1003,7 +991,7 @@ class App:
                 resultado = diaria_service.consultar(codigo_dia, codigo_especialidade)
                 diaria = resultado["dados"]
 
-                # Buscar o nome da especialidade
+
                 esp = especialidade_service.consultar(codigo_especialidade)
                 nome_esp = esp["dados"].descricao if esp["status"] == "SUCESSO" else "N/D"
 

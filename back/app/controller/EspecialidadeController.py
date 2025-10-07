@@ -4,7 +4,7 @@ from app.services.EspecialidadeService import EspecialidadeService
 especialidade_service = EspecialidadeService()
 especialidade_bp = Blueprint('especialidade_bp', __name__, url_prefix='/api')
 
-# ------------------ CRUD ------------------
+
 
 @especialidade_bp.route('/especialidades', methods=['POST'])
 def incluir_especialidade():
@@ -21,7 +21,7 @@ def incluir_especialidade():
 def consultar_especialidade(codigo):
     resultado = especialidade_service.consultar(codigo)
     if resultado["status"] == "SUCESSO":
-        resultado["dados"] = resultado["dados"].to_dict()  # converte para dict antes de enviar
+        resultado["dados"] = resultado["dados"].to_dict()
     return jsonify(resultado)
 
 @especialidade_bp.route('/especialidades/<int:codigo>', methods=['PUT'])

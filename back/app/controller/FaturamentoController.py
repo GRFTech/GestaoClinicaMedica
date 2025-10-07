@@ -6,7 +6,7 @@ from app.services.EspecialidadeService import EspecialidadeService
 from app.services.ExameService import ExameService
 from datetime import datetime
 
-# Instanciar os serviços
+
 consulta_service = ConsultaService()
 medico_service = MedicoService()
 especialidade_service = EspecialidadeService()
@@ -21,15 +21,15 @@ faturamento_service = FaturamentoService(
 
 faturamento_bp = Blueprint('faturamento_bp', __name__, url_prefix='/api')
 
-# ------------------ ENDPOINTS ------------------
+
 
 @faturamento_bp.route('/faturamento/dia', methods=['GET'])
 def faturamento_por_dia():
-    data_str = request.args.get("data")  # Ex: "06/10/2025"
+    data_str = request.args.get("data")
     if not data_str:
         return jsonify({"status": "ERRO", "mensagem": "Parâmetro 'data' é obrigatório"}), 400
 
-    # Verifica formato DD/MM/YYYY
+
     try:
         datetime.strptime(data_str, "%d/%m/%Y")
     except ValueError:
@@ -49,7 +49,7 @@ def faturamento_por_periodo():
     if not inicio_str or not fim_str:
         return jsonify({"status": "ERRO", "mensagem": "Parâmetros 'inicio' e 'fim' são obrigatórios"}), 400
 
-    # Valida formato DD/MM/YYYY
+
     try:
         datetime.strptime(inicio_str, "%d/%m/%Y")
         datetime.strptime(fim_str, "%d/%m/%Y")

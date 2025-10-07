@@ -16,23 +16,22 @@ class FaturamentoService:
         """
         valor_total = 0.0
 
-        # 1. Obter Médico para achar a Especialidade
+
         medico_res = self.medico_service.consultar(codigo_medico)
         if medico_res["status"] == "ERRO":
             return 0.0
         medico = medico_res["dados"]
         codigo_especialidade = medico.get("codigo_especialidade")
 
-        # 2. Obter Especialidade (Valor da Consulta)
+
         esp_res = self.especialidade_service.consultar(codigo_especialidade)
         if esp_res["status"] == "SUCESSO":
-            # O objeto Especialidade é retornado, mas o método consulta retorna ele dentro de .dados
-            # Acessamos o dicionário do objeto para obter o valor
+
             especialidade_dict = esp_res["dados"].__dict__
             valor_consulta = especialidade_dict.get("valor_consulta", 0.0)
             valor_total += valor_consulta
 
-        # 3. Obter Exame (Valor do Exame)
+
         exame_res = self.exame_service.consultar(codigo_exame)
         if exame_res["status"] == "SUCESSO":
             exame_dict = exame_res["dados"].__dict__
@@ -41,7 +40,7 @@ class FaturamentoService:
 
         return valor_total
 
-    # --- 6.1: FATURAMENTO POR DIA ---
+
 
     def faturamento_por_dia(self, data_str):
         """Calcula o faturamento total para um dia específico (DD/MM/AAAA)."""
@@ -54,7 +53,7 @@ class FaturamentoService:
 
         return total
 
-    # --- 6.2: FATURAMENTO POR PERÍODO ---
+
 
     def faturamento_por_periodo(self, data_inicio_str, data_fim_str):
         """
@@ -64,7 +63,7 @@ class FaturamentoService:
         total = 0.0
         consultas = self.consulta_service.listar_ordenado()
 
-        # Tenta converter as datas de início e fim para objetos date para comparação
+
         try:
             data_inicio = datetime.strptime(data_inicio_str, "%d/%m/%Y").date()
             data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
@@ -74,18 +73,18 @@ class FaturamentoService:
 
         for c in consultas:
             try:
-                # Converte a data da consulta para date, assumindo formato DD/MM/AAAA
+
                 data_consulta = datetime.strptime(c.data, "%d/%m/%Y").date()
             except ValueError:
-                continue  # Pula consultas com data inválida
+                continue
 
-            # Verifica se a data da consulta está dentro do período (inclusive)
+
             if data_inicio <= data_consulta <= data_fim:
                 total += self._calcular_valor_consulta(c.codigo_medico, c.codigo_exame)
 
         return total
 
-    # --- 6.3: FATURAMENTO POR MÉDICO ---
+
 
     def faturamento_por_medico(self, codigo_medico):
         """Calcula o faturamento total gerado por um médico específico."""
@@ -98,7 +97,7 @@ class FaturamentoService:
 
         return total
 
-    # --- 6.4: FATURAMENTO POR ESPECIALIDADE ---
+
 
     def faturamento_por_especialidade(self, codigo_especialidade):
         """Calcula o faturamento total gerado por uma especialidade específica."""
@@ -110,7 +109,7 @@ class FaturamentoService:
 
             if medico_res["status"] == "SUCESSO":
                 medico = medico_res["dados"]
-                # Verifica se a especialidade do médico da consulta corresponde à especialidade alvo
+
                 if medico.get("codigo_especialidade") == codigo_especialidade:
                     total += self._calcular_valor_consulta(c.codigo_medico, c.codigo_exame)
 

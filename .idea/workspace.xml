@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba7218bb-1f34-4097-934e-1dcf70d269ac" name="Changes" comment="initial commit" />
+    <list default="true" id="ba7218bb-1f34-4097-934e-1dcf70d269ac" name="Changes" comment="initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/CidadeController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/CidadeController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/ConsultaController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/ConsultaController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/DiariaController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/DiariaController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/EspecialidadeController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/EspecialidadeController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/ExameController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/ExameController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/FaturamentoController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/FaturamentoController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/MedicoController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/MedicoController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/controller/PacienteController.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/controller/PacienteController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/repository/BaseRepository.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/repository/BaseRepository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/ConsultaService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/ConsultaService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/DiariaService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/DiariaService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/EspecialidadeService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/EspecialidadeService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/ExameService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/ExameService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/FaturamentoService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/FaturamentoService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/MedicoService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/MedicoService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/app/services/PacienteService.py" beforeDir="false" afterPath="$PROJECT_DIR$/back/app/services/PacienteService.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

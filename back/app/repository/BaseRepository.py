@@ -16,7 +16,6 @@ class BaseRepository:
         self.dados = []
         self.raiz = None
 
-        # 3. Carregamento inicial
         self.carregar_dados()
         self.reconstruir_indice()
 

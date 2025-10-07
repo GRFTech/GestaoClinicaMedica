@@ -4,7 +4,7 @@ from app.services.ExameService import ExameService
 exame_service = ExameService()
 exame_bp = Blueprint('exame_bp', __name__, url_prefix='/api')
 
-# ------------------ CRUD ------------------
+
 
 @exame_bp.route('/exames', methods=['POST'])
 def incluir_exame():
