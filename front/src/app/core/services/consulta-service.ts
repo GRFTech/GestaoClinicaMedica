@@ -8,6 +8,7 @@ import { ExameService } from './exame-service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {CidadeService} from './cidade-service';
+import {EspecialidadeService} from './especialidade-service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class ConsultaService {
   medicoService = inject(MedicoService);
   exameService = inject(ExameService);
   cidadeService = inject(CidadeService);
+  especialidadeService = inject(EspecialidadeService);
   private http = inject(HttpClient);
 
   // Propriedades
@@ -93,6 +95,7 @@ export class ConsultaService {
   private DTOtoUI(dto: Consulta): ConsultaUI {
     const paciente = this.pacienteService.pacientesDto().find(p => p.codigo_paciente === dto.codigo_paciente);
     const medico = this.medicoService.medicosDto().find(m => m.codigo_medico === dto.codigo_medico);
+    const especialidade = this.especialidadeService.especialidadesDto().find(e => e.codigo_especialidade === medico?.codigo_especialidade);
     const exame = this.exameService.examesDto().find(e => e.codigo_exame === dto.codigo_exame);
     const cidade = this.cidadeService.cidadesDto().find(c => c.codigo === paciente?.codigo_cidade ? c.descricao : "")
 
@@ -105,7 +108,7 @@ export class ConsultaService {
       medico?.nome ?? '',
       exame?.descricao ?? '',
       cidade?.descricao ?? '',
-      exame?.valor_exame ?? 0
+      exame!.valor_exame + especialidade!.valor_consulta
     );
   }
 

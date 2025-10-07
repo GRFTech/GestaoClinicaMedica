@@ -46,6 +46,12 @@
     <ng-template #caption>
       <div class="flex items-center justify-between">
         <h5 class="m-0">{{ title }}</h5>
+
+        @if (total) {
+          <p>Total total somado: {{total | currency}} </p>
+        }
+
+
         <p-iconfield>
           <p-inputicon class="pi pi-search"/>
           <input
@@ -55,6 +61,7 @@
             placeholder="Buscar..."
           />
         </p-iconfield>
+
       </div>
     </ng-template>
 

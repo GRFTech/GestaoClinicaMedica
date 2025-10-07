@@ -3,27 +3,27 @@
 <div class="p-4 flex flex-column gap-3 w-full max-w-30rem mx-auto">
   <p-card header="💰 Faturamento da Clínica" class="shadow-3">
 
-    <!-- Faturamento por dia -->
+
     <div class="flex gap-2 align-items-center">
 
       <p-date-picker [(ngModel)]="data" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy"/>
       <p-button label="Buscar por dia" icon="pi pi-search" (click)="buscarPorDia()"></p-button>
     </div>
 
-    <!-- Faturamento por período -->
+
     <div class="flex gap-2 align-items-center mt-2">
       <p-date-picker [(ngModel)]="inicio" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy"/>
       <p-date-picker [(ngModel)]="fim" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy"/>
       <p-button label="Buscar por período" icon="pi pi-search" (click)="buscarPorPeriodo()"></p-button>
     </div>
 
-    <!-- Faturamento por médico -->
+
     <div class="flex gap-2 align-items-center mt-2">
       <p-input-number placeholder="Código do médico" [(ngModel)]="codigoMedico"/>
       <p-button label="Buscar por médico" icon="pi pi-search" (click)="buscarPorMedico()"></p-button>
     </div>
 
-    <!-- Faturamento por especialidade -->
+
     <div class="flex gap-2 align-items-center mt-2">
       <p-input-number placeholder="Código da Especialidade" [(ngModel)]="codigoEspecialidade"/>
       <p-button label="Buscar por especialidade" icon="pi pi-search" (click)="buscarPorEspecialidade()"></p-button>

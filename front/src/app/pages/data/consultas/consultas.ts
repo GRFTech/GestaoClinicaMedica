@@ -8,12 +8,15 @@ import {Toast} from 'primeng/toast';
 import {PacienteService} from '../../../core/services/paciente-service';
 import {MedicoService} from '../../../core/services/medico-service';
 import {ExameService} from '../../../core/services/exame-service';
+import {EspecialidadeService} from '../../../core/services/especialidade-service';
+import {CurrencyPipe} from '@angular/common';
 
 @Component({
   selector: 'app-consulta',
   imports: [
     DynamicCrud,
-    Toast
+    Toast,
+    CurrencyPipe
   ],
   providers: [MessageService],
   templateUrl: './consultas.html',
@@ -27,6 +30,7 @@ export class Consultas implements OnInit {
   pacienteService = inject(PacienteService);
   medicoService = inject(MedicoService);
   exameService = inject(ExameService);
+  especialidadeService = inject(EspecialidadeService);
 
   constructor() {
   }
@@ -193,6 +197,14 @@ export class Consultas implements OnInit {
         life: 3000
       });
     }
+  }
+
+  somaTotal() {
+    let total = 0;
+
+    this.consultaService.consultasUI().forEach(c => total += (c.valor_total))
+
+    return total;
   }
 
 }

@@ -45,6 +45,7 @@ export class DynamicCrud<T extends AbstractDataType> implements OnInit {
   @Input({ required: true }) data!: Signal<T[]>;
   @Input() entityName: string = 'item';
   @Input() T_class!: { new(): T };
+  @Input() total!: number;
 
   @Output() onSave = new EventEmitter<T>();
   @Output() onEdit = new EventEmitter<T>();
