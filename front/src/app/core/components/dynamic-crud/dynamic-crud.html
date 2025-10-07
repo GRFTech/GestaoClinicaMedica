@@ -39,7 +39,7 @@
     [tableStyle]="{ 'min-width': '50rem' }"
     [(selection)]="selectedItems"
     [rowHover]="true"
-    dataKey="id"
+    [dataKey]="columns[0].field"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
   >
