@@ -7,6 +7,7 @@ export default class PacienteUI {
   private _peso: number;
   private _altura: number;
   private _cidade: string;
+  private _estado: string;
 
   constructor(
     codigo_paciente: number = 0,
@@ -16,7 +17,8 @@ export default class PacienteUI {
     telefone: string = '',
     peso: number = 0,
     altura: number = 0,
-    cidade: string = ''
+    cidade: string = '',
+    estado: string = '',
   ) {
     this._codigo_paciente = codigo_paciente;
     this._nome = nome;
@@ -26,6 +28,7 @@ export default class PacienteUI {
     this._peso = peso;
     this._altura = altura;
     this._cidade = cidade;
+    this._estado = estado;
   }
 
 
@@ -91,5 +94,14 @@ export default class PacienteUI {
 
   set cidade(value: string) {
     this._cidade = value;
+  }
+
+
+  get estado(): string {
+    return this._estado;
+  }
+
+  set estado(value: string) {
+    this._estado = value;
   }
 }

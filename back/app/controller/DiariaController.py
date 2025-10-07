@@ -41,31 +41,15 @@ def excluir_diaria(codigo_dia, codigo_especialidade):
 def listar_diarias():
     diarias = diaria_service.listar_ordenado()
     diarias_dict = [d.to_dict() for d in diarias]  # <-- converte cada objeto
-    return jsonify({"status": "SUCESSO", "dados": diarias_dict})
 
-# ------------------ Operações de Contagem ------------------
+    # Cria a resposta JSON
+    response = jsonify({"status": "SUCESSO", "dados": diarias_dict})
 
-@diaria_bp.route('/diarias/verificar_limite', methods=['POST'])
-def verificar_limite():
-    data = request.json
-    data_consulta = data.get('data')
-    codigo_especialidade = data.get('codigo_especialidade')
-    resultado = diaria_service.verificar_limite(data_consulta, codigo_especialidade)
-    return jsonify(resultado)
+    # --- CONFIGURAÇÃO ANTICACHE ---
+    # Garante que o navegador (e proxies) não armazenem a resposta em cache,
+    # forçando uma nova requisição GET a cada F5 ou recarga do componente.
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
 
-@diaria_bp.route('/diarias/incrementar', methods=['POST'])
-def incrementar_contagem():
-    data = request.json
-    data_consulta = data.get('data')
-    codigo_especialidade = data.get('codigo_especialidade')
-    incremento = data.get('incremento', 1)
-    resultado = diaria_service.incrementar_contagem(data_consulta, codigo_especialidade, incremento)
-    return jsonify(resultado)
-
-@diaria_bp.route('/diarias/decrementar', methods=['POST'])
-def decrementar_contagem():
-    data = request.json
-    data_consulta = data.get('data')
-    codigo_especialidade = data.get('codigo_especialidade')
-    resultado = diaria_service.decrementar_contagem(data_consulta, codigo_especialidade)
-    return jsonify(resultado)
+    return response

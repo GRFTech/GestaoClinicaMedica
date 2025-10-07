@@ -111,7 +111,8 @@ export class PacienteService {
       paciente.telefone,
       paciente.peso,
       paciente.altura,
-      cidade?.descricao ?? ''
+      cidade?.descricao ?? '',
+      cidade?.estado ?? ''
     );
   }
 

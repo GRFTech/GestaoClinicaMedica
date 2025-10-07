@@ -44,7 +44,8 @@ export class Pacientes implements OnInit {
       { field: 'telefone', header: 'Telefone', editable: true, type: 'text', insertable: true, exhibitable: true },
       { field: 'peso', header: 'Peso (kg)', editable: true, type: 'number', insertable: true, exhibitable: true },
       { field: 'altura', header: 'Altura (cm)', editable: true, type: 'number', insertable: true, exhibitable: true },
-      { field: 'cidade', header: 'Cidade', editable: true, type: 'select', insertable: true, options: this.cidadeOptions(), exhibitable: true }
+      { field: 'cidade', header: 'Cidade', editable: true, type: 'select', insertable: true, options: this.cidadeOptions(), exhibitable: true },
+      { field: 'estado', header: 'Estado', editable: false, type: 'text', insertable: false, exhibitable: true }
     ];
   }
 

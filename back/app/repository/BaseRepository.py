@@ -135,4 +135,7 @@ class BaseRepository:
         """Retorna todos os registros em ordem crescente da chave."""
         resultados = []
         self._in_ordem(self.raiz, resultados)
+
+        self.carregar_dados()
+        self.reconstruir_indice()
         return resultados

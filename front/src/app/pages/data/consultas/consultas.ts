@@ -122,43 +122,47 @@ export class Consultas implements OnInit {
   }
 
   onSave(ui: ConsultaUI) {
-
-    try {
-      this.consultaService.createConsulta(ui);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: `Consulta salva com sucesso!`,
-        life: 3000
-      });
-    } catch (ex) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Ocorreu um erro!',
-        detail: `Ocorreu um erro ao salvar a consulta!`,
-        life: 3000
-      });
-    }
+    this.consultaService.createConsulta(ui).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: res.mensagem ?? 'Consulta salva com sucesso!',
+          life: 3000
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: err.message ?? 'Ocorreu um erro ao salvar a consulta!',
+          life: 4000
+        });
+      }
+    });
   }
 
   onEdit(ui: ConsultaUI) {
-    try {
-      this.consultaService.updateConsulta(ui);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: `Consulta atualizada com sucesso!`,
-        life: 3000
-      });
-    } catch (ex) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Ocorreu um erro!',
-        detail: `Ocorreu um erro ao editar a consulta!`,
-        life: 3000
-      });
-    }
+    this.consultaService.updateConsulta(ui).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: res.mensagem ?? 'Consulta atualizada com sucesso!',
+          life: 3000
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: err.message ?? 'Ocorreu um erro ao atualizar a consulta!',
+          life: 4000
+        });
+      }
+    });
   }
+
 
   onDelete(ui: ConsultaUI) {
 

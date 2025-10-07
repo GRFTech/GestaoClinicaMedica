@@ -6,9 +6,10 @@ import { PacienteService } from './paciente-service';
 import { MedicoService } from './medico-service';
 import { ExameService } from './exame-service';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import {firstValueFrom, map} from 'rxjs';
 import {CidadeService} from './cidade-service';
 import {EspecialidadeService} from './especialidade-service';
+import {DiariaService} from './diaria-service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class ConsultaService {
   exameService = inject(ExameService);
   cidadeService = inject(CidadeService);
   especialidadeService = inject(EspecialidadeService);
+  diariaService = inject(DiariaService);
   private http = inject(HttpClient);
 
   // Propriedades
@@ -123,15 +125,20 @@ export class ConsultaService {
     }
   }
 
-  /** Cria nova consulta */
   createConsulta(ui: ConsultaUI) {
     const dto = this.UItoDto(ui);
 
-    this.http.post<{ status: string; mensagem: string }>(
+    return this.http.post<{ status: string; mensagem: string }>(
       `${environment.apiURL}/consultas`,
       dto.toJSON()
-    ).subscribe({
-      next: (res) => {
+    ).pipe(
+      map(res => {
+        console.log(res);
+
+        if (res.status === 'ERRO') {
+          throw new Error(res.mensagem || 'Erro ao criar consulta');
+        }
+
         if (res.status === 'SUCESSO') {
           // Extrai o código da consulta da mensagem retornada
           const match = res.mensagem.match(/\(Cód:\s*(\d+)\)/);
@@ -142,31 +149,41 @@ export class ConsultaService {
           // Atualiza a lista de consultas
           this.consultas.update(consultas => [...consultas, this.UItoDto(ui)]);
           console.log(`Consulta salva com código: ${ui.codigo_consulta}`);
+          this.diariaService.getDiarias();
         } else {
           console.error('Falha ao criar consulta:', res.mensagem);
         }
-      },
-      error: (err) => console.error('Erro HTTP ao criar consulta:', err)
-    });
+
+        return res;
+      })
+    );
   }
 
-
-  /** Atualiza consulta existente */
   updateConsulta(ui: ConsultaUI) {
     const dto = this.UItoDto(ui);
-    this.http.put<{ status: string; mensagem: string }>(
+
+    return this.http.put<{ status: string; mensagem: string }>(
       `${environment.apiURL}/consultas/${ui.codigo_consulta}`,
       dto.toJSON()
-    ).subscribe({
-      next: (res) => {
-        if (res.status === 'SUCESSO') this.getConsultas();
-        this.consultas.update(cidades =>
-          cidades.map(c => c.codigo_consulta === ui.codigo_consulta ? this.UItoDto(ui) : c)
-        );
-      },
-      error: (err) => console.error('Erro ao atualizar consulta:', err)
-    });
+    ).pipe(
+      map(res => {
+        if (res.status === 'SUCESSO') {
+          this.getConsultas();
+          this.consultas.update(cidades =>
+            cidades.map(c =>
+              c.codigo_consulta === ui.codigo_consulta ? this.UItoDto(ui) : c
+            )
+          );
+          this.diariaService.getDiarias();
+        } else {
+          throw new Error(res.mensagem || 'Erro ao atualizar consulta');
+        }
+
+        return res;
+      })
+    );
   }
+
 
   /** Exclui consulta */
   deleteConsulta(ui: ConsultaUI) {
@@ -177,6 +194,7 @@ export class ConsultaService {
         if (res.status === 'SUCESSO') {
           this.consultas.update(cs => cs.filter(c => c.codigo_consulta !== ui.codigo_consulta));
         }
+        this.diariaService.getDiarias();
       },
       error: (err) => console.error('Erro ao excluir consulta:', err)
     });
